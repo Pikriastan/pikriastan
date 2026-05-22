@@ -315,9 +315,9 @@ export function ProductForm({
       <section className="border-t hairline pt-10">
         <div className="flex items-end justify-between gap-4 flex-wrap mb-6">
           <h3 className="font-mono text-[11px] uppercase tracking-[0.28em] text-muted">
-            {labels.fieldImages} {values.images.length > 0 ? `\u2014 ${values.images.length}` : ""}
+            {`${labels.fieldImages}${values.images.length > 0 ? ` \u2014 ${values.images.length}` : ""}`}
           </h3>
-          <label className="btn-ghost cursor-pointer">
+          <label className="btn btn-ghost cursor-pointer">
             <input
               ref={fileRef}
               type="file"
@@ -332,14 +332,14 @@ export function ProductForm({
         </div>
 
         {values.images.length === 0 ? (
-          <div className="border hairline-strong border-dashed py-16 grid place-items-center text-center text-muted font-mono text-[11px] uppercase tracking-[0.22em]">
+          <div className="border hairline border-dashed py-20 grid place-items-center text-center text-muted font-mono text-[11px] uppercase tracking-[0.24em]">
             {labels.uploadImages}
           </div>
         ) : (
           <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {values.images.map((src, i) => (
               <li key={src + i} className="group relative">
-                <div className="relative aspect-[4/5] bg-paper-deep border hairline-strong overflow-hidden">
+                <div className="relative aspect-[4/5] bg-paper-deep overflow-hidden">
                   <Image
                     src={src}
                     alt={`image ${i + 1}`}
@@ -415,14 +415,14 @@ export function ProductForm({
         <button
           type="button"
           onClick={() => router.push("/admin")}
-          className="btn-ghost"
+          className="btn btn-ghost"
           disabled={pending}
         >
           {labels.cancel}
         </button>
         <button
           type="submit"
-          className="btn-primary"
+          className="btn btn-primary"
           disabled={pending || uploading}
         >
           {pending ? labels.saving : labels.save}

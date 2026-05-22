@@ -1,13 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f3f1ec;
-  --bg-deep: #ebe8e0;
-  --ink: #0a0a0a;
-  --ink-soft: #1a1a1a;
+  /* Surfaces — pure white */
+  --bg: #ffffff;
+  --bg-deep: #f4f4f4;
+  --bg-warm: #ededed;
+
+  /* Ink — pure black */
+  --ink: #000000;
+  --ink-soft: #111111;
   --muted: #6b6b6b;
-  --line: rgba(10, 10, 10, 0.12);
-  --line-strong: rgba(10, 10, 10, 0.32);
+  --muted-soft: #9a9a9a;
+
+  /* Accent — muted gold, used very sparingly */
+  --accent: #b08d3c;
+  --accent-strong: #8e6f2b;
+  --accent-soft: #d4b66e;
+
+  /* Lines — minimal, editorial */
+  --line: rgba(0, 0, 0, 0.10);
+  --line-strong: rgba(0, 0, 0, 0.22);
 }
 
 @theme inline {
@@ -15,9 +27,14 @@
   --color-foreground: var(--ink);
   --color-paper: var(--bg);
   --color-paper-deep: var(--bg-deep);
+  --color-paper-warm: var(--bg-warm);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --font-sans: var(--font-sans-ui);
@@ -39,7 +56,6 @@ body {
 
 body {
   font-family: var(--font-sans-ui), "Inter", "Noto Sans Georgian", system-ui, sans-serif;
-  font-feature-settings: "ss01", "ss02", "cv01";
 }
 
 ::selection {
@@ -48,16 +64,17 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-display-en), "Anton", "Archivo Black", "Noto Sans Georgian",
-    "Inter", system-ui, sans-serif;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display-en), "Fraunces", "Cormorant Garamond",
+    "Noto Serif Georgian", Georgia, serif;
+  font-weight: 350;
+  font-optical-sizing: auto;
+  letter-spacing: -0.018em;
 }
 
 .font-display-ka {
-  font-family: var(--font-display-ka), "Noto Sans Georgian", "Inter", system-ui,
-    sans-serif;
-  font-weight: 800;
+  font-family: var(--font-display-ka), "Noto Serif Georgian",
+    "Noto Sans Georgian", system-ui, sans-serif;
+  font-weight: 500;
   letter-spacing: -0.02em;
 }
 
@@ -74,43 +91,10 @@ body {
   border-color: var(--line-strong);
 }
 
-.shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(10, 10, 10, 0) 0%,
-    rgba(10, 10, 10, 0.06) 50%,
-    rgba(10, 10, 10, 0) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee-track {
-  animation: marquee 40s linear infinite;
-}
-
 @keyframes fade-up {
   0% {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   100% {
     opacity: 1;
@@ -122,31 +106,21 @@ body {
   animation: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-.ink-grain {
-  position: relative;
-}
-
-.ink-grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  mix-blend-mode: multiply;
-  background-image:
-    radial-gradient(rgba(0, 0, 0, 0.8) 1px, transparent 1px);
-  background-size: 3px 3px;
-}
-
 .product-card-img {
-  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
-    filter 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  filter: grayscale(20%);
+  transition: transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .product-card:hover .product-card-img {
-  transform: scale(1.04);
-  filter: grayscale(0%);
+  transform: scale(1.035);
+}
+
+.product-card .second-img {
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.product-card:hover .second-img {
+  opacity: 1;
 }
 
 .link-underline {
@@ -154,50 +128,51 @@ body {
   background-size: 0% 1px;
   background-repeat: no-repeat;
   background-position: 0 100%;
-  transition: background-size 350ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: background-size 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .link-underline:hover {
   background-size: 100% 1px;
 }
 
-.btn-primary {
+.link-static {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+}
+
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
-  padding: 0.875rem 1.5rem;
-  background: var(--ink);
-  color: var(--bg);
+  gap: 0.55rem;
+  padding: 0.85rem 1.6rem;
   font-family: var(--font-sans-ui);
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   font-size: 0.7rem;
   text-transform: uppercase;
+  border-radius: 0;
+  transition: background 300ms ease, color 300ms ease, border-color 300ms ease;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--bg);
   border: 1px solid var(--ink);
-  transition: background 250ms ease, color 250ms ease, transform 250ms ease;
 }
 
 .btn-primary:hover {
-  background: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
   color: var(--ink);
 }
 
 .btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.625rem;
-  padding: 0.875rem 1.5rem;
   background: transparent;
   color: var(--ink);
-  font-family: var(--font-sans-ui);
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  font-size: 0.7rem;
-  text-transform: uppercase;
   border: 1px solid var(--ink);
-  transition: background 250ms ease, color 250ms ease;
 }
 
 .btn-ghost:hover {
@@ -205,24 +180,24 @@ body {
   color: var(--bg);
 }
 
-.tag {
+.btn-text {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.25rem 0.55rem;
-  border: 1px solid var(--line-strong);
   font-family: var(--font-mono-ui);
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+  color: var(--ink);
+  padding-bottom: 2px;
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.7rem;
   font-family: var(--font-mono-ui);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--muted);
@@ -231,9 +206,42 @@ body {
 .eyebrow::before {
   content: "";
   display: inline-block;
-  width: 1.75rem;
+  width: 1.4rem;
   height: 1px;
-  background: var(--ink);
+  background: var(--accent);
+}
+
+.dot-accent {
+  position: relative;
+}
+
+.dot-accent::before {
+  content: "";
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--accent);
+  margin-right: 0.6rem;
+  vertical-align: middle;
+  transform: translateY(-1px);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.text-accent-strong {
+  color: var(--accent-strong);
+}
+
+.rule-accent {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin-right: 0.6rem;
 }
 
 input[type="text"],
@@ -243,15 +251,16 @@ input[type="email"],
 textarea,
 select {
   background: transparent;
-  border: 1px solid var(--line-strong);
+  border: none;
+  border-bottom: 1px solid var(--line-strong);
   color: var(--ink);
-  padding: 0.75rem 0.875rem;
+  padding: 0.75rem 0;
   font-family: var(--font-sans-ui);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   border-radius: 0;
   width: 100%;
   outline: none;
-  transition: border-color 200ms ease;
+  transition: border-color 250ms ease;
 }
 
 input:focus,
@@ -262,16 +271,23 @@ select:focus {
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--muted);
+  color: var(--muted-soft);
 }
 
 label.field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.3rem;
   font-family: var(--font-mono-ui);
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+/* Admin checkboxes: keep native styling but small */
+input[type="checkbox"] {
+  width: auto;
+  border: 1px solid var(--ink);
+  accent-color: var(--ink);
 }

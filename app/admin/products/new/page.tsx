@@ -31,7 +31,7 @@ export default async function NewProductPage() {
         <div className="mx-auto max-w-5xl px-5 md:px-10 py-10 md:py-14">
           <p className="eyebrow mb-3">/ {t.admin.newProduct}</p>
           <h1
-            className={`${displayClass} uppercase leading-none tracking-tight text-4xl md:text-6xl`}
+            className={`${displayClass} lowercase leading-none tracking-tight text-4xl md:text-6xl`}
           >
             {t.admin.formTitleNew}
           </h1>

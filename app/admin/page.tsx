@@ -21,18 +21,18 @@ export default async function AdminPage() {
   return (
     <AdminShell locale={locale} t={t}>
       <section className="border-b hairline">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 py-12 md:py-16">
+        <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-14 md:py-20">
           <div className="flex items-end justify-between gap-6 flex-wrap">
             <div>
-              <p className="eyebrow mb-3">/ {locale === "ka" ? "მართვა" : "Admin"}</p>
+              <p className="eyebrow mb-4">{`/ ${locale === "ka" ? "მართვა" : "Admin"}`}</p>
               <h1
-                className={`${displayClass} uppercase leading-none tracking-tight text-5xl md:text-7xl`}
+                className={`${displayClass} lowercase leading-none tracking-tight text-5xl md:text-7xl`}
               >
                 {t.admin.dashboardTitle}
               </h1>
               <p className="mt-3 text-sm text-muted">{t.admin.dashboardSubtitle}</p>
             </div>
-            <Link href="/admin/products/new" className="btn-primary">
+            <Link href="/admin/products/new" className="btn btn-primary">
               + {t.admin.newProduct}
             </Link>
           </div>
@@ -40,7 +40,7 @@ export default async function AdminPage() {
       </section>
 
       <section>
-        <div className="mx-auto max-w-7xl px-5 md:px-10 py-10 md:py-14">
+        <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-12 md:py-16">
           <div className="flex items-center justify-between gap-4 mb-6">
             <h2 className="font-mono text-[11px] uppercase tracking-[0.28em] text-muted">
               {`${t.admin.productsHeader} \u2014 ${products.length}`}
@@ -48,11 +48,11 @@ export default async function AdminPage() {
           </div>
 
           {products.length === 0 ? (
-            <div className="border hairline-strong border-dashed py-24 grid place-items-center text-center">
-              <p className="text-muted font-mono text-xs uppercase tracking-[0.22em] max-w-md">
+            <div className="border hairline border-dashed py-28 grid place-items-center text-center">
+              <p className="text-muted font-mono text-xs uppercase tracking-[0.24em] max-w-md">
                 {t.admin.noProducts}
               </p>
-              <Link href="/admin/products/new" className="btn-primary mt-6">
+              <Link href="/admin/products/new" className="btn btn-primary mt-7">
                 + {t.admin.newProduct}
               </Link>
             </div>
@@ -64,7 +64,7 @@ export default async function AdminPage() {
                 return (
                   <li
                     key={p.id}
-                    className="grid grid-cols-12 gap-4 items-center border-b hairline py-4"
+                    className="grid grid-cols-12 gap-4 items-center border-b hairline py-5"
                   >
                     <div className="col-span-2 md:col-span-1">
                       <div className="relative aspect-[4/5] w-full bg-paper-deep overflow-hidden">
@@ -81,36 +81,31 @@ export default async function AdminPage() {
                     </div>
                     <div className="col-span-10 md:col-span-5 min-w-0">
                       <div
-                        className={`${displayClass} uppercase text-lg md:text-xl tracking-tight truncate`}
+                        className={`${displayClass} lowercase text-lg md:text-xl tracking-tight truncate`}
                       >
                         {name}
                       </div>
                       <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.22em] text-muted truncate">
-                        / {p.slug}
-                        {category ? ` \u00b7 ${category}` : ""}
+                        {`/ ${p.slug}${category ? ` \u00b7 ${category}` : ""}`}
                       </div>
                     </div>
-                    <div className="col-span-6 md:col-span-2 font-mono text-xs">
+                    <div className="col-span-6 md:col-span-2 font-mono text-[12px]">
                       {formatPrice(p.price, p.currency, locale)}
                     </div>
-                    <div className="col-span-6 md:col-span-2 flex flex-wrap gap-1.5">
-                      <span
-                        className={`font-mono text-[10px] uppercase tracking-[0.22em] px-1.5 py-0.5 border hairline-strong ${
-                          p.published ? "text-ink" : "text-muted"
-                        }`}
-                      >
+                    <div className="col-span-6 md:col-span-2 flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+                      <span className={p.published ? "text-ink" : "text-muted"}>
                         {p.published ? t.admin.published : t.admin.draft}
                       </span>
                       {p.featured && (
-                        <span className="font-mono text-[10px] uppercase tracking-[0.22em] px-1.5 py-0.5 bg-ink text-paper">
-                          {t.admin.featured}
+                        <span className="text-accent-strong">
+                          {`\u00b7 ${t.admin.featured}`}
                         </span>
                       )}
                     </div>
-                    <div className="col-span-12 md:col-span-2 flex md:justify-end gap-4">
+                    <div className="col-span-12 md:col-span-2 flex md:justify-end gap-5">
                       <Link
                         href={`/admin/products/${p.id}/edit`}
-                        className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink hover:text-ink/70 underline underline-offset-4 decoration-line-strong hover:decoration-ink"
+                        className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink hover:text-accent-strong link-static decoration-line-strong"
                       >
                         {t.admin.edit}
                       </Link>

@@ -12,27 +12,25 @@ export function Logo({
 }) {
   const big =
     size === "lg"
-      ? "text-3xl md:text-4xl"
+      ? "text-4xl md:text-5xl"
       : size === "sm"
-        ? "text-base md:text-lg"
+        ? "text-lg md:text-xl"
         : "text-xl md:text-2xl";
-  const small =
-    size === "lg" ? "text-[10px]" : size === "sm" ? "text-[9px]" : "text-[10px]";
 
   return (
     <Link
       href={href}
-      className="group inline-flex flex-col leading-none tracking-tight text-ink"
+      className="inline-flex items-baseline gap-2 leading-none tracking-tight text-ink"
     >
       <span
-        className={`${big} ${locale === "ka" ? "font-display-ka" : "font-display"} uppercase`}
+        className={`${big} ${
+          locale === "ka" ? "font-display-ka" : "font-display"
+        } lowercase`}
       >
-        {locale === "ka" ? "ამირანას" : "Amiranas"}
+        {locale === "ka" ? "ამირანას" : "amiranas"}
       </span>
-      <span
-        className={`${small} font-mono uppercase tracking-[0.3em] text-muted mt-1`}
-      >
-        {locale === "ka" ? "გამოფენა \u00b7 სტუდია" : "Gamofena \u00b7 Studio"}
+      <span className="hidden sm:inline font-mono uppercase tracking-[0.3em] text-muted text-[10px]">
+        {locale === "ka" ? "/ გამოფენა" : "/ gamofena"}
       </span>
     </Link>
   );

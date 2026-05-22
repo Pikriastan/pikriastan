@@ -55,7 +55,7 @@ export function LoginForm({
       )}
       <button
         type="submit"
-        className="btn-primary w-full"
+        className="btn btn-primary w-full"
         disabled={pending || password.length === 0}
       >
         {pending ? "\u2026" : labels.submit}

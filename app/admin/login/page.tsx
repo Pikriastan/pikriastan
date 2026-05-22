@@ -14,41 +14,36 @@ export default async function AdminLoginPage() {
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-paper">
-      <div className="hidden md:flex relative bg-ink text-paper p-12 flex-col justify-between overflow-hidden">
-        <div>
+    <div className="min-h-screen flex flex-col bg-paper">
+      <header className="border-b hairline">
+        <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-5 md:py-6 flex items-center justify-between">
           <Link
             href="/"
-            className="font-mono text-[10px] uppercase tracking-[0.32em] text-paper/70 hover:text-paper"
+            className={`${displayClass} lowercase text-xl md:text-2xl tracking-tight leading-none`}
           >
-            {"\u2190 "} {locale === "ka" ? "უკან" : "Back to site"}
+            {locale === "ka" ? "ამირანას" : "amiranas"}
+            <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.32em] text-muted align-middle">
+              {" / admin"}
+            </span>
+          </Link>
+          <Link
+            href="/"
+            className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted hover:text-ink"
+          >
+            {`\u2190 ${locale === "ka" ? "უკან" : "Back"}`}
           </Link>
         </div>
-        <div>
-          <div
-            className={`${displayClass} uppercase leading-[0.9] tracking-tight text-paper text-7xl lg:text-8xl`}
-          >
-            {locale === "ka" ? "სტუდია" : "Studio"}
-          </div>
-          <p className="mt-6 text-paper/70 max-w-sm">
-            {locale === "ka"
-              ? "მართე კოლექცია. ატვირთე ახალი ნაკეთობები."
-              : "Curate the archive. Upload new pieces. Publish quietly."}
-          </p>
-        </div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.32em] text-paper/50">
-          {"Amiranas \u00b7 Gamofena \u00b7 Admin"}
-        </div>
-      </div>
-      <div className="flex items-center justify-center p-8 md:p-16">
+      </header>
+
+      <main className="flex-1 grid place-items-center px-6 md:px-12 py-20">
         <div className="w-full max-w-sm">
-          <p className="eyebrow mb-6">/ {locale === "ka" ? "შესვლა" : "Access"}</p>
+          <p className="eyebrow mb-6">{`/ ${locale === "ka" ? "შესვლა" : "Access"}`}</p>
           <h1
-            className={`${displayClass} uppercase leading-none tracking-tight text-5xl md:text-6xl`}
+            className={`${displayClass} leading-none tracking-tight text-5xl md:text-6xl lowercase`}
           >
             {t.admin.loginTitle}
           </h1>
-          <p className="mt-3 text-sm text-muted">
+          <p className="mt-3 text-[15px] text-muted">
             {locale === "ka"
               ? "შეიყვანე ადმინისტრატორის პაროლი."
               : "Enter the studio password to continue."}
@@ -63,7 +58,7 @@ export default async function AdminLoginPage() {
             />
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

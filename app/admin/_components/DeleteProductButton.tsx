@@ -32,7 +32,7 @@ export function DeleteProductButton({
       type="button"
       onClick={onClick}
       disabled={pending}
-      className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/80 hover:text-ink underline underline-offset-4 decoration-line-strong hover:decoration-ink disabled:opacity-40"
+      className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/80 hover:text-accent-strong link-static decoration-line-strong disabled:opacity-40"
     >
       {pending ? "\u2026" : label}
     </button>

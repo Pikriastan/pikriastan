@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Anton, Noto_Sans_Georgian } from "next/font/google";
+import {
+  Inter,
+  JetBrains_Mono,
+  Fraunces,
+  Noto_Serif_Georgian,
+} from "next/font/google";
 import "./globals.css";
 import { getLocale } from "@/lib/i18n/server";
 
@@ -15,27 +20,28 @@ const monoUi = JetBrains_Mono({
   display: "swap",
 });
 
-const displayEn = Anton({
+const displayEn = Fraunces({
   variable: "--font-display-en",
   subsets: ["latin"],
-  weight: "400",
+  weight: "variable",
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const displayKa = Noto_Sans_Georgian({
+const displayKa = Noto_Serif_Georgian({
   variable: "--font-display-ka",
   subsets: ["georgian"],
-  weight: ["400", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Amiranas Gamofena \u2014 Studio",
+    default: "Amiranas Gamofena \u2014 Atelier",
     template: "%s \u2014 Amiranas Gamofena",
   },
   description:
-    "An independent garment studio from Tbilisi. Considered cuts, raw textures, numbered runs.",
+    "An independent atelier from Tbilisi. Quietly considered garments, soft palettes, numbered runs.",
 };
 
 export default async function RootLayout({

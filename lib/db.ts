@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
+import { maybeSeed } from "./seed";
 
 const DB_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DB_DIR, "app.db");
@@ -42,6 +43,13 @@ export function getDb(): Database.Database {
   `);
 
   _db = db;
+
+  try {
+    maybeSeed(db);
+  } catch (err) {
+    console.error("Seed failed:", err);
+  }
+
   return db;
 }
 

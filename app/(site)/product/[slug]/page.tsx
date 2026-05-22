@@ -39,41 +39,41 @@ export default async function ProductPage({
 
   return (
     <article className="border-b hairline">
-      <div className="mx-auto max-w-7xl px-5 md:px-10 pt-8 md:pt-12 pb-20 md:pb-28">
-        <div className="mb-8 md:mb-12">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-12 pt-10 md:pt-14 pb-24 md:pb-32">
+        <div className="mb-10 md:mb-14">
           <Link
             href="/collection"
-            className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted hover:text-ink"
+            className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted hover:text-ink link-underline pb-1 inline-block"
           >
-            {"\u2190 "}
-            {t.product.back}
+            {`\u2190 ${t.product.back}`}
           </Link>
         </div>
 
-        <div className="grid grid-cols-12 gap-8 md:gap-12">
-          <div className="col-span-12 lg:col-span-8 fade-up">
+        <div className="grid grid-cols-12 gap-10 md:gap-16">
+          <div className="col-span-12 lg:col-span-7 fade-up">
             <ProductGallery images={product.images} alt={name} />
           </div>
 
           <aside
-            className="col-span-12 lg:col-span-4 lg:sticky lg:top-28 lg:self-start fade-up"
-            style={{ animationDelay: "120ms" }}
+            className="col-span-12 lg:col-span-5 lg:sticky lg:top-32 lg:self-start fade-up"
+            style={{ animationDelay: "100ms" }}
           >
-            {category && <p className="eyebrow mb-4">{category}</p>}
+            {category && (
+              <p className="eyebrow mb-6">{category}</p>
+            )}
             <h1
-              className={`${displayClass} uppercase leading-[0.95] tracking-tight text-4xl md:text-5xl lg:text-[3.2rem]`}
+              className={`${displayClass} leading-[0.95] tracking-tight text-4xl md:text-5xl lg:text-[3.2rem] lowercase`}
             >
               {name}
             </h1>
 
-            <div className="mt-6 flex items-baseline gap-4">
-              <span className="text-2xl md:text-3xl tracking-tight">
-                {formatPrice(product.price, product.currency, locale)}
-              </span>
-              <span className="tag">{t.product.soldOutSoon}</span>
+            <div
+              className={`mt-7 ${displayClass} text-2xl md:text-3xl tracking-tight`}
+            >
+              {formatPrice(product.price, product.currency, locale)}
             </div>
 
-            <div className="mt-10 border-t hairline pt-6">
+            <div className="mt-10 border-t hairline pt-7">
               <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted mb-3">
                 {t.product.description}
               </p>
@@ -82,13 +82,13 @@ export default async function ProductPage({
               </p>
             </div>
 
-            <div className="mt-10 border-t hairline pt-6 space-y-3 font-mono text-[11px] uppercase tracking-[0.2em]">
+            <div className="mt-10 border-t hairline pt-7 space-y-4 font-mono text-[11px] uppercase tracking-[0.2em]">
               <div className="flex justify-between gap-4">
                 <span className="text-muted">{t.product.category}</span>
                 <span>{category || "\u2014"}</span>
               </div>
               <div className="flex justify-between gap-4">
-                <span className="text-muted">N\u00b0</span>
+                <span className="text-muted">{"N\u00b0"}</span>
                 <span>{product.id.slice(-6).toUpperCase()}</span>
               </div>
               <div className="flex justify-between gap-4">
@@ -101,7 +101,7 @@ export default async function ProductPage({
               href={`mailto:studio@amiranas-gamofena.test?subject=${encodeURIComponent(
                 `Inquiry: ${product.name.en} (${product.slug})`,
               )}`}
-              className="btn-primary mt-10 w-full"
+              className="btn btn-primary mt-12 w-full"
             >
               {t.product.inquire}
             </a>
