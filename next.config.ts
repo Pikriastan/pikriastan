@@ -28,7 +28,6 @@ const nextConfig: NextConfig = {
 	images: {
 		remotePatterns: readImageHosts(),
 	},
-	serverExternalPackages: ["better-sqlite3"],
 };
 
 export default nextConfig;
