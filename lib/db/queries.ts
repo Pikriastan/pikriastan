@@ -1,8 +1,6 @@
-import { config } from "dotenv";
-import { drizzle } from "drizzle-orm/node-postgres";
+import "server-only";
 
-config({
-	path: ".env.local",
-});
+import "dotenv/config";
+import { drizzle } from "drizzle-orm/node-postgres";
 
 const db = drizzle(process.env.DATABASE_URL!);
