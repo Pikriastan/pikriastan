@@ -30,7 +30,7 @@ export default async function ProductPage({
   const { slug } = await params;
   const { locale, t } = await getT();
   const product = getProductBySlug(slug);
-  if (!product?.published) notFound();
+  if (!product.published) notFound();
 
   const name = pickLocalized(product.name, locale);
   const category = pickLocalized(product.category, locale);

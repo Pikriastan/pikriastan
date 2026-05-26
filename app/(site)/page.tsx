@@ -13,7 +13,7 @@ export default async function HomePage() {
     <>
       {/* HERO */}
       <section className="border-b hairline">
-        <div className="mx-auto max-w-[1400px] px-6 md:px-12 pt-24 md:pt-32 pb-24 md:pb-32">
+        <div className="mx-auto max-w-350 px-6 md:px-12 pt-24 md:pt-32 pb-24 md:pb-32">
           <p className="eyebrow mb-10 fade-up">{t.hero.eyebrow}</p>
           <div className="grid grid-cols-12 gap-8 md:gap-12 items-end">
             <h1
@@ -114,7 +114,7 @@ export default async function HomePage() {
 
       {/* MANIFESTO */}
       <section className="border-b hairline">
-        <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-24 md:py-32">
+        <div className="mx-auto max-w-350 px-6 md:px-12 py-24 md:py-32">
           <p className="eyebrow mb-12">{t.home.manifestoTitle}</p>
           <ol className="space-y-0">
             {t.home.manifestoLines.map((line, i) => (
