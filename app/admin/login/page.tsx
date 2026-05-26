@@ -1,22 +1,17 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { isAuthenticated } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { LoginForm } from "./LoginForm";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminLoginPage() {
-  if (await isAuthenticated()) {
-    redirect("/admin");
-  }
   const { locale, t } = await getT();
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
 
   return (
     <div className="min-h-screen flex flex-col bg-paper">
       <header className="border-b hairline">
-        <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-5 md:py-6 flex items-center justify-between">
+        <div className="mx-auto max-w-350 px-6 md:px-12 py-5 md:py-6 flex items-center justify-between">
           <Link
             href="/"
             className={`${displayClass} lowercase text-xl md:text-2xl tracking-tight leading-none`}
@@ -45,12 +40,13 @@ export default async function AdminLoginPage() {
           </h1>
           <p className="mt-3 text-[15px] text-muted">
             {locale === "ka"
-              ? "შეიყვანე ადმინისტრატორის პაროლი."
-              : "Enter the studio password to continue."}
+              ? "შეიყვანე ადმინისტრატორის მონაცემები."
+              : "Enter the studio credentials to continue."}
           </p>
           <div className="mt-10">
             <LoginForm
               labels={{
+                email: t.admin.emailLabel,
                 password: t.admin.passwordLabel,
                 submit: t.admin.loginButton,
                 error: t.admin.loginError,

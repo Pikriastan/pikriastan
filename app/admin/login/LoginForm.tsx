@@ -1,64 +1,71 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { updateSession } from "@/lib/auth-client";
+import { type LoginActionState, login } from "./actions";
 
-export function LoginForm({
-  labels,
-}: {
-  labels: { password: string; submit: string; error: string };
-}) {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+interface LoginFormProps {
+  labels: {
+    email: string;
+    password: string;
+    submit: string;
+    error: string;
+  };
+}
+
+export function LoginForm({ labels }: LoginFormProps) {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [isSuccessful, setIsSuccessful] = useState(false);
 
-  function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-    startTransition(async () => {
-      try {
-        const res = await fetch("/api/admin/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password }),
-        });
-        if (!res.ok) {
-          setError(labels.error);
-          return;
-        }
-        router.push("/admin");
-        router.refresh();
-      } catch {
-        setError(labels.error);
-      }
-    });
-  }
+  const [state, formAction] = useActionState<LoginActionState, FormData>(
+    login,
+    { status: "idle" },
+  );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: router is stable ref
+  useEffect(() => {
+    if (state.status === "failed") {
+      toast.error("Invalid credentials.");
+    } else if (state.status === "invalid_data") {
+      toast.error("Failed validating your submission!");
+    } else if (state.status === "success") {
+      setIsSuccessful(true);
+      updateSession();
+      router.refresh();
+    }
+  }, [state.status]);
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form action={formAction} className="space-y-5">
+      <label className="field">
+        <span>{labels.email}</span>
+        <input
+          type="email"
+          name="email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </label>
       <label className="field">
         <span>{labels.password}</span>
         <input
           type="password"
+          name="password"
           autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           required
-          autoFocus
         />
       </label>
-      {error && (
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/90 border-l-2 border-ink pl-3 py-1">
-          {error}
-        </p>
-      )}
       <button
         type="submit"
         className="btn btn-primary w-full"
-        disabled={pending || password.length === 0}
+        disabled={isSuccessful}
       >
-        {pending ? "\u2026" : labels.submit}
+        {isSuccessful ? "\u2026" : labels.submit}
       </button>
     </form>
   );

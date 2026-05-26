@@ -35,7 +35,7 @@ export default async function AboutPage() {
         <div className="mt-24 md:mt-32 border-t hairline">
           {t.about.values.map((v, i) => (
             <div
-              key={i}
+              key={v.title}
               className="grid grid-cols-12 gap-4 md:gap-12 items-baseline border-b hairline py-8 md:py-10"
             >
               <span className="col-span-2 md:col-span-1 font-mono text-[11px] uppercase tracking-[0.24em] text-muted">

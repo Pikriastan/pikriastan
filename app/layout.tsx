@@ -5,6 +5,7 @@ import {
   JetBrains_Mono,
   Noto_Serif_Georgian,
 } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { getLocale } from "@/lib/i18n/server";
 
@@ -57,6 +58,25 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {children}
+        <Toaster
+          position="bottom-right"
+          duration={4000}
+          gap={10}
+          offset={24}
+          visibleToasts={4}
+          toastOptions={{
+            unstyled: true,
+            classNames: {
+              toast: "custom-toast",
+              title: "custom-toast-title",
+              description: "custom-toast-description",
+              icon: "custom-toast-icon",
+              actionButton: "custom-toast-action",
+              cancelButton: "custom-toast-cancel",
+              closeButton: "custom-toast-close",
+            },
+          }}
+        />
       </body>
     </html>
   );

@@ -60,6 +60,7 @@ export type Dictionary = {
   };
   admin: {
     loginTitle: string;
+    emailLabel: string;
     passwordLabel: string;
     loginButton: string;
     loginError: string;
@@ -186,6 +187,7 @@ const en: Dictionary = {
   },
   admin: {
     loginTitle: "Studio access",
+    emailLabel: "Email",
     passwordLabel: "Password",
     loginButton: "Enter",
     loginError: "Incorrect password.",
@@ -311,6 +313,7 @@ const ka: Dictionary = {
   },
   admin: {
     loginTitle: "სტუდიის წვდომა",
+    emailLabel: "იმეილი",
     passwordLabel: "პაროლი",
     loginButton: "შესვლა",
     loginError: "არასწორი პაროლი.",

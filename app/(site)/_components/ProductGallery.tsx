@@ -36,7 +36,7 @@ export function ProductGallery({
         <div className="grid grid-cols-4 md:grid-cols-6 gap-2 md:gap-3">
           {images.map((src, i) => (
             <button
-              key={src + i}
+              key={src}
               type="button"
               onClick={() => setActive(i)}
               className={`relative aspect-[4/5] overflow-hidden transition-opacity ${

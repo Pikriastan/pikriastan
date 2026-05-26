@@ -344,7 +344,7 @@ export function ProductForm({
         ) : (
           <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {values.images.map((src, i) => (
-              <li key={src + i} className="group relative">
+              <li key={src} className="group relative">
                 <div className="relative aspect-[4/5] bg-paper-deep overflow-hidden">
                   <Image
                     src={src}

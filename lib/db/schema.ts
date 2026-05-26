@@ -1,21 +1,18 @@
 import "server-only";
 
+import type { InferSelectModel } from "drizzle-orm";
 import {
   boolean,
   json,
   pgTable,
   text,
   timestamp,
-  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { v7 as uuidv7 } from "uuid";
+import { primaryKeyId } from "./utils";
 
 export const product = pgTable("products", {
-  id: uuid()
-    .primaryKey()
-    .notNull()
-    .$defaultFn(() => uuidv7()),
+  id: primaryKeyId(),
   slug: varchar().notNull(),
   nameEn: varchar("name_en").notNull(),
   nameKa: varchar("name_ka").notNull(),
@@ -31,3 +28,5 @@ export const product = pgTable("products", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export type Product = InferSelectModel<typeof product>;

@@ -1,21 +1,11 @@
 import Link from "next/link";
-import { listProducts } from "@/lib/db";
 import { getT } from "@/lib/i18n/server";
-import { ProductCard } from "./_components/ProductCard";
+// import { ProductCard } from "./_components/ProductCard";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const { locale, t } = await getT();
-  const featured = listProducts({
-    featuredOnly: true,
-    publishedOnly: true,
-    limit: 6,
-  });
-  const latest =
-    featured.length === 0
-      ? listProducts({ publishedOnly: true, limit: 6 })
-      : featured;
 
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
 
@@ -73,7 +63,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {latest.length === 0 ? (
+          {/*{latest.length === 0 ? (
             <div className="border hairline border-dashed py-28 grid place-items-center text-center">
               <p className="text-muted font-mono text-xs uppercase tracking-[0.24em] max-w-md">
                 {t.collection.empty}
@@ -85,7 +75,7 @@ export default async function HomePage() {
                 <ProductCard key={p.id} product={p} locale={locale} index={i} />
               ))}
             </div>
-          )}
+          )}*/}
 
           <div className="mt-14 md:hidden">
             <Link href="/collection" className="btn btn-ghost w-full">
@@ -129,7 +119,7 @@ export default async function HomePage() {
           <ol className="space-y-0">
             {t.home.manifestoLines.map((line, i) => (
               <li
-                key={i}
+                key={line}
                 className="grid grid-cols-12 gap-4 md:gap-8 items-baseline border-t hairline py-6 md:py-8"
               >
                 <span className="col-span-2 md:col-span-1 font-mono text-[11px] uppercase tracking-[0.24em] text-muted">
