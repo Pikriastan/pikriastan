@@ -12,7 +12,7 @@ const productSchema = z.object({
     .max(80)
     .regex(
       slugRegex,
-      "Invalid slug. Use lowercase letters, numbers, and dashes.",
+      "Invalid slug. Use lowercase letters, numbers, and dashes."
     ),
   name: z.object({
     en: z.string().min(1).max(200),
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Validation failed", issues: parsed.error.issues },
-      { status: 400 },
+      { status: 400 }
     );
   }
   if (!slugIsAvailable(parsed.data.slug)) {

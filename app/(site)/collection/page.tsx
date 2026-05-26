@@ -1,6 +1,6 @@
 import { listProducts } from "@/lib/db";
 import { getT } from "@/lib/i18n/server";
-import { ProductCard } from "../_components/ProductCard";
+import { ProductCard } from "../_components/product-card";
 
 export const dynamic = "force-dynamic";
 
@@ -19,30 +19,30 @@ export default async function CollectionPage() {
       : t.collection.countMany(products.length);
 
   return (
-    <section className="border-b hairline">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-12 pt-20 md:pt-28 pb-24 md:pb-32">
+    <section className="hairline border-b">
+      <div className="mx-auto max-w-[1400px] px-6 pt-20 pb-24 md:px-12 md:pt-28 md:pb-32">
         <div className="mb-16 md:mb-24">
           <p className="eyebrow mb-6">{countLabel}</p>
           <h1
-            className={`${displayClass} leading-[0.92] tracking-tight text-[14vw] sm:text-[12vw] md:text-[8.4vw] lowercase`}
+            className={`${displayClass} text-[14vw] lowercase leading-[0.92] tracking-tight sm:text-[12vw] md:text-[8.4vw]`}
           >
             {t.collection.title}
           </h1>
-          <p className="mt-8 max-w-md text-[15px] md:text-base text-ink/75 leading-relaxed">
+          <p className="mt-8 max-w-md text-[15px] text-ink/75 leading-relaxed md:text-base">
             {t.collection.subtitle}
           </p>
         </div>
 
         {products.length === 0 ? (
-          <div className="border hairline border-dashed py-28 grid place-items-center text-center">
-            <p className="text-muted font-mono text-xs uppercase tracking-[0.24em] max-w-md">
+          <div className="hairline grid place-items-center border border-dashed py-28 text-center">
+            <p className="max-w-md font-mono text-muted text-xs uppercase tracking-[0.24em]">
               {t.collection.empty}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-24">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-24 lg:grid-cols-3">
             {products.map((p, i) => (
-              <ProductCard key={p.id} product={p} locale={locale} index={i} />
+              <ProductCard index={i} key={p.id} locale={locale} product={p} />
             ))}
           </div>
         )}

@@ -50,8 +50,8 @@
 
 html,
 body {
-  background: var(--bg);
   color: var(--ink);
+  background: var(--bg);
 }
 
 body {
@@ -60,8 +60,8 @@ body {
 }
 
 ::selection {
-  background: var(--ink);
   color: var(--bg);
+  background: var(--ink);
 }
 
 .font-display {
@@ -129,9 +129,9 @@ body {
 
 .link-underline {
   background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 1px;
   background-repeat: no-repeat;
   background-position: 0 100%;
+  background-size: 0% 1px;
   transition: background-size 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -141,22 +141,22 @@ body {
 
 .link-static {
   background-image: linear-gradient(currentColor, currentColor);
-  background-size: 100% 1px;
   background-repeat: no-repeat;
   background-position: 0 100%;
+  background-size: 100% 1px;
 }
 
 .btn {
   display: inline-flex;
+  gap: 0.55rem;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
   padding: 0.85rem 1.6rem;
   font-family: var(--font-sans-ui);
-  font-weight: 500;
-  letter-spacing: 0.14em;
   font-size: 0.7rem;
+  font-weight: 500;
   text-transform: uppercase;
+  letter-spacing: 0.14em;
   border-radius: 0;
   transition:
     background 300ms ease,
@@ -165,8 +165,8 @@ body {
 }
 
 .btn-primary {
-  background: var(--accent);
   color: var(--bg);
+  background: var(--accent);
   border: none;
 }
 
@@ -175,44 +175,44 @@ body {
 }
 
 .btn-ghost {
-  background: transparent;
   color: var(--ink);
+  background: transparent;
   border: 1px solid var(--ink);
 }
 
 .btn-ghost:hover {
-  background: var(--ink);
   color: var(--bg);
+  background: var(--ink);
 }
 
 .btn-text {
   display: inline-flex;
-  align-items: center;
   gap: 0.4rem;
+  align-items: center;
+  padding-bottom: 2px;
   font-family: var(--font-mono-ui);
   font-size: 0.7rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: var(--ink);
-  padding-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
 }
 
 .eyebrow {
   display: inline-flex;
-  align-items: center;
   gap: 0.7rem;
+  align-items: center;
   font-family: var(--font-mono-ui);
   font-size: 0.65rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
   color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
 }
 
 .eyebrow::before {
-  content: "";
   display: inline-block;
   width: 1.4rem;
   height: 1px;
+  content: "";
   background: var(--accent);
 }
 
@@ -221,14 +221,14 @@ body {
 }
 
 .dot-accent::before {
-  content: "";
   display: inline-block;
   width: 0.4rem;
   height: 0.4rem;
-  border-radius: 999px;
-  background: var(--accent);
   margin-right: 0.6rem;
   vertical-align: middle;
+  content: "";
+  background: var(--accent);
+  border-radius: 999px;
   transform: translateY(-1px);
 }
 
@@ -244,9 +244,9 @@ body {
   display: inline-block;
   width: 1.5rem;
   height: 1px;
-  background: var(--accent);
-  vertical-align: middle;
   margin-right: 0.6rem;
+  vertical-align: middle;
+  background: var(--accent);
 }
 
 input[type="text"],
@@ -255,16 +255,16 @@ input[type="number"],
 input[type="email"],
 textarea,
 select {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--line-strong);
-  color: var(--ink);
+  width: 100%;
   padding: 0.75rem 0;
   font-family: var(--font-sans-ui);
   font-size: 0.95rem;
-  border-radius: 0;
-  width: 100%;
+  color: var(--ink);
   outline: none;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
   transition: border-color 250ms ease;
 }
 
@@ -285,37 +285,37 @@ label.field {
   gap: 0.3rem;
   font-family: var(--font-mono-ui);
   font-size: 0.65rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
 }
 
 /* Admin checkboxes: keep native styling but small */
 input[type="checkbox"] {
   width: auto;
-  border: 1px solid var(--ink);
   accent-color: var(--ink);
+  border: 1px solid var(--ink);
 }
 
 /* ---- Toasts (sonner) ---- */
 .custom-toast {
+  position: relative;
   display: flex;
-  align-items: flex-start;
   gap: 0.85rem;
+  align-items: flex-start;
   width: 100%;
   min-width: 320px;
   max-width: 420px;
   padding: 1rem 1.1rem;
-  background: var(--bg);
+  font-family: var(--font-sans-ui);
+  font-size: 0.875rem;
+  line-height: 1.45;
   color: var(--ink);
+  background: var(--bg);
   border: 1px solid var(--line-strong);
   border-left: 2px solid var(--ink);
   border-radius: 0;
   box-shadow: 0 14px 40px -18px rgba(0, 0, 0, 0.25);
-  font-family: var(--font-sans-ui);
-  font-size: 0.875rem;
-  line-height: 1.45;
-  position: relative;
 }
 
 .custom-toast[data-type="success"] {
@@ -323,9 +323,9 @@ input[type="checkbox"] {
 }
 
 .custom-toast[data-type="error"] {
-  border-left-color: var(--ink);
-  background: var(--ink);
   color: var(--bg);
+  background: var(--ink);
+  border-left-color: var(--ink);
 }
 
 .custom-toast[data-type="warning"] {
@@ -339,20 +339,20 @@ input[type="checkbox"] {
 .custom-toast-title {
   font-family: var(--font-mono-ui);
   font-size: 0.65rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: inherit;
   font-weight: 500;
+  color: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
 }
 
 .custom-toast-description {
   margin-top: 0.4rem;
   font-family: var(--font-sans-ui);
   font-size: 0.85rem;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--muted);
   line-height: 1.5;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .custom-toast[data-type="error"] .custom-toast-description {
@@ -377,29 +377,29 @@ input[type="checkbox"] {
 .custom-toast-cancel {
   display: inline-flex;
   align-items: center;
+  padding: 0.45rem 0.8rem;
   font-family: var(--font-mono-ui);
   font-size: 0.65rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.45rem 0.8rem;
-  border: 1px solid currentColor;
-  background: transparent;
   color: inherit;
-  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
   cursor: pointer;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 0;
   transition:
     background 200ms ease,
     color 200ms ease;
 }
 
 .custom-toast-action:hover {
-  background: var(--ink);
   color: var(--bg);
+  background: var(--ink);
 }
 
 .custom-toast[data-type="error"] .custom-toast-action:hover {
-  background: var(--bg);
   color: var(--ink);
+  background: var(--bg);
 }
 
 .custom-toast-cancel {
@@ -411,15 +411,15 @@ input[type="checkbox"] {
   position: absolute;
   top: 0.55rem;
   right: 0.55rem;
-  width: 1.1rem;
-  height: 1.1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: none;
+  width: 1.1rem;
+  height: 1.1rem;
   color: var(--muted);
   cursor: pointer;
+  background: transparent;
+  border: none;
   opacity: 0;
   transition:
     opacity 200ms ease,
@@ -443,6 +443,5 @@ input[type="checkbox"] {
 }
 
 [data-sonner-toaster] [data-sonner-spinner] > div {
-  /* biome-ignore lint/complexity/noImportantStyles: it's needed */
   background: var(--accent) !important;
 }

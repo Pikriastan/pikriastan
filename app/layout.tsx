@@ -53,17 +53,16 @@ export default async function RootLayout({
   const locale = await getLocale();
   return (
     <html
-      lang={locale}
       className={`${sansUi.variable} ${monoUi.variable} ${displayEn.variable} ${displayKa.variable} h-full antialiased`}
+      lang={locale}
     >
-      <body className="min-h-full flex flex-col bg-paper text-ink">
+      <body className="flex min-h-full flex-col bg-paper text-ink">
         {children}
         <Toaster
-          position="bottom-right"
           duration={4000}
           gap={10}
           offset={24}
-          visibleToasts={4}
+          position="bottom-right"
           toastOptions={{
             unstyled: true,
             classNames: {
@@ -76,6 +75,7 @@ export default async function RootLayout({
               closeButton: "custom-toast-close",
             },
           }}
+          visibleToasts={4}
         />
       </body>
     </html>

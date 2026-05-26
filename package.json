@@ -6,12 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint-format": "biome check .",
-    "lint-format:fix": "biome check . --write",
-    "drizzle:push": "drizzle-kit push",
-    "drizzle:generate": "drizzle-kit generate",
-    "drizzle:migrate": "drizzle-kit migrate",
-    "drizzle:drop": "drizzle-kit drop"
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:drop": "drizzle-kit drop"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1053.0",
@@ -41,6 +41,7 @@
     "drizzle-kit": "^0.31.10",
     "tailwindcss": "^4.3.0",
     "tsx": "^4.22.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "ultracite": "^7.7.0"
   }
 }

@@ -34,14 +34,14 @@ export async function POST(req: Request) {
   if (file.size > MAX_BYTES) {
     return NextResponse.json(
       { error: "File too large (max 10MB)" },
-      { status: 413 },
+      { status: 413 }
     );
   }
   const contentType = (file.type || "").toLowerCase();
   if (!ALLOWED.has(contentType)) {
     return NextResponse.json(
       { error: "Unsupported image type" },
-      { status: 415 },
+      { status: 415 }
     );
   }
   const arrayBuffer = await file.arrayBuffer();

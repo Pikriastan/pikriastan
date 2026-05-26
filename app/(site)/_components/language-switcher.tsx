@@ -8,27 +8,27 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
       className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.24em]"
     >
       <button
-        type="submit"
-        name="locale"
-        value="en"
+        aria-pressed={locale === "en"}
         className={`transition-colors ${
           locale === "en" ? "text-ink" : "text-muted hover:text-ink"
         }`}
-        aria-pressed={locale === "en"}
+        name="locale"
+        type="submit"
+        value="en"
       >
         EN
       </button>
-      <span className="text-muted-soft" aria-hidden>
+      <span aria-hidden className="text-muted-soft">
         /
       </span>
       <button
-        type="submit"
-        name="locale"
-        value="ka"
+        aria-pressed={locale === "ka"}
         className={`transition-colors ${
           locale === "ka" ? "text-ink" : "text-muted hover:text-ink"
         }`}
-        aria-pressed={locale === "ka"}
+        name="locale"
+        type="submit"
+        value="ka"
       >
         KA
       </button>

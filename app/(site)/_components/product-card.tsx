@@ -19,33 +19,33 @@ export function ProductCard({
 
   return (
     <Link
+      className="product-card group fade-up block"
       href={`/product/${product.slug}`}
-      className="product-card group block fade-up"
       style={{ animationDelay: `${Math.min(index * 70, 420)}ms` }}
     >
-      <div className="relative w-full aspect-[4/5] overflow-hidden bg-paper-deep">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper-deep">
         {cover ? (
           <>
             <Image
-              src={cover}
               alt={name}
-              fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="product-card-img object-cover"
+              fill
               priority={index < 2}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              src={cover}
             />
             {second && (
               <Image
-                src={second}
                 alt=""
+                className="second-img absolute inset-0 object-cover"
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="second-img absolute inset-0 object-cover"
+                src={second}
               />
             )}
           </>
         ) : (
-          <div className="absolute inset-0 grid place-items-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
+          <div className="absolute inset-0 grid place-items-center font-mono text-[10px] text-muted uppercase tracking-[0.3em]">
             {"\u2014"}
           </div>
         )}
@@ -58,7 +58,7 @@ export function ProductCard({
         >
           {name}
         </h3>
-        <div className="shrink-0 font-mono text-[12px] tracking-tight text-ink/85">
+        <div className="shrink-0 font-mono text-[12px] text-ink/85 tracking-tight">
           {formatPrice(product.price, product.currency, locale)}
         </div>
       </div>

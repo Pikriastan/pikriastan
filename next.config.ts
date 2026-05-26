@@ -3,7 +3,9 @@ import type { NextConfig } from "next";
 function readImageHosts(): { protocol: "https" | "http"; hostname: string }[] {
   const hosts = new Set<string>();
   const tryAdd = (url: string | undefined) => {
-    if (!url) return;
+    if (!url) {
+      return;
+    }
     try {
       const u = new URL(url);
       hosts.add(u.hostname);

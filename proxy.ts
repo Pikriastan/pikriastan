@@ -7,14 +7,20 @@ const PUBLIC_PATHS = new Set<string>(["/admin/login", "/api/admin/login"]);
 
 function getSecret(): Uint8Array | null {
   const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret || secret.length < 16) return null;
+  if (!secret || secret.length < 16) {
+    return null;
+  }
   return new TextEncoder().encode(secret);
 }
 
 async function verify(token: string | undefined): Promise<boolean> {
-  if (!token) return false;
+  if (!token) {
+    return false;
+  }
   const secret = getSecret();
-  if (!secret) return false;
+  if (!secret) {
+    return false;
+  }
   try {
     const { payload } = await jwtVerify(token, secret);
     return payload.role === "admin";
@@ -32,7 +38,9 @@ export async function proxy(req: NextRequest) {
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const ok = await verify(token);
-  if (ok) return NextResponse.next();
+  if (ok) {
+    return NextResponse.next();
+  }
 
   if (pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

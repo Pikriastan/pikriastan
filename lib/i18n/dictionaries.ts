@@ -1,62 +1,12 @@
 import type { Locale } from "./locales";
 
-export type Dictionary = {
-  brand: { tagline: string };
-  nav: {
-    home: string;
-    collection: string;
-    about: string;
-    contact: string;
-  };
-  hero: {
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-    cta: string;
-    secondary: string;
-  };
-  home: {
-    featuredEyebrow: string;
-    featuredTitle: string;
-    viewAll: string;
-    storyEyebrow: string;
-    storyTitle: string;
-    storyBody: string;
-    aboutCta: string;
-    manifestoTitle: string;
-    manifestoLines: string[];
-  };
-  collection: {
-    title: string;
-    subtitle: string;
-    empty: string;
-    sortNewest: string;
-    countOne: string;
-    countMany: (n: number) => string;
-  };
-  product: {
-    back: string;
-    description: string;
-    details: string;
-    soldOutSoon: string;
-    inquire: string;
-    notFound: string;
-    notFoundBody: string;
-    price: string;
-    category: string;
-    noDescription: string;
-  };
+export interface Dictionary {
   about: {
     title: string;
     intro: string;
     body1: string;
     body2: string;
     values: { title: string; body: string }[];
-  };
-  footer: {
-    rights: string;
-    madeIn: string;
-    languageLabel: string;
   };
   admin: {
     loginTitle: string;
@@ -100,7 +50,57 @@ export type Dictionary = {
     draft: string;
     published: string;
   };
-};
+  brand: { tagline: string };
+  collection: {
+    title: string;
+    subtitle: string;
+    empty: string;
+    sortNewest: string;
+    countOne: string;
+    countMany: (n: number) => string;
+  };
+  footer: {
+    rights: string;
+    madeIn: string;
+    languageLabel: string;
+  };
+  hero: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    cta: string;
+    secondary: string;
+  };
+  home: {
+    featuredEyebrow: string;
+    featuredTitle: string;
+    viewAll: string;
+    storyEyebrow: string;
+    storyTitle: string;
+    storyBody: string;
+    aboutCta: string;
+    manifestoTitle: string;
+    manifestoLines: string[];
+  };
+  nav: {
+    home: string;
+    collection: string;
+    about: string;
+    contact: string;
+  };
+  product: {
+    back: string;
+    description: string;
+    details: string;
+    soldOutSoon: string;
+    inquire: string;
+    notFound: string;
+    notFoundBody: string;
+    price: string;
+    category: string;
+    noDescription: string;
+  };
+}
 
 const en: Dictionary = {
   brand: { tagline: "Garments for the unseen hours." },

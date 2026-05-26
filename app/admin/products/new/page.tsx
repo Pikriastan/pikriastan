@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import { AdminShell } from "@/app/admin/_components/AdminShell";
+import { AdminShell } from "@/app/admin/_components/admin-shell";
 import {
   ProductForm,
   type ProductFormValues,
-} from "@/app/admin/_components/ProductForm";
+} from "@/app/admin/_components/product-form";
 import { isAuthenticated } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 
@@ -30,21 +30,20 @@ export default async function NewProductPage() {
 
   return (
     <AdminShell locale={locale} t={t}>
-      <section className="border-b hairline">
-        <div className="mx-auto max-w-5xl px-5 md:px-10 py-10 md:py-14">
+      <section className="hairline border-b">
+        <div className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
           <p className="eyebrow mb-3">/ {t.admin.newProduct}</p>
           <h1
-            className={`${displayClass} lowercase leading-none tracking-tight text-4xl md:text-6xl`}
+            className={`${displayClass} text-4xl lowercase leading-none tracking-tight md:text-6xl`}
           >
             {t.admin.formTitleNew}
           </h1>
         </div>
       </section>
       <section>
-        <div className="mx-auto max-w-5xl px-5 md:px-10 py-10 md:py-14">
+        <div className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
           <ProductForm
             initial={empty}
-            mode="create"
             labels={{
               fieldSlug: t.admin.fieldSlug,
               fieldSlugHelp: t.admin.fieldSlugHelp,
@@ -67,6 +66,7 @@ export default async function NewProductPage() {
               saveError: t.admin.saveError,
               removeImage: t.admin.removeImage,
             }}
+            mode="create"
           />
         </div>
       </section>

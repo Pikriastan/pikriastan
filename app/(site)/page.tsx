@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n/server";
-// import { ProductCard } from "./_components/ProductCard";
+// import { ProductCard } from "./_components/product-card";
 
 export const dynamic = "force-dynamic";
 
@@ -12,28 +12,28 @@ export default async function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="border-b hairline">
-        <div className="mx-auto max-w-350 px-6 md:px-12 pt-24 md:pt-32 pb-24 md:pb-32">
-          <p className="eyebrow mb-10 fade-up">{t.hero.eyebrow}</p>
-          <div className="grid grid-cols-12 gap-8 md:gap-12 items-end">
+      <section className="hairline border-b">
+        <div className="mx-auto max-w-350 px-6 pt-24 pb-24 md:px-12 md:pt-32 md:pb-32">
+          <p className="eyebrow fade-up mb-10">{t.hero.eyebrow}</p>
+          <div className="grid grid-cols-12 items-end gap-8 md:gap-12">
             <h1
-              className={`col-span-12 md:col-span-10 ${displayClass} leading-[0.92] tracking-tight text-ink text-[14vw] sm:text-[12vw] md:text-[8.6vw] lowercase fade-up`}
+              className={`col-span-12 md:col-span-10 ${displayClass} fade-up text-[14vw] text-ink lowercase leading-[0.92] tracking-tight sm:text-[12vw] md:text-[8.6vw]`}
               style={{ animationDelay: "60ms" }}
             >
               {t.hero.title}
             </h1>
           </div>
           <div
-            className="mt-12 md:mt-16 grid grid-cols-12 gap-8 md:gap-12 items-start fade-up"
+            className="fade-up mt-12 grid grid-cols-12 items-start gap-8 md:mt-16 md:gap-12"
             style={{ animationDelay: "140ms" }}
           >
             <div className="col-span-12 md:col-span-5 md:col-start-1">
-              <p className="text-[15px] md:text-base leading-relaxed text-ink/80 max-w-sm">
+              <p className="max-w-sm text-[15px] text-ink/80 leading-relaxed md:text-base">
                 {t.hero.subtitle}
               </p>
             </div>
-            <div className="col-span-12 md:col-span-3 md:col-start-10 flex md:justify-end">
-              <Link href="/collection" className="btn btn-primary">
+            <div className="col-span-12 flex md:col-span-3 md:col-start-10 md:justify-end">
+              <Link className="btn btn-primary" href="/collection">
                 {t.hero.cta}
               </Link>
             </div>
@@ -42,22 +42,22 @@ export default async function HomePage() {
       </section>
 
       {/* FEATURED PIECES */}
-      <section className="border-b hairline">
-        <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-20 md:py-28">
-          <div className="flex items-end justify-between gap-6 mb-14 md:mb-20">
+      <section className="hairline border-b">
+        <div className="mx-auto max-w-[1400px] px-6 py-20 md:px-12 md:py-28">
+          <div className="mb-14 flex items-end justify-between gap-6 md:mb-20">
             <div>
-              <p className="eyebrow mb-4 dot-accent">
+              <p className="eyebrow dot-accent mb-4">
                 {t.home.featuredEyebrow}
               </p>
               <h2
-                className={`${displayClass} leading-[0.95] tracking-tight text-4xl md:text-6xl lg:text-7xl lowercase`}
+                className={`${displayClass} text-4xl lowercase leading-[0.95] tracking-tight md:text-6xl lg:text-7xl`}
               >
                 {t.home.featuredTitle}
               </h2>
             </div>
             <Link
+              className="btn-text link-underline hidden pb-1 md:inline-flex"
               href="/collection"
-              className="hidden md:inline-flex btn-text link-underline pb-1"
             >
               {t.home.viewAll}
             </Link>
@@ -78,7 +78,7 @@ export default async function HomePage() {
           )}*/}
 
           <div className="mt-14 md:hidden">
-            <Link href="/collection" className="btn btn-ghost w-full">
+            <Link className="btn btn-ghost w-full" href="/collection">
               {t.home.viewAll}
             </Link>
           </div>
@@ -86,24 +86,24 @@ export default async function HomePage() {
       </section>
 
       {/* STUDIO STORY */}
-      <section className="border-b hairline">
-        <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-24 md:py-32">
+      <section className="hairline border-b">
+        <div className="mx-auto max-w-[1400px] px-6 py-24 md:px-12 md:py-32">
           <div className="grid grid-cols-12 gap-8 md:gap-16">
             <div className="col-span-12 md:col-span-5">
               <p className="eyebrow mb-5">{t.home.storyEyebrow}</p>
               <h2
-                className={`${displayClass} leading-[0.95] tracking-tight text-4xl md:text-5xl lg:text-6xl lowercase max-w-md`}
+                className={`${displayClass} max-w-md text-4xl lowercase leading-[0.95] tracking-tight md:text-5xl lg:text-6xl`}
               >
                 {t.home.storyTitle}
               </h2>
             </div>
             <div className="col-span-12 md:col-span-6 md:col-start-7">
-              <p className="text-base md:text-lg leading-relaxed text-ink/80 max-w-md">
+              <p className="max-w-md text-base text-ink/80 leading-relaxed md:text-lg">
                 {t.home.storyBody}
               </p>
               <Link
+                className="btn-text link-underline mt-8 inline-flex pb-1"
                 href="/about"
-                className="mt-8 inline-flex btn-text link-underline pb-1"
               >
                 {t.home.aboutCta}
               </Link>
@@ -113,26 +113,26 @@ export default async function HomePage() {
       </section>
 
       {/* MANIFESTO */}
-      <section className="border-b hairline">
-        <div className="mx-auto max-w-350 px-6 md:px-12 py-24 md:py-32">
+      <section className="hairline border-b">
+        <div className="mx-auto max-w-350 px-6 py-24 md:px-12 md:py-32">
           <p className="eyebrow mb-12">{t.home.manifestoTitle}</p>
           <ol className="space-y-0">
             {t.home.manifestoLines.map((line, i) => (
               <li
+                className="hairline grid grid-cols-12 items-baseline gap-4 border-t py-6 md:gap-8 md:py-8"
                 key={line}
-                className="grid grid-cols-12 gap-4 md:gap-8 items-baseline border-t hairline py-6 md:py-8"
               >
-                <span className="col-span-2 md:col-span-1 font-mono text-[11px] uppercase tracking-[0.24em] text-muted">
+                <span className="col-span-2 font-mono text-[11px] text-muted uppercase tracking-[0.24em] md:col-span-1">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span
-                  className={`col-span-10 md:col-span-11 ${displayClass} text-2xl md:text-4xl leading-snug lowercase tracking-tight`}
+                  className={`col-span-10 md:col-span-11 ${displayClass} text-2xl lowercase leading-snug tracking-tight md:text-4xl`}
                 >
                   {line}
                 </span>
               </li>
             ))}
-            <li className="border-t hairline" />
+            <li className="hairline border-t" />
           </ol>
         </div>
       </section>

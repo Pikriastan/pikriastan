@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Locale } from "@/lib/i18n/locales";
-import { LogoutButton } from "./LogoutButton";
+import { LogoutButton } from "./logout-button";
 
 export function AdminShell({
   locale,
@@ -14,22 +14,22 @@ export function AdminShell({
 }) {
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
   return (
-    <div className="min-h-screen flex flex-col bg-paper text-ink">
-      <header className="border-b hairline bg-paper/95 backdrop-blur sticky top-0 z-30">
-        <div className="mx-auto max-w-[1400px] px-6 md:px-12 flex items-center justify-between py-5 md:py-6">
+    <div className="flex min-h-screen flex-col bg-paper text-ink">
+      <header className="hairline sticky top-0 z-30 border-b bg-paper/95 backdrop-blur">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 md:px-12 md:py-6">
           <Link
+            className={`${displayClass} text-xl lowercase leading-none tracking-tight md:text-2xl`}
             href="/admin"
-            className={`${displayClass} lowercase text-xl md:text-2xl tracking-tight leading-none`}
           >
             {locale === "ka" ? "ამირანას" : "amiranas"}
-            <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.32em] text-muted align-middle">
+            <span className="ml-2 align-middle font-mono text-[10px] text-muted uppercase tracking-[0.32em]">
               {" / admin"}
             </span>
           </Link>
           <div className="flex items-center gap-6">
             <Link
+              className="hidden font-mono text-[11px] text-muted uppercase tracking-[0.22em] hover:text-ink sm:inline-flex"
               href="/"
-              className="hidden sm:inline-flex font-mono text-[11px] uppercase tracking-[0.22em] text-muted hover:text-ink"
               target="_blank"
             >
               {locale === "ka" ? "საიტი ↗" : "Site ↗"}

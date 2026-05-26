@@ -1,12 +1,15 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 interface R2Config {
-  accountId: string;
   accessKeyId: string;
-  secretAccessKey: string;
+  accountId: string;
   bucket: string;
   publicBaseUrl: string;
+  secretAccessKey: string;
 }
+
+const TRAILING_SLASHES_RE = /\/+$/;
+const EXTENSION_RE = /^[a-z0-9]{2,5}$/i;
 
 function readConfig(): R2Config {
   const accountId = process.env.R2_ACCOUNT_ID;
@@ -15,14 +18,10 @@ function readConfig(): R2Config {
   const bucket = process.env.R2_BUCKET;
   const publicBaseUrl = process.env.R2_PUBLIC_BASE_URL;
   if (
-    !accountId ||
-    !accessKeyId ||
-    !secretAccessKey ||
-    !bucket ||
-    !publicBaseUrl
+    !(accountId && accessKeyId && secretAccessKey && bucket && publicBaseUrl)
   ) {
     throw new Error(
-      "Cloudflare R2 is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, and R2_PUBLIC_BASE_URL in .env.local",
+      "Cloudflare R2 is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, and R2_PUBLIC_BASE_URL in .env.local"
     );
   }
   return {
@@ -30,7 +29,7 @@ function readConfig(): R2Config {
     accessKeyId,
     secretAccessKey,
     bucket,
-    publicBaseUrl: publicBaseUrl.replace(/\/+$/, ""),
+    publicBaseUrl: publicBaseUrl.replace(TRAILING_SLASHES_RE, ""),
   };
 }
 
@@ -38,7 +37,9 @@ let _client: S3Client | null = null;
 let _config: R2Config | null = null;
 
 function getClient(): { client: S3Client; config: R2Config } {
-  if (_client && _config) return { client: _client, config: _config };
+  if (_client && _config) {
+    return { client: _client, config: _config };
+  }
   const cfg = readConfig();
   _client = new S3Client({
     region: "auto",
@@ -54,7 +55,7 @@ function getClient(): { client: S3Client; config: R2Config } {
 
 function pickExtension(filename: string, contentType: string): string {
   const fromName = filename.split(".").pop();
-  if (fromName && /^[a-z0-9]{2,5}$/i.test(fromName)) {
+  if (fromName && EXTENSION_RE.test(fromName)) {
     return fromName.toLowerCase();
   }
   const map: Record<string, string> = {
@@ -76,8 +77,8 @@ function safeKey(filename: string, contentType: string): string {
 }
 
 export interface UploadedImage {
-  url: string;
   key: string;
+  url: string;
 }
 
 export async function uploadImage(params: {
@@ -94,7 +95,7 @@ export async function uploadImage(params: {
       Body: params.body,
       ContentType: params.contentType,
       CacheControl: "public, max-age=31536000, immutable",
-    }),
+    })
   );
   const url = `${config.publicBaseUrl}/${key}`;
   return { url, key };
@@ -106,6 +107,6 @@ export function r2IsConfigured(): boolean {
       process.env.R2_ACCESS_KEY_ID &&
       process.env.R2_SECRET_ACCESS_KEY &&
       process.env.R2_BUCKET &&
-      process.env.R2_PUBLIC_BASE_URL,
+      process.env.R2_PUBLIC_BASE_URL
   );
 }

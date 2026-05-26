@@ -33,7 +33,7 @@ const productSchema = z.object({
 
 export async function PUT(
   req: Request,
-  ctx: { params: Promise<{ id: string }> },
+  ctx: { params: Promise<{ id: string }> }
 ) {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -53,7 +53,7 @@ export async function PUT(
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Validation failed", issues: parsed.error.issues },
-      { status: 400 },
+      { status: 400 }
     );
   }
   if (!slugIsAvailable(parsed.data.slug, id)) {
@@ -65,13 +65,15 @@ export async function PUT(
 
 export async function DELETE(
   _req: Request,
-  ctx: { params: Promise<{ id: string }> },
+  ctx: { params: Promise<{ id: string }> }
 ) {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { id } = await ctx.params;
   const ok = deleteProduct(id);
-  if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!ok) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   return NextResponse.json({ ok: true });
 }

@@ -17,10 +17,10 @@ export function LogoutButton({ label }: { label: string }) {
 
   return (
     <button
-      type="button"
-      onClick={logout}
+      className="font-mono text-[11px] text-ink uppercase tracking-[0.22em] hover:text-ink/70 disabled:opacity-50"
       disabled={pending}
-      className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink hover:text-ink/70 disabled:opacity-50"
+      onClick={logout}
+      type="button"
     >
       {pending ? "\u2026" : label}
     </button>

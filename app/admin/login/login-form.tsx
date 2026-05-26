@@ -22,7 +22,7 @@ export function LoginForm({ labels }: LoginFormProps) {
 
   const [state, formAction] = useActionState<LoginActionState, FormData>(
     login,
-    { status: "idle" },
+    { status: "idle" }
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: router is stable ref
@@ -43,27 +43,27 @@ export function LoginForm({ labels }: LoginFormProps) {
       <label className="field">
         <span>{labels.email}</span>
         <input
-          type="email"
-          name="email"
           autoComplete="email"
-          value={email}
+          name="email"
           onChange={(e) => setEmail(e.target.value)}
           required
+          type="email"
+          value={email}
         />
       </label>
       <label className="field">
         <span>{labels.password}</span>
         <input
-          type="password"
-          name="password"
           autoComplete="current-password"
+          name="password"
           required
+          type="password"
         />
       </label>
       <button
-        type="submit"
         className="btn btn-primary w-full"
         disabled={isSuccessful}
+        type="submit"
       >
         {isSuccessful ? "\u2026" : labels.submit}
       </button>

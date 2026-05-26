@@ -4,40 +4,40 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 
-export type ProductFormValues = {
-  id?: string;
-  slug: string;
-  name: { en: string; ka: string };
-  description: { en: string; ka: string };
+export interface ProductFormValues {
   category: { en: string; ka: string };
-  price: number;
   currency: string;
-  images: string[];
+  description: { en: string; ka: string };
   featured: boolean;
+  id?: string;
+  images: string[];
+  name: { en: string; ka: string };
+  price: number;
   published: boolean;
-};
+  slug: string;
+}
 
 export interface ProductFormLabels {
-  fieldSlug: string;
-  fieldSlugHelp: string;
-  fieldNameEn: string;
-  fieldNameKa: string;
-  fieldDescriptionEn: string;
-  fieldDescriptionKa: string;
+  cancel: string;
   fieldCategoryEn: string;
   fieldCategoryKa: string;
-  fieldPrice: string;
   fieldCurrency: string;
+  fieldDescriptionEn: string;
+  fieldDescriptionKa: string;
   fieldFeatured: string;
-  fieldPublished: string;
   fieldImages: string;
+  fieldNameEn: string;
+  fieldNameKa: string;
+  fieldPrice: string;
+  fieldPublished: string;
+  fieldSlug: string;
+  fieldSlugHelp: string;
+  removeImage: string;
+  save: string;
+  saveError: string;
+  saving: string;
   uploadImages: string;
   uploading: string;
-  save: string;
-  saving: string;
-  cancel: string;
-  saveError: string;
-  removeImage: string;
 }
 
 function slugify(s: string): string {
@@ -69,7 +69,7 @@ export function ProductForm({
 
   function patch<K extends keyof ProductFormValues>(
     key: K,
-    value: ProductFormValues[K],
+    value: ProductFormValues[K]
   ) {
     setValues((v) => ({ ...v, [key]: value }));
   }
@@ -85,7 +85,9 @@ export function ProductForm({
   }
 
   async function handleFiles(files: FileList | null) {
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
     setUploading(true);
     setError(null);
     try {
@@ -109,7 +111,9 @@ export function ProductForm({
       setError(err instanceof Error ? err.message : labels.saveError);
     } finally {
       setUploading(false);
-      if (fileRef.current) fileRef.current.value = "";
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
     }
   }
 
@@ -121,7 +125,9 @@ export function ProductForm({
     setValues((v) => {
       const next = [...v.images];
       const target = idx + dir;
-      if (target < 0 || target >= next.length) return v;
+      if (target < 0 || target >= next.length) {
+        return v;
+      }
       [next[idx], next[target]] = [next[target], next[idx]];
       return { ...v, images: next };
     });
@@ -168,10 +174,10 @@ export function ProductForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-12">
+    <form className="space-y-12" onSubmit={onSubmit}>
       {error && (
-        <div className="border-l-2 border-ink pl-4 py-2 bg-paper-deep">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-ink">
+        <div className="border-ink border-l-2 bg-paper-deep py-2 pl-4">
+          <p className="font-mono text-ink text-xs uppercase tracking-[0.18em]">
             {error}
           </p>
         </div>
@@ -182,11 +188,11 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldNameEn}</span>
             <input
+              onChange={(e) => patchName("en", e.target.value)}
+              placeholder="Long Wool Overcoat"
+              required
               type="text"
               value={values.name.en}
-              onChange={(e) => patchName("en", e.target.value)}
-              required
-              placeholder="Long Wool Overcoat"
             />
           </label>
         </div>
@@ -194,11 +200,11 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldNameKa}</span>
             <input
+              onChange={(e) => patchName("ka", e.target.value)}
+              placeholder="გრძელი მატყლის პალტო"
+              required
               type="text"
               value={values.name.ka}
-              onChange={(e) => patchName("ka", e.target.value)}
-              required
-              placeholder="გრძელი მატყლის პალტო"
             />
           </label>
         </div>
@@ -207,17 +213,17 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldSlug}</span>
             <input
-              type="text"
-              value={values.slug}
               onChange={(e) => {
                 setSlugTouched(true);
                 patch("slug", slugify(e.target.value));
               }}
-              required
               pattern="^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
               placeholder="long-wool-overcoat"
+              required
+              type="text"
+              value={values.slug}
             />
-            <span className="text-[10px] tracking-[0.12em] normal-case text-muted">
+            <span className="text-[10px] text-muted normal-case tracking-[0.12em]">
               {labels.fieldSlugHelp}
             </span>
           </label>
@@ -227,12 +233,12 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldPrice}</span>
             <input
-              type="number"
               min="0"
-              step="1"
-              value={values.price}
               onChange={(e) => patch("price", Number(e.target.value))}
               required
+              step="1"
+              type="number"
+              value={values.price}
             />
           </label>
         </div>
@@ -240,8 +246,8 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldCurrency}</span>
             <select
-              value={values.currency}
               onChange={(e) => patch("currency", e.target.value)}
+              value={values.currency}
             >
               <option value="GEL">GEL ₾</option>
               <option value="USD">USD $</option>
@@ -255,8 +261,6 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldCategoryEn}</span>
             <input
-              type="text"
-              value={values.category.en}
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -264,6 +268,8 @@ export function ProductForm({
                 }))
               }
               placeholder="Outerwear"
+              type="text"
+              value={values.category.en}
             />
           </label>
         </div>
@@ -271,8 +277,6 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldCategoryKa}</span>
             <input
-              type="text"
-              value={values.category.ka}
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -280,6 +284,8 @@ export function ProductForm({
                 }))
               }
               placeholder="გარესაცმელი"
+              type="text"
+              value={values.category.ka}
             />
           </label>
         </div>
@@ -288,8 +294,6 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldDescriptionEn}</span>
             <textarea
-              rows={6}
-              value={values.description.en}
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -297,6 +301,8 @@ export function ProductForm({
                 }))
               }
               placeholder="Patterned and cut in Tbilisi. Heavy wool, raw selvedge edges, hand-finished buttonholes."
+              rows={6}
+              value={values.description.en}
             />
           </label>
         </div>
@@ -304,8 +310,6 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldDescriptionKa}</span>
             <textarea
-              rows={6}
-              value={values.description.ka}
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -313,75 +317,77 @@ export function ProductForm({
                 }))
               }
               placeholder="ნიმუში მოჭრილია თბილისში. მძიმე მატყლი, ნედლი კიდეები, ხელით დასრულებული ღილკილოები."
+              rows={6}
+              value={values.description.ka}
             />
           </label>
         </div>
       </section>
 
-      <section className="border-t hairline pt-10">
-        <div className="flex items-end justify-between gap-4 flex-wrap mb-6">
-          <h3 className="font-mono text-[11px] uppercase tracking-[0.28em] text-muted">
+      <section className="hairline border-t pt-10">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <h3 className="font-mono text-[11px] text-muted uppercase tracking-[0.28em]">
             {`${labels.fieldImages}${values.images.length > 0 ? ` \u2014 ${values.images.length}` : ""}`}
           </h3>
           <label className="btn btn-ghost cursor-pointer">
             <input
+              accept="image/*"
+              disabled={uploading}
+              hidden
+              multiple
+              onChange={(e) => handleFiles(e.target.files)}
               ref={fileRef}
               type="file"
-              accept="image/*"
-              multiple
-              hidden
-              onChange={(e) => handleFiles(e.target.files)}
-              disabled={uploading}
             />
             {uploading ? labels.uploading : `+ ${labels.uploadImages}`}
           </label>
         </div>
 
         {values.images.length === 0 ? (
-          <div className="border hairline border-dashed py-20 grid place-items-center text-center text-muted font-mono text-[11px] uppercase tracking-[0.24em]">
+          <div className="hairline grid place-items-center border border-dashed py-20 text-center font-mono text-[11px] text-muted uppercase tracking-[0.24em]">
             {labels.uploadImages}
           </div>
         ) : (
-          <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {values.images.map((src, i) => (
-              <li key={src} className="group relative">
-                <div className="relative aspect-[4/5] bg-paper-deep overflow-hidden">
+              <li className="group relative" key={src}>
+                <div className="relative aspect-[4/5] overflow-hidden bg-paper-deep">
                   <Image
-                    src={src}
                     alt={`image ${i + 1}`}
+                    className="object-cover"
                     fill
                     sizes="220px"
-                    className="object-cover"
+                    src={src}
                   />
-                  <div className="absolute top-1.5 left-1.5 font-mono text-[10px] uppercase tracking-[0.22em] bg-paper/85 px-1 py-0.5">
+                  <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
                     {String(i + 1).padStart(2, "0")}
                   </div>
                 </div>
                 <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
                   <div className="flex items-center gap-1">
                     <button
-                      type="button"
-                      onClick={() => moveImage(i, -1)}
-                      disabled={i === 0}
-                      className="px-1.5 py-0.5 border hairline-strong text-ink disabled:opacity-30"
                       aria-label="Move up"
+                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                      disabled={i === 0}
+                      onClick={() => moveImage(i, -1)}
+                      type="button"
                     >
                       ←
                     </button>
                     <button
-                      type="button"
-                      onClick={() => moveImage(i, 1)}
-                      disabled={i === values.images.length - 1}
-                      className="px-1.5 py-0.5 border hairline-strong text-ink disabled:opacity-30"
                       aria-label="Move down"
+                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                      disabled={i === values.images.length - 1}
+                      onClick={() => moveImage(i, 1)}
+                      type="button"
                     >
                       →
                     </button>
                   </div>
                   <button
-                    type="button"
+                    className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
                     onClick={() => removeImage(i)}
-                    className="underline underline-offset-4 decoration-line-strong hover:decoration-ink"
+                    type="button"
                   >
                     {labels.removeImage}
                   </button>
@@ -392,24 +398,24 @@ export function ProductForm({
         )}
       </section>
 
-      <section className="border-t hairline pt-10 flex flex-col gap-4 sm:flex-row sm:gap-10">
-        <label className="flex items-start gap-3 cursor-pointer max-w-sm">
+      <section className="hairline flex flex-col gap-4 border-t pt-10 sm:flex-row sm:gap-10">
+        <label className="flex max-w-sm cursor-pointer items-start gap-3">
           <input
-            type="checkbox"
             checked={values.featured}
-            onChange={(e) => patch("featured", e.target.checked)}
             className="mt-1 w-auto"
+            onChange={(e) => patch("featured", e.target.checked)}
+            type="checkbox"
           />
           <span className="font-mono text-[11px] uppercase tracking-[0.22em]">
             {labels.fieldFeatured}
           </span>
         </label>
-        <label className="flex items-start gap-3 cursor-pointer max-w-sm">
+        <label className="flex max-w-sm cursor-pointer items-start gap-3">
           <input
-            type="checkbox"
             checked={values.published}
-            onChange={(e) => patch("published", e.target.checked)}
             className="mt-1 w-auto"
+            onChange={(e) => patch("published", e.target.checked)}
+            type="checkbox"
           />
           <span className="font-mono text-[11px] uppercase tracking-[0.22em]">
             {labels.fieldPublished}
@@ -417,19 +423,19 @@ export function ProductForm({
         </label>
       </section>
 
-      <div className="border-t hairline pt-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+      <div className="hairline flex flex-col-reverse gap-3 border-t pt-8 sm:flex-row sm:justify-end">
         <button
-          type="button"
-          onClick={() => router.push("/admin")}
           className="btn btn-ghost"
           disabled={pending}
+          onClick={() => router.push("/admin")}
+          type="button"
         >
           {labels.cancel}
         </button>
         <button
-          type="submit"
           className="btn btn-primary"
           disabled={pending || uploading}
+          type="submit"
         >
           {pending ? labels.saving : labels.save}
         </button>

@@ -110,7 +110,9 @@ export function maybeSeed(db: Database.Database): void {
   const row = db.prepare("SELECT COUNT(*) AS c FROM products").get() as {
     c: number;
   };
-  if (row.c > 0) return;
+  if (row.c > 0) {
+    return;
+  }
 
   const now = Date.now();
   const insert = db.prepare(
@@ -121,7 +123,7 @@ export function maybeSeed(db: Database.Database): void {
      VALUES
       (@id, @slug, @name_en, @name_ka, @description_en, @description_ka,
        @price, @currency, @category_en, @category_ka, @images_json,
-       @featured, @published, @created_at, @updated_at)`,
+       @featured, @published, @created_at, @updated_at)`
   );
 
   const insertAll = db.transaction((rows: ProductInput[]) => {

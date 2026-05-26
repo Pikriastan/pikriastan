@@ -1,6 +1,6 @@
 import { getT } from "@/lib/i18n/server";
-import { Footer } from "./_components/Footer";
-import { Header } from "./_components/Header";
+import { Footer } from "./_components/footer";
+import { Header } from "./_components/header";
 
 export default async function SiteLayout({
   children,
@@ -11,7 +11,7 @@ export default async function SiteLayout({
   return (
     <>
       <Header locale={locale} t={t} />
-      <main className="flex-1 flex flex-col">{children}</main>
+      <main className="flex flex-1 flex-col">{children}</main>
       <Footer locale={locale} t={t} />
     </>
   );

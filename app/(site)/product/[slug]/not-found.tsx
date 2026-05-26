@@ -5,18 +5,18 @@ export default async function ProductNotFound() {
   const { locale, t } = await getT();
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
   return (
-    <section className="border-b hairline">
-      <div className="mx-auto max-w-3xl px-6 md:px-12 py-32 text-center">
+    <section className="hairline border-b">
+      <div className="mx-auto max-w-3xl px-6 py-32 text-center md:px-12">
         <p className="eyebrow mb-6">404</p>
         <h1
-          className={`${displayClass} leading-[0.95] tracking-tight text-5xl md:text-7xl lowercase`}
+          className={`${displayClass} text-5xl lowercase leading-[0.95] tracking-tight md:text-7xl`}
         >
           {t.product.notFound}
         </h1>
-        <p className="mt-6 text-muted max-w-md mx-auto">
+        <p className="mx-auto mt-6 max-w-md text-muted">
           {t.product.notFoundBody}
         </p>
-        <Link href="/collection" className="btn btn-primary mt-10 inline-flex">
+        <Link className="btn btn-primary mt-10 inline-flex" href="/collection">
           {t.product.back}
         </Link>
       </div>

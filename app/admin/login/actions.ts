@@ -9,13 +9,13 @@ const loginFormSchema = z.object({
   password: z.string().min(6),
 });
 
-export type LoginActionState = {
+export interface LoginActionState {
   status: "idle" | "in_progress" | "success" | "failed" | "invalid_data";
-};
+}
 
 export const login = async (
   _: LoginActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<LoginActionState> => {
   try {
     const validatedData = loginFormSchema.parse({
