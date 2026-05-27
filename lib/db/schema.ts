@@ -1,5 +1,3 @@
-import "server-only";
-
 import type { InferSelectModel } from "drizzle-orm";
 import {
   boolean,

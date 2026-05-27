@@ -1,55 +1,25 @@
-import { jwtVerify } from "jose";
+import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
-const SESSION_COOKIE = "admin_session";
+const PUBLIC_PATHS: string[] = ["/admin/login"];
 
-const PUBLIC_PATHS = new Set<string>(["/admin/login", "/api/admin/login"]);
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-function getSecret(): Uint8Array | null {
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret || secret.length < 16) {
-    return null;
-  }
-  return new TextEncoder().encode(secret);
-}
-
-async function verify(token: string | undefined): Promise<boolean> {
-  if (!token) {
-    return false;
-  }
-  const secret = getSecret();
-  if (!secret) {
-    return false;
-  }
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    return payload.role === "admin";
-  } catch {
-    return false;
-  }
-}
-
-export async function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  if (PUBLIC_PATHS.has(pathname)) {
+  if (PUBLIC_PATHS.includes(pathname)) {
     return NextResponse.next();
   }
 
-  const token = req.cookies.get(SESSION_COOKIE)?.value;
-  const ok = await verify(token);
-  if (ok) {
-    return NextResponse.next();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
-  if (pathname.startsWith("/api/")) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const url = req.nextUrl.clone();
-  url.pathname = "/admin/login";
-  url.search = "";
-  return NextResponse.redirect(url);
+  return NextResponse.next();
 }
 
 export const config = {
