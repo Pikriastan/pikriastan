@@ -1,4 +1,22 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { type ErrorCode, WebError } from "./errors";
 import type { Locale } from "./i18n/locales";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export const fetcher = async (url: string) => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const { code, cause } = await response.json();
+    throw new WebError(code as ErrorCode, cause);
+  }
+
+  return response.json();
+};
 
 const SYMBOLS: Record<string, string> = {
   GEL: "\u20BE",

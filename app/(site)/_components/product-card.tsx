@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/db";
-import { formatPrice, pickLocalized } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/locales";
+import { formatPrice, pickLocalized } from "@/lib/utils";
 
 export function ProductCard({
   product,

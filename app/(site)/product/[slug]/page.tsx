@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug } from "@/lib/db";
-import { formatPrice, pickLocalized } from "@/lib/format";
+// import { getProductBySlug } from "@/lib/db";
 import { getT } from "@/lib/i18n/server";
+import { formatPrice, pickLocalized } from "@/lib/utils";
 import { ProductGallery } from "../../_components/product-gallery";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +43,7 @@ export default async function ProductPage({
 
   return (
     <article className="hairline border-b">
-      <div className="mx-auto max-w-[1400px] px-6 pt-10 pb-24 md:px-12 md:pt-14 md:pb-32">
+      <div className="mx-auto max-w-350 px-6 pt-10 pb-24 md:px-12 md:pt-14 md:pb-32">
         <div className="mb-10 md:mb-14">
           <Link
             className="link-underline inline-block pb-1 font-mono text-[10px] text-muted uppercase tracking-[0.28em] hover:text-ink"

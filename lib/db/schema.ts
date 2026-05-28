@@ -1,6 +1,7 @@
 import type { InferSelectModel } from "drizzle-orm";
 import {
   boolean,
+  integer,
   json,
   pgTable,
   text,
@@ -16,8 +17,8 @@ export const product = pgTable("products", {
   nameKa: varchar("name_ka").notNull(),
   descriptionEn: text("description_en").notNull(),
   descriptionKa: text("description_ka").notNull(),
-  price: varchar().notNull(),
-  currency: varchar().default("GEL"),
+  price: integer().notNull(),
+  currency: varchar().default("GEL").notNull(),
   categoryEn: varchar("category_en").notNull(),
   categoryKa: varchar("category_ka").notNull(),
   imagesJson: json("images_json").notNull(),

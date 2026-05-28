@@ -23,15 +23,13 @@ export const login = async (
       password: formData.get("password"),
     });
 
-    const response = await auth.api.signInEmail({
+    await auth.api.signInEmail({
       body: {
         email: validatedData.email,
         password: validatedData.password,
       },
       asResponse: true,
     });
-
-    console.log(response);
 
     return { status: "success" };
   } catch (error) {
