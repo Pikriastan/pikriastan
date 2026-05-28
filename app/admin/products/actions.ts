@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import type { BaseActionState } from "@/lib/types";
 
 const newProductSchema = z.object({
   nameEn: z.string(),
@@ -15,12 +16,10 @@ const newProductSchema = z.object({
   images: z.array(z.file()),
 });
 
-export type NewProductState = "idle" | "success" | "failed" | "invalid_data";
-
 export const createProduct = async (
-  _: NewProductState,
+  _: BaseActionState,
   formData: FormData
-): Promise<NewProductState> => {
+): Promise<BaseActionState> => {
   try {
     const validatedData = newProductSchema.parse({
       ...Object.fromEntries(formData),
