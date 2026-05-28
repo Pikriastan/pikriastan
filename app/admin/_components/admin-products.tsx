@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
 import { Skeleton } from "@/components/skeleton";
-import type { Product } from "@/lib/db/schema";
+import type { ProductWithImages } from "@/lib/db/queries";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Locale } from "@/lib/i18n/locales";
 import { fetcher, formatPrice, pickLocalized } from "@/lib/utils";
@@ -18,7 +19,7 @@ export function AdminProducts({
   locale: Locale;
   t: Dictionary["admin"];
 }) {
-  const { data, isLoading, error } = useSWR<Product[]>(
+  const { data, isLoading, error } = useSWR<ProductWithImages[]>(
     "/api/products",
     fetcher
   );
@@ -66,15 +67,16 @@ export function AdminProducts({
                 >
                   <div className="col-span-2 md:col-span-1">
                     <div className="relative aspect-4/5 w-full overflow-hidden bg-paper-deep">
-                      {/*{p.images[0] ? (
+                      {p.images[0] ? (
                         <Image
                           alt={name}
                           className="object-cover"
                           fill
-                          sizes="80px"
-                          src={p.images[0]}
+                          quality={100}
+                          sizes="(min-width: 768px) 120px, 96px"
+                          src={p.images[0].url}
                         />
-                      ) : null}*/}
+                      ) : null}
                     </div>
                   </div>
                   <div className="col-span-10 min-w-0 md:col-span-5">

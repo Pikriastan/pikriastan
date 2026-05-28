@@ -20,6 +20,37 @@
   /* Lines — minimal, editorial */
   --line: rgba(0, 0, 0, 0.1);
   --line-strong: rgba(0, 0, 0, 0.22);
+
+  /* Skeleton shimmer band tint */
+  --skeleton-shimmer: rgba(0, 0, 0, 0.08);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  /* Surfaces — ink black, slightly raised tiers */
+  --bg: #0a0a0a;
+  --bg-deep: #131313;
+  --bg-warm: #1a1a1a;
+
+  /* Ink — off-white, soft to reduce strain */
+  --ink: #f4f4f4;
+  --ink-soft: #e8e8e8;
+  --muted: #9a9a9a;
+  --muted-soft: #6b6b6b;
+
+  /* Accent — same gold reads on both */
+  --accent: #c8a14e;
+  --accent-strong: #d4b66e;
+  --accent-soft: #b08d3c;
+
+  /* Lines — hairlines on dark surfaces */
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.22);
+
+  --skeleton-shimmer: rgba(255, 255, 255, 0.08);
+
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -110,6 +141,71 @@ body {
   animation: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
+@property --hero-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.hero-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-glow::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1.5px;
+  pointer-events: none;
+  content: "";
+  background: conic-gradient(
+    from var(--hero-angle),
+    transparent 0%,
+    transparent 72%,
+    color-mix(in srgb, var(--accent) 25%, transparent) 80%,
+    color-mix(in srgb, var(--accent) 70%, transparent) 88%,
+    color-mix(in srgb, var(--accent-soft) 90%, transparent) 92%,
+    color-mix(in srgb, var(--accent) 40%, transparent) 96%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: hero-glow-rotate 9s linear infinite;
+}
+
+.hero-glow::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background: radial-gradient(
+    120% 60% at 50% 0%,
+    color-mix(in srgb, var(--accent) 6%, transparent),
+    transparent 70%
+  );
+  opacity: 0.6;
+}
+
+@keyframes hero-glow-rotate {
+  to {
+    --hero-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow::before {
+    animation: none;
+  }
+}
+
 @keyframes skeleton-shimmer {
   0% {
     background-position: -150% 0;
@@ -126,7 +222,7 @@ body {
   background-image: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(0, 0, 0, 0.08) 50%,
+    var(--skeleton-shimmer) 50%,
     transparent 100%
   );
   background-repeat: no-repeat;

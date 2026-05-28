@@ -45,6 +45,8 @@ export const metadata: Metadata = {
     "An independent atelier from Tbilisi. Quietly considered garments, soft palettes, numbered runs.",
 };
 
+const themeInitScript = `(function(){try{var s=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s==='dark'||s==='light'?s:(m?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -55,7 +57,12 @@ export default async function RootLayout({
     <html
       className={`${sansUi.variable} ${monoUi.variable} ${displayEn.variable} ${displayKa.variable} h-full antialiased`}
       lang={locale}
+      suppressHydrationWarning
     >
+      <head>
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: theme init must run before paint to avoid FOUC */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
         {children}
         <Toaster

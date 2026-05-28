@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { EXTENSION_RE } from "./constants";
 import { type ErrorCode, WebError } from "./errors";
 import type { Locale } from "./i18n/locales";
 
@@ -46,4 +47,18 @@ export function pickLocalized<T extends { en: string; ka: string }>(
   locale: Locale
 ): string {
   return field[locale] || field.en || field.ka;
+}
+
+export function pickExtension(filename: string, contentType: string): string {
+  const fromName = filename.split(".").pop();
+  if (fromName && EXTENSION_RE.test(fromName)) {
+    return fromName.toLowerCase();
+  }
+  const map: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/jpg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+  };
+  return map[contentType.toLowerCase()] ?? "bin";
 }

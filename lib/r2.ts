@@ -1,112 +1,46 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { S3Client } from "bun";
+import { v4 as uuidv4 } from "uuid";
+import { config } from "./config";
+import { ALLOWED_IMAGE_TYPES, MAX_BYTES } from "./constants";
+import { WebError } from "./errors";
 
-interface R2Config {
-  accessKeyId: string;
-  accountId: string;
-  bucket: string;
-  publicBaseUrl: string;
-  secretAccessKey: string;
-}
+const r2 = new S3Client({
+  region: "auto",
+  accessKeyId: config.R2_ACCESS_KEY_ID,
+  secretAccessKey: config.R2_SECRET_ACCESS_KEY,
+  bucket: config.R2_BUCKET,
+  endpoint: `https://${config.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+});
 
-const TRAILING_SLASHES_RE = /\/+$/;
-const EXTENSION_RE = /^[a-z0-9]{2,5}$/i;
-
-function readConfig(): R2Config {
-  const accountId = process.env.R2_ACCOUNT_ID;
-  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
-  const bucket = process.env.R2_BUCKET;
-  const publicBaseUrl = process.env.R2_PUBLIC_BASE_URL;
-  if (
-    !(accountId && accessKeyId && secretAccessKey && bucket && publicBaseUrl)
-  ) {
-    throw new Error(
-      "Cloudflare R2 is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, and R2_PUBLIC_BASE_URL in .env.local"
-    );
+export async function uploadImage(productId: string, file: File) {
+  if (file.size === 0) {
+    throw new WebError("bad_request:r2", "Empty file");
   }
-  return {
-    accountId,
-    accessKeyId,
-    secretAccessKey,
-    bucket,
-    publicBaseUrl: publicBaseUrl.replace(TRAILING_SLASHES_RE, ""),
-  };
-}
-
-let _client: S3Client | null = null;
-let _config: R2Config | null = null;
-
-function getClient(): { client: S3Client; config: R2Config } {
-  if (_client && _config) {
-    return { client: _client, config: _config };
+  if (file.size > MAX_BYTES) {
+    throw new WebError("bad_request:r2", "File too large (max 10MB)");
   }
-  const cfg = readConfig();
-  _client = new S3Client({
-    region: "auto",
-    endpoint: `https://${cfg.accountId}.r2.cloudflarestorage.com`,
-    credentials: {
-      accessKeyId: cfg.accessKeyId,
-      secretAccessKey: cfg.secretAccessKey,
-    },
-  });
-  _config = cfg;
-  return { client: _client, config: _config };
-}
 
-function pickExtension(filename: string, contentType: string): string {
-  const fromName = filename.split(".").pop();
-  if (fromName && EXTENSION_RE.test(fromName)) {
-    return fromName.toLowerCase();
+  const contentType = (file.type || "").toLowerCase();
+  if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
+    throw new WebError("bad_request:r2", "Unsupported image type");
   }
-  const map: Record<string, string> = {
-    "image/jpeg": "jpg",
-    "image/jpg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-    "image/avif": "avif",
-    "image/gif": "gif",
-  };
-  return map[contentType.toLowerCase()] ?? "bin";
-}
 
-function safeKey(filename: string, contentType: string): string {
-  const ext = pickExtension(filename, contentType);
-  const rand = Math.random().toString(36).slice(2, 10);
-  const ts = Date.now().toString(36);
-  return `products/${ts}-${rand}.${ext}`;
-}
+  try {
+    const key = `products/${productId}/${uuidv4()}.webp`;
 
-export interface UploadedImage {
-  key: string;
-  url: string;
-}
+    const input = Buffer.from(await file.arrayBuffer());
+    const image = await new Bun.Image(input).webp({ quality: 92 }).blob();
 
-export async function uploadImage(params: {
-  filename: string;
-  contentType: string;
-  body: Buffer | Uint8Array;
-}): Promise<UploadedImage> {
-  const { client, config } = getClient();
-  const key = safeKey(params.filename, params.contentType);
-  await client.send(
-    new PutObjectCommand({
-      Bucket: config.bucket,
-      Key: key,
-      Body: params.body,
-      ContentType: params.contentType,
-      CacheControl: "public, max-age=31536000, immutable",
-    })
-  );
-  const url = `${config.publicBaseUrl}/${key}`;
-  return { url, key };
-}
+    await r2.file(key).write(image, {
+      type: "image/webp",
+    });
 
-export function r2IsConfigured(): boolean {
-  return Boolean(
-    process.env.R2_ACCOUNT_ID &&
-      process.env.R2_ACCESS_KEY_ID &&
-      process.env.R2_SECRET_ACCESS_KEY &&
-      process.env.R2_BUCKET &&
-      process.env.R2_PUBLIC_BASE_URL
-  );
+    return { key };
+  } catch (err) {
+    console.log(err);
+    if (err instanceof WebError) {
+      throw err;
+    }
+    throw new WebError("bad_request:r2", "Failed to upload an image to R2");
+  }
 }

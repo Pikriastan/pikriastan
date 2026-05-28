@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState, useTransition } from "react";
 
 import type { BaseActionState } from "@/lib/types";
-import { createProduct } from "../products/actions";
+import { create } from "../products/actions";
 
 interface PendingFile {
   file: File;
@@ -78,7 +78,7 @@ export function ProductForm({
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
 
   const [state, formAction] = useActionState<BaseActionState, FormData>(
-    createProduct,
+    create,
     "idle"
   );
 
@@ -145,6 +145,8 @@ export function ProductForm({
     for (const pendingFile of pendingFiles) {
       formData.append("images", pendingFile.file);
     }
+    formData.append("featured", String(values.featured));
+    formData.append("published", String(values.published));
     formAction(formData);
   }
 

@@ -12,7 +12,7 @@ export default async function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="hairline border-b">
+      <section className="hero-glow hairline border-b">
         <div className="mx-auto max-w-350 px-6 pt-24 pb-24 md:px-12 md:pt-32 md:pb-32">
           <p className="eyebrow fade-up mb-10">{t.hero.eyebrow}</p>
           <div className="grid grid-cols-12 items-end gap-8 md:gap-12">

@@ -1,39 +1,30 @@
 "use server";
 
 import { z } from "zod";
+import { createProduct } from "@/lib/db/queries";
+import { productSchema } from "@/lib/schemas";
 import type { BaseActionState } from "@/lib/types";
 
-const newProductSchema = z.object({
-  nameEn: z.string(),
-  nameKa: z.string(),
-  categoryEn: z.string(),
-  categoryKa: z.string(),
-  slug: z.string().regex(/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/),
-  price: z.coerce.number(),
-  currency: z.string(),
-  descriptionEn: z.string(),
-  descriptionKa: z.string(),
-  images: z.array(z.file()),
-});
-
-export const createProduct = async (
+export const create = async (
   _: BaseActionState,
   formData: FormData
 ): Promise<BaseActionState> => {
   try {
-    const validatedData = newProductSchema.parse({
+    const validatedData = productSchema.parse({
       ...Object.fromEntries(formData),
       images: formData.getAll("images"),
     });
 
-    console.log(validatedData);
+    await createProduct(validatedData);
 
     return "success";
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.error("[create product] validation failed", error.flatten());
       return "invalid_data";
     }
 
+    console.error("[create product] failed", error);
     return "failed";
   }
 };

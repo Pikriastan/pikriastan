@@ -3,6 +3,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Locale } from "@/lib/i18n/locales";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Header({ locale, t }: { locale: Locale; t: Dictionary }) {
   const nav = [
@@ -26,7 +27,10 @@ export function Header({ locale, t }: { locale: Locale; t: Dictionary }) {
               </Link>
             ))}
           </nav>
-          <LanguageSwitcher locale={locale} />
+          <div className="flex items-center gap-5">
+            <ThemeToggle />
+            <LanguageSwitcher locale={locale} />
+          </div>
         </div>
         <nav className="flex items-center gap-6 pb-4 font-mono text-[10px] uppercase tracking-[0.24em] md:hidden">
           {nav.map((n) => (

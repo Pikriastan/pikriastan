@@ -16,6 +16,19 @@ const cli = new Command();
 
 cli.name("amiranas-butiki").description("CLI for creating admin users");
 
+function isPromptCancel(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.name === "ExitPromptError" ||
+      error.message.includes("force closed the prompt"))
+  );
+}
+
+function fail(message: string): never {
+  cli.error(message);
+  process.exit(1);
+}
+
 cli
   .command("create-admin-user")
   .description("Create admin panel user")
@@ -69,8 +82,7 @@ cli
     }
 
     if (!(name && email && pwd)) {
-      cli.error("Email and password are required");
-      process.exit(1);
+      fail("Email and password are required");
     }
 
     const response = await auth.api.signUpEmail({
@@ -88,4 +100,11 @@ cli
     }
   });
 
-cli.parse();
+cli.parseAsync().catch((error: unknown) => {
+  if (isPromptCancel(error)) {
+    console.log("\nCancelled.");
+    process.exit(0);
+  }
+
+  throw error;
+});

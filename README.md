@@ -18,10 +18,10 @@ A minimal, full-stack clothing **showcase** built with Next.js 16 (App Router) a
 ## Quick start
 
 ```bash
-pnpm install
+bun install
 cp .env.example .env.local
 # edit .env.local — at minimum set ADMIN_PASSWORD and ADMIN_SESSION_SECRET
-pnpm dev
+bun dev
 ```
 
 Open http://localhost:3000 for the public site and http://localhost:3000/admin to sign in.
@@ -104,7 +104,7 @@ The home page shows featured products first; if none are flagged as featured it 
 
 ## Scripts
 
-- `pnpm dev` — start the dev server
-- `pnpm build` — production build
-- `pnpm start` — run the production build
-- `pnpm lint` — lint the project
+- `bun dev` — start the dev server
+- `bun run build` — production build
+- `bun start` — run the production build
+- `bun check` — lint the project

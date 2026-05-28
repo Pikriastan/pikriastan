@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/app/(site)/_components/theme-toggle";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Locale } from "@/lib/i18n/locales";
 import { LogoutButton } from "./logout-button";
@@ -34,6 +35,7 @@ export function AdminShell({
             >
               {locale === "ka" ? "საიტი ↗" : "Site ↗"}
             </Link>
+            <ThemeToggle />
             <LogoutButton label={t.admin.logout} />
           </div>
         </div>
