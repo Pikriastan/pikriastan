@@ -1,11 +1,12 @@
 "use client";
 
+import { createAuthClient } from "better-auth/client";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { signOut } from "@/lib/auth-client";
 
 export function LogoutButton({ label }: { label: string }) {
   const [pending, startTransition] = useTransition();
+  const { signOut } = createAuthClient();
   const router = useRouter();
 
   function logout() {

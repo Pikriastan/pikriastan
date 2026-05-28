@@ -1,23 +1,12 @@
 import { NextResponse } from "next/server";
-import { isAuthenticated } from "@/lib/auth";
 import { uploadImage } from "@/lib/r2";
 
 const MAX_BYTES = 10 * 1024 * 1024;
-const ALLOWED = new Set([
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-  "image/avif",
-  "image/gif",
-]);
+const ALLOWED = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
 
-export const runtime = "nodejs";
+export async function NEW_POST(request: Request) {}
 
 export async function POST(req: Request) {
-  if (!(await isAuthenticated())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
   let form: FormData;
   try {
     form = await req.formData();

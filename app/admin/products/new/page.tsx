@@ -1,10 +1,8 @@
-import { redirect } from "next/navigation";
 import { AdminShell } from "@/app/admin/_components/admin-shell";
 import {
   ProductForm,
   type ProductFormValues,
 } from "@/app/admin/_components/product-form";
-import { isAuthenticated } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
@@ -22,9 +20,6 @@ const empty: ProductFormValues = {
 };
 
 export default async function NewProductPage() {
-  if (!(await isAuthenticated())) {
-    redirect("/admin/login");
-  }
   const { locale, t } = await getT();
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
 

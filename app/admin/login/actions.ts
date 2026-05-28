@@ -10,7 +10,7 @@ const loginFormSchema = z.object({
 });
 
 export interface LoginActionState {
-  status: "idle" | "in_progress" | "success" | "failed" | "invalid_data";
+  status: "idle" | "success" | "failed" | "invalid_data";
 }
 
 export const login = async (
@@ -18,10 +18,7 @@ export const login = async (
   formData: FormData
 ): Promise<LoginActionState> => {
   try {
-    const validatedData = loginFormSchema.parse({
-      email: formData.get("email"),
-      password: formData.get("password"),
-    });
+    const validatedData = loginFormSchema.parse(Object.fromEntries(formData));
 
     await auth.api.signInEmail({
       body: {

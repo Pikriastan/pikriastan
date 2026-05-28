@@ -1,9 +1,10 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { config } from "../config";
 import { WebError } from "../errors";
 import { type Product, product } from "./schema";
 
-export const db = drizzle(process.env.DATABASE_URL ?? "");
+export const db = drizzle(config.DATABASE_URL);
 
 export async function getProducts(): Promise<Product[]> {
   try {

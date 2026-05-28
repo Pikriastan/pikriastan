@@ -1,9 +1,9 @@
 "use client";
 
+import { createAuthClient } from "better-auth/client";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { updateSession } from "@/lib/auth-client";
 import { type LoginActionState, login } from "./actions";
 
 interface LoginFormProps {
@@ -17,6 +17,7 @@ interface LoginFormProps {
 
 export function LoginForm({ labels }: LoginFormProps) {
   const router = useRouter();
+  const { updateSession } = createAuthClient();
   const [email, setEmail] = useState("");
   const [isSuccessful, setIsSuccessful] = useState(false);
 

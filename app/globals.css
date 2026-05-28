@@ -183,6 +183,7 @@ body {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
+  cursor: default;
   border-radius: 0;
   transition:
     background 300ms ease,
@@ -193,7 +194,7 @@ body {
 .btn-primary {
   color: var(--bg);
   background: var(--accent);
-  border: none;
+  border: 1px solid var(--ink);
 }
 
 .btn-primary:hover {

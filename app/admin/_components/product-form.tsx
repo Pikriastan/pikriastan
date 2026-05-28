@@ -2,7 +2,15 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition } from "react";
+import { useActionState, useRef, useState, useTransition } from "react";
+
+import { createProduct, type NewProductState } from "../products/actions";
+
+interface PendingFile {
+  file: File;
+  id: string;
+  previewUrl: string;
+}
 
 export interface ProductFormValues {
   category: { en: string; ka: string };
@@ -63,9 +71,15 @@ export function ProductForm({
   const [values, setValues] = useState<ProductFormValues>(initial);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [uploading, setUploading] = useState(false);
+  const [uploading, _setUploading] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+
+  const [state, formAction] = useActionState<NewProductState, FormData>(
+    createProduct,
+    "idle"
+  );
 
   function patch<K extends keyof ProductFormValues>(
     key: K,
@@ -84,37 +98,30 @@ export function ProductForm({
     });
   }
 
-  async function handleFiles(files: FileList | null) {
+  function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) {
       return;
     }
-    setUploading(true);
     setError(null);
-    try {
-      const uploaded: string[] = [];
-      for (const file of Array.from(files)) {
-        const fd = new FormData();
-        fd.append("file", file);
-        const res = await fetch("/api/admin/upload", {
-          method: "POST",
-          body: fd,
-        });
-        if (!res.ok) {
-          const txt = await res.text().catch(() => "");
-          throw new Error(txt || `Upload failed (${res.status})`);
-        }
-        const data = (await res.json()) as { url: string };
-        uploaded.push(data.url);
-      }
-      setValues((v) => ({ ...v, images: [...v.images, ...uploaded] }));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : labels.saveError);
-    } finally {
-      setUploading(false);
-      if (fileRef.current) {
-        fileRef.current.value = "";
-      }
+    const next: PendingFile[] = Array.from(files).map((file) => ({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${file.name}`,
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+    setPendingFiles((prev) => [...prev, ...next]);
+    if (fileRef.current) {
+      fileRef.current.value = "";
     }
+  }
+
+  function removePending(id: string) {
+    setPendingFiles((prev) => {
+      const item = prev.find((p) => p.id === id);
+      if (item) {
+        URL.revokeObjectURL(item.previewUrl);
+      }
+      return prev.filter((p) => p.id !== id);
+    });
   }
 
   function removeImage(idx: number) {
@@ -133,7 +140,14 @@ export function ProductForm({
     });
   }
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function newOnSubmit(formData: FormData) {
+    for (const pendingFile of pendingFiles) {
+      formData.append("images", pendingFile.file);
+    }
+    formAction(formData);
+  }
+
+  function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     startTransition(async () => {
@@ -174,7 +188,7 @@ export function ProductForm({
   }
 
   return (
-    <form className="space-y-12" onSubmit={onSubmit}>
+    <form action={newOnSubmit} className="space-y-12">
       {error && (
         <div className="border-ink border-l-2 bg-paper-deep py-2 pl-4">
           <p className="font-mono text-ink text-xs uppercase tracking-[0.18em]">
@@ -188,6 +202,7 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldNameEn}</span>
             <input
+              name="nameEn"
               onChange={(e) => patchName("en", e.target.value)}
               placeholder="Long Wool Overcoat"
               required
@@ -200,6 +215,7 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldNameKa}</span>
             <input
+              name="nameKa"
               onChange={(e) => patchName("ka", e.target.value)}
               placeholder="გრძელი მატყლის პალტო"
               required
@@ -213,11 +229,12 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldSlug}</span>
             <input
+              name="slug"
               onChange={(e) => {
                 setSlugTouched(true);
                 patch("slug", slugify(e.target.value));
               }}
-              pattern="^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+              pattern="^[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?$"
               placeholder="long-wool-overcoat"
               required
               type="text"
@@ -234,6 +251,7 @@ export function ProductForm({
             <span>{labels.fieldPrice}</span>
             <input
               min="0"
+              name="price"
               onChange={(e) => patch("price", Number(e.target.value))}
               required
               step="1"
@@ -246,6 +264,7 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldCurrency}</span>
             <select
+              name="currency"
               onChange={(e) => patch("currency", e.target.value)}
               value={values.currency}
             >
@@ -261,6 +280,7 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldCategoryEn}</span>
             <input
+              name="categoryEn"
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -277,6 +297,7 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldCategoryKa}</span>
             <input
+              name="categoryKa"
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -294,6 +315,7 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldDescriptionEn}</span>
             <textarea
+              name="descriptionEn"
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -310,6 +332,7 @@ export function ProductForm({
           <label className="field">
             <span>{labels.fieldDescriptionKa}</span>
             <textarea
+              name="descriptionKa"
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
@@ -327,7 +350,11 @@ export function ProductForm({
       <section className="hairline border-t pt-10">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <h3 className="font-mono text-[11px] text-muted uppercase tracking-[0.28em]">
-            {`${labels.fieldImages}${values.images.length > 0 ? ` \u2014 ${values.images.length}` : ""}`}
+            {`${labels.fieldImages}${
+              values.images.length + pendingFiles.length > 0
+                ? ` \u2014 ${values.images.length + pendingFiles.length}`
+                : ""
+            }`}
           </h3>
           <label className="btn btn-ghost cursor-pointer">
             <input
@@ -343,7 +370,7 @@ export function ProductForm({
           </label>
         </div>
 
-        {values.images.length === 0 ? (
+        {values.images.length === 0 && pendingFiles.length === 0 ? (
           <div className="hairline grid place-items-center border border-dashed py-20 text-center font-mono text-[11px] text-muted uppercase tracking-[0.24em]">
             {labels.uploadImages}
           </div>
@@ -351,7 +378,7 @@ export function ProductForm({
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {values.images.map((src, i) => (
               <li className="group relative" key={src}>
-                <div className="relative aspect-[4/5] overflow-hidden bg-paper-deep">
+                <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
                   <Image
                     alt={`image ${i + 1}`}
                     className="object-cover"
@@ -387,6 +414,32 @@ export function ProductForm({
                   <button
                     className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
                     onClick={() => removeImage(i)}
+                    type="button"
+                  >
+                    {labels.removeImage}
+                  </button>
+                </div>
+              </li>
+            ))}
+            {pendingFiles.map((p) => (
+              <li className="group relative" key={p.id}>
+                <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
+                  {/* biome-ignore lint/performance/noImgElement: blob previews aren't served by next/image */}
+                  <img
+                    alt={p.file.name}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    height={500}
+                    src={p.previewUrl}
+                    width={400}
+                  />
+                  <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
+                    {"pending"}
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center justify-end gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
+                  <button
+                    className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
+                    onClick={() => removePending(p.id)}
                     type="button"
                   >
                     {labels.removeImage}

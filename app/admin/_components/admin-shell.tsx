@@ -16,7 +16,7 @@ export function AdminShell({
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
       <header className="hairline sticky top-0 z-30 border-b bg-paper/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 md:px-12 md:py-6">
+        <div className="mx-auto flex max-w-350 items-center justify-between px-6 py-5 md:px-12 md:py-6">
           <Link
             className={`${displayClass} text-xl lowercase leading-none tracking-tight md:text-2xl`}
             href="/admin"
