@@ -19,12 +19,11 @@ export function LoginForm({ labels }: LoginFormProps) {
   const router = useRouter();
   const { updateSession } = createAuthClient();
   const [email, setEmail] = useState("");
-  const [isSuccessful, setIsSuccessful] = useState(false);
 
-  const [state, formAction] = useActionState<LoginActionState, FormData>(
-    login,
-    { status: "idle" }
-  );
+  const [state, formAction, pending] = useActionState<
+    LoginActionState,
+    FormData
+  >(login, { status: "idle" });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: router is stable ref
   useEffect(() => {
@@ -33,7 +32,6 @@ export function LoginForm({ labels }: LoginFormProps) {
     } else if (state.status === "invalid_data") {
       toast.error("Failed validating your submission!");
     } else if (state.status === "success") {
-      setIsSuccessful(true);
       updateSession();
       router.refresh();
     }
@@ -63,10 +61,10 @@ export function LoginForm({ labels }: LoginFormProps) {
       </label>
       <button
         className="btn btn-primary w-full"
-        disabled={isSuccessful}
+        disabled={pending}
         type="submit"
       >
-        {isSuccessful ? "\u2026" : labels.submit}
+        {pending ? "\u2026" : labels.submit}
       </button>
     </form>
   );

@@ -15,7 +15,9 @@ export default async function AdminPage() {
         <div className="mx-auto max-w-350 px-6 py-14 md:px-12 md:py-20">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p className="eyebrow mb-4">{`/ ${locale === "ka" ? "მართვა" : "Admin"}`}</p>
+              <p className="eyebrow mb-4">
+                {`/ ${locale === "ka" ? "მართვა" : "Admin"}`}
+              </p>
               <h1
                 className={`${displayClass} text-5xl lowercase leading-none tracking-tight md:text-7xl`}
               >

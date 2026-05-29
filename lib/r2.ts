@@ -1,4 +1,9 @@
-import { Image, S3Client } from "bun";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
+import sharp from "sharp";
 import { v4 as uuidv4 } from "uuid";
 import { config } from "./config";
 import { ALLOWED_IMAGE_TYPES, MAX_BYTES } from "./constants";
@@ -6,9 +11,10 @@ import { WebError } from "./errors";
 
 const r2 = new S3Client({
   region: "auto",
-  accessKeyId: config.R2_ACCESS_KEY_ID,
-  secretAccessKey: config.R2_SECRET_ACCESS_KEY,
-  bucket: config.R2_BUCKET,
+  credentials: {
+    accessKeyId: config.R2_ACCESS_KEY_ID,
+    secretAccessKey: config.R2_SECRET_ACCESS_KEY,
+  },
   endpoint: `https://${config.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
 });
 
@@ -29,11 +35,16 @@ export async function uploadImage(productId: string, file: File) {
     const key = `products/${productId}/${uuidv4()}.webp`;
 
     const input = Buffer.from(await file.arrayBuffer());
-    const image = await new Image(input).webp({ quality: 92 }).blob();
+    const image = await sharp(input).rotate().webp({ quality: 92 }).toBuffer();
 
-    await r2.file(key).write(image, {
-      type: "image/webp",
-    });
+    await r2.send(
+      new PutObjectCommand({
+        Bucket: config.R2_BUCKET,
+        Key: key,
+        Body: image,
+        ContentType: "image/webp",
+      })
+    );
 
     return { key };
   } catch {
@@ -43,7 +54,12 @@ export async function uploadImage(productId: string, file: File) {
 
 export async function deleteImage(key: string) {
   try {
-    await r2.file(key).delete();
+    await r2.send(
+      new DeleteObjectCommand({
+        Bucket: config.R2_BUCKET,
+        Key: key,
+      })
+    );
   } catch {
     throw new WebError("bad_request:r2", "Failed to delete an image from R2");
   }

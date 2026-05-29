@@ -32,7 +32,9 @@ export default async function AdminLoginPage() {
 
       <main className="grid flex-1 place-items-center px-6 py-20 md:px-12">
         <div className="w-full max-w-sm">
-          <p className="eyebrow mb-6">{`/ ${locale === "ka" ? "შესვლა" : "Access"}`}</p>
+          <p className="eyebrow mb-6">
+            {`/ ${locale === "ka" ? "შესვლა" : "Access"}`}
+          </p>
           <h1
             className={`${displayClass} text-5xl lowercase leading-none tracking-tight md:text-6xl`}
           >

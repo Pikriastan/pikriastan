@@ -109,7 +109,9 @@ export function ProductForm({
     }
     setError(null);
     const next: PendingFile[] = Array.from(files).map((file) => ({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${file.name}`,
+      id: `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 8)}-${file.name}`,
       file,
       previewUrl: URL.createObjectURL(file),
     }));

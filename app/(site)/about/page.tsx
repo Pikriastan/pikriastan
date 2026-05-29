@@ -11,7 +11,9 @@ export default async function AboutPage() {
   return (
     <section className="hairline border-b">
       <div className="mx-auto max-w-[1400px] px-6 pt-20 pb-24 md:px-12 md:pt-28 md:pb-32">
-        <p className="eyebrow mb-6">{`/ ${locale === "ka" ? "სტუდია" : "Studio"}`}</p>
+        <p className="eyebrow mb-6">
+          {`/ ${locale === "ka" ? "სტუდია" : "Studio"}`}
+        </p>
         <h1
           className={`${displayClass} fade-up text-[16vw] lowercase leading-[0.92] tracking-tight sm:text-[14vw] md:text-[10vw] lg:text-[9vw]`}
         >
