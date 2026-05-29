@@ -72,7 +72,7 @@ export function AdminProducts({
                           alt={name}
                           className="object-cover"
                           fill
-                          quality={100}
+                          quality={90}
                           sizes="(min-width: 768px) 120px, 96px"
                           src={p.images[0].url}
                         />

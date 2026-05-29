@@ -1,4 +1,4 @@
-import { S3Client } from "bun";
+import { Image, S3Client } from "bun";
 import { v4 as uuidv4 } from "uuid";
 import { config } from "./config";
 import { ALLOWED_IMAGE_TYPES, MAX_BYTES } from "./constants";
@@ -29,18 +29,22 @@ export async function uploadImage(productId: string, file: File) {
     const key = `products/${productId}/${uuidv4()}.webp`;
 
     const input = Buffer.from(await file.arrayBuffer());
-    const image = await new Bun.Image(input).webp({ quality: 92 }).blob();
+    const image = await new Image(input).webp({ quality: 92 }).blob();
 
     await r2.file(key).write(image, {
       type: "image/webp",
     });
 
     return { key };
-  } catch (err) {
-    console.log(err);
-    if (err instanceof WebError) {
-      throw err;
-    }
+  } catch {
     throw new WebError("bad_request:r2", "Failed to upload an image to R2");
+  }
+}
+
+export async function deleteImage(key: string) {
+  try {
+    await r2.file(key).delete();
+  } catch {
+    throw new WebError("bad_request:r2", "Failed to delete an image from R2");
   }
 }

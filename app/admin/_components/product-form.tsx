@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useActionState, useRef, useState, useTransition } from "react";
-
-import type { BaseActionState } from "@/lib/types";
-import { create } from "../products/actions";
+import { useActionState, useRef, useState } from "react";
+import { useActionStatus } from "@/hooks/use-action-status";
+import type { BaseActionState } from "@/lib/action";
+import { createProductAction } from "../products/actions";
 
 interface PendingFile {
   file: File;
@@ -71,16 +71,20 @@ export function ProductForm({
   const router = useRouter();
   const [values, setValues] = useState<ProductFormValues>(initial);
   const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
   const [uploading, _setUploading] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
 
-  const [state, formAction] = useActionState<BaseActionState, FormData>(
-    create,
-    "idle"
-  );
+  const [state, formAction, pending] = useActionState<
+    BaseActionState,
+    FormData
+  >(createProductAction, { status: "idle" });
+
+  useActionStatus(state, () => {
+    router.push("/admin");
+    router.refresh();
+  });
 
   function patch<K extends keyof ProductFormValues>(
     key: K,
@@ -150,45 +154,45 @@ export function ProductForm({
     formAction(formData);
   }
 
-  function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-    startTransition(async () => {
-      try {
-        const payload = {
-          slug: values.slug,
-          name: values.name,
-          description: values.description,
-          category: values.category,
-          price: Number(values.price),
-          currency: values.currency || "GEL",
-          images: values.images,
-          featured: values.featured,
-          published: values.published,
-        };
-        const url =
-          mode === "create"
-            ? "/api/admin/products"
-            : `/api/admin/products/${initial.id}`;
-        const method = mode === "create" ? "POST" : "PUT";
-        const res = await fetch(url, {
-          method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) {
-          const data = (await res.json().catch(() => ({}))) as {
-            error?: string;
-          };
-          throw new Error(data.error || labels.saveError);
-        }
-        router.push("/admin");
-        router.refresh();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : labels.saveError);
-      }
-    });
-  }
+  // function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+  //   e.preventDefault();
+  //   setError(null);
+  //   startTransition(async () => {
+  //     try {
+  //       const payload = {
+  //         slug: values.slug,
+  //         name: values.name,
+  //         description: values.description,
+  //         category: values.category,
+  //         price: Number(values.price),
+  //         currency: values.currency || "GEL",
+  //         images: values.images,
+  //         featured: values.featured,
+  //         published: values.published,
+  //       };
+  //       const url =
+  //         mode === "create"
+  //           ? "/api/admin/products"
+  //           : `/api/admin/products/${initial.id}`;
+  //       const method = mode === "create" ? "POST" : "PUT";
+  //       const res = await fetch(url, {
+  //         method,
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify(payload),
+  //       });
+  //       if (!res.ok) {
+  //         const data = (await res.json().catch(() => ({}))) as {
+  //           error?: string;
+  //         };
+  //         throw new Error(data.error || labels.saveError);
+  //       }
+  //       router.push("/admin");
+  //       router.refresh();
+  //     } catch (err) {
+  //       setError(err instanceof Error ? err.message : labels.saveError);
+  //     }
+  //   });
+  // }
 
   return (
     <form action={newOnSubmit} className="space-y-12">

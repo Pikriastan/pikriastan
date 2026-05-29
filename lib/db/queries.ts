@@ -1,10 +1,10 @@
 import "dotenv/config";
 import { asc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { config } from "../config";
-import { WebError } from "../errors";
-import { uploadImage } from "../r2";
-import type { ProductData } from "../schemas";
+import { config } from "@/lib/config";
+import { WebError } from "@/lib/errors";
+import { deleteImage, uploadImage } from "@/lib/r2";
+import type { ProductData } from "@/lib/schemas";
 import {
   type Product,
   type ProductImage,
@@ -49,7 +49,7 @@ export async function getProducts(): Promise<ProductWithImages[]> {
   }
 }
 
-export async function createProduct(data: ProductData) {
+export async function createProduct(data: ProductData): Promise<Product> {
   const { images, ...productData } = data;
 
   try {
@@ -75,5 +75,30 @@ export async function createProduct(data: ProductData) {
       throw err;
     }
     throw new WebError("bad_request:database", "Failed to create a product");
+  }
+}
+
+export async function deleteProduct(productId: string) {
+  try {
+    const images = await db
+      .select({ key: productImage.key })
+      .from(productImage)
+      .where(eq(productImage.productId, productId));
+
+    const [deleted] = await db
+      .delete(product)
+      .where(eq(product.id, productId))
+      .returning({ id: product.id });
+
+    if (!deleted) {
+      throw new WebError("not_found:database", "Product not found");
+    }
+
+    await Promise.all(images.map((img) => deleteImage(img.key)));
+  } catch (err) {
+    if (err instanceof WebError) {
+      throw err;
+    }
+    throw new WebError("bad_request:database", "Failed to delete a product");
   }
 }

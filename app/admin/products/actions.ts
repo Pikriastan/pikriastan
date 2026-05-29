@@ -1,30 +1,53 @@
 "use server";
 
-import { z } from "zod";
-import { createProduct } from "@/lib/db/queries";
+import { type BaseActionState, runAction } from "@/lib/action";
+import { createProduct, deleteProduct } from "@/lib/db/queries";
 import { productSchema } from "@/lib/schemas";
-import type { BaseActionState } from "@/lib/types";
 
-export const create = async (
+export const createProductAction = async (
   _: BaseActionState,
   formData: FormData
-): Promise<BaseActionState> => {
-  try {
-    const validatedData = productSchema.parse({
-      ...Object.fromEntries(formData),
-      images: formData.getAll("images"),
-    });
+) =>
+  await runAction(
+    async () => {
+      const validatedData = productSchema.parse({
+        ...Object.fromEntries(formData),
+        images: formData.getAll("images"),
+      });
 
-    await createProduct(validatedData);
+      await createProduct(validatedData);
 
-    return "success";
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      console.error("[create product] validation failed", error.flatten());
-      return "invalid_data";
+      return {
+        status: "success",
+        message: "Product was created",
+      };
+    },
+    {
+      zodError: "Received invalid data, check form fields.",
+      failedError: "Failed to create a product",
     }
+  );
 
-    console.error("[create product] failed", error);
-    return "failed";
-  }
-};
+export const deleteProductAction = async (
+  _: BaseActionState,
+  formData: FormData
+) =>
+  await runAction(
+    async () => {
+      const id = formData.get("id");
+      if (typeof id !== "string" || id.length === 0) {
+        throw new Error("Missing product id");
+      }
+
+      await deleteProduct(id);
+
+      return {
+        status: "success",
+        message: "Product was deleted",
+      };
+    },
+    {
+      zodError: "Received invalid data, check form fields.",
+      failedError: "Failed to delete a product",
+    }
+  );

@@ -1,8 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { useActionState, useState } from "react";
+import { mutate } from "swr";
+import { useActionStatus } from "@/hooks/use-action-status";
+import type { BaseActionState } from "@/lib/action";
+import { deleteProductAction } from "../products/actions";
 
 export function DeleteProductButton({
   id,
@@ -13,9 +16,20 @@ export function DeleteProductButton({
   label: string;
   confirmLabel: string;
 }) {
-  const [confirming, setConfirming] = useState(false);
-  const [pending, startTransition] = useTransition();
   const router = useRouter();
+  const [confirming, setConfirming] = useState(false);
+
+  const [state, formAction, pending] = useActionState<
+    BaseActionState,
+    FormData
+  >(deleteProductAction, { status: "idle" });
+
+  useActionStatus(state, () => {
+    setConfirming(false);
+    router.refresh();
+    mutate("/api/products");
+  });
+
   let buttonLabel = label;
   if (confirming) {
     buttonLabel = confirmLabel;
@@ -24,32 +38,24 @@ export function DeleteProductButton({
     buttonLabel = "\u2026";
   }
 
-  function onClick() {
+  function onClick(event: React.MouseEvent<HTMLButtonElement>) {
     if (!confirming) {
+      event.preventDefault();
       setConfirming(true);
-      return;
     }
-    startTransition(async () => {
-      const res = await fetch(`/api/admin/products/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        router.refresh();
-      } else {
-        setConfirming(false);
-        toast.error("Failed to delete.");
-      }
-    });
   }
 
   return (
-    <button
-      className="link-static font-mono text-[11px] text-ink/80 uppercase tracking-[0.22em] decoration-line-strong hover:text-accent-strong disabled:opacity-40"
-      disabled={pending}
-      onClick={onClick}
-      type="button"
-    >
-      {buttonLabel}
-    </button>
+    <form action={formAction} className="contents">
+      <input name="id" type="hidden" value={id} />
+      <button
+        className="link-static border-0 bg-transparent p-0 font-mono text-[11px] text-ink/80 uppercase leading-none tracking-[0.22em] decoration-line-strong hover:text-accent-strong disabled:opacity-40"
+        disabled={pending}
+        onClick={onClick}
+        type="submit"
+      >
+        {buttonLabel}
+      </button>
+    </form>
   );
 }
