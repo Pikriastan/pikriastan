@@ -1,7 +1,6 @@
 {
   "imports": {
-    "@/": "./",
-    "@std/uuid": "jsr:@std/uuid@^1.1.1"
+    "@/": "./"
   },
   "allowScripts": [
     "npm:esbuild@0.18.20",
@@ -15,5 +14,10 @@
     "node-globals",
     "unsafe-proto",
     "sloppy-imports"
-  ]
+  ],
+  "lint": {
+    "rules": {
+      "exclude": ["no-sloppy-imports"]
+    }
+  }
 }
