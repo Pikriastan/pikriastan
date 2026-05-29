@@ -1,11 +1,19 @@
 {
   "imports": {
-    "@/": "./"
+    "@/": "./",
+    "@std/uuid": "jsr:@std/uuid@^1.1.1"
   },
   "allowScripts": [
     "npm:esbuild@0.18.20",
     "npm:esbuild@0.25.12",
     "npm:esbuild@0.28.0",
     "npm:sharp@0.34.5"
+  ],
+  "unstable": [
+    "bare-node-builtins",
+    "detect-cjs",
+    "node-globals",
+    "unsafe-proto",
+    "sloppy-imports"
   ]
 }
