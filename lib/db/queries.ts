@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { and, asc, eq, inArray, notInArray } from "drizzle-orm";
+import { and, asc, eq, inArray, notInArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { config } from "@/lib/config";
 import { WebError } from "@/lib/errors";
@@ -17,7 +17,11 @@ export async function getProducts(): Promise<ProductWithImages[]> {
       .select()
       .from(product)
       .leftJoin(productImage, eq(productImage.productId, product.id))
-      .orderBy(asc(product.createdAt), asc(productImage.sortOrder));
+      .orderBy(
+        asc(product.createdAt),
+        asc(productImage.sortOrder),
+        asc(productImage.id)
+      );
 
     return productsWithImageUrls(rows);
   } catch {
@@ -33,7 +37,8 @@ export async function getProductById(
       .select()
       .from(product)
       .where(eq(product.id, productId))
-      .leftJoin(productImage, eq(productImage.productId, product.id));
+      .leftJoin(productImage, eq(productImage.productId, product.id))
+      .orderBy(asc(productImage.sortOrder), asc(productImage.id));
 
     if (result.length === 0) {
       throw new WebError("not_found:database", "Product not found");
@@ -108,6 +113,24 @@ export async function updateProduct(productId: string, data: ProductData) {
       }
 
       removedKeys = orphans.map((o) => o.key);
+
+      if (existingImageIds.length > 0) {
+        const cases = sql.join(
+          existingImageIds.map(
+            (id, i) => sql`WHEN ${productImage.id} = ${id} THEN ${i}`
+          ),
+          sql` `
+        );
+        await tx
+          .update(productImage)
+          .set({ sortOrder: sql`(CASE ${cases} END)::integer` })
+          .where(
+            and(
+              eq(productImage.productId, productId),
+              inArray(productImage.id, existingImageIds)
+            )
+          );
+      }
 
       if (images.length > 0) {
         const uploads = await Promise.all(

@@ -37,7 +37,7 @@ export class BaseAction {
   }
 }
 
-export async function runAction<T extends BaseActionState = BaseActionState>(
+export async function wrapAction<T extends BaseActionState = BaseActionState>(
   callback: () => Promise<T>,
   errors: Errors
 ): Promise<BaseActionState> {

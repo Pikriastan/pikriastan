@@ -2,10 +2,9 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useActionStatus } from "@/hooks/use-action-status";
 import type { BaseActionState } from "@/lib/action";
-import type { ProductImage } from "@/lib/db/schema";
 import type { ProductImageWithUrl } from "@/lib/db/types";
 import { createOrUpdateProductAction } from "../products/actions";
 
@@ -21,7 +20,7 @@ export interface ProductFormValues {
   description: { en: string; ka: string };
   featured: boolean;
   id?: string;
-  images: string[] | ProductImageWithUrl[];
+  images: ProductImageWithUrl[];
   name: { en: string; ka: string };
   price: number;
   published: boolean;
@@ -77,6 +76,11 @@ export function ProductForm({
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [state, formAction, pending] = useActionState<
     BaseActionState,
@@ -148,7 +152,7 @@ export function ProductForm({
 
   function moveImage(idx: number, dir: -1 | 1) {
     setValues((v) => {
-      const next = [...(v.images as Array<string | ProductImage>)];
+      const next = [...v.images];
       const target = idx + dir;
       if (target < 0 || target >= next.length) {
         return v;
@@ -162,11 +166,8 @@ export function ProductForm({
     for (const pendingFile of pendingFiles) {
       formData.append("images", pendingFile.file);
     }
-    if (values.images.every((i) => typeof i === "object")) {
-      formData.append(
-        "existingImageIds",
-        String(values.images.map((i) => i.id))
-      );
+    for (const image of values.images) {
+      formData.append("existingImageIds", image.id);
     }
     formData.append("featured", String(values.featured));
     formData.append("published", String(values.published));
@@ -402,56 +403,51 @@ export function ProductForm({
           </div>
         ) : (
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {values.images.map((src, i) => {
-              const isString = typeof src === "string";
-              const key = isString ? src : src.id;
-              const url = isString ? src : src.url;
-              return (
-                <li className="group relative" key={key}>
-                  <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
-                    <Image
-                      alt={`image ${i + 1}`}
-                      className="object-cover"
-                      fill
-                      sizes="220px"
-                      src={url}
-                    />
-                    <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
-                      {String(i + 1).padStart(2, "0")}
-                    </div>
+            {values.images.map((src, i) => (
+              <li className="group relative" key={src.id}>
+                <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
+                  <Image
+                    alt={`image ${i + 1}`}
+                    className="object-cover"
+                    fill
+                    sizes="220px"
+                    src={src.url}
+                  />
+                  <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
+                    {String(i + 1).padStart(2, "0")}
                   </div>
-                  <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
-                    <div className="flex items-center gap-1">
-                      <button
-                        aria-label="Move up"
-                        className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
-                        disabled={i === 0}
-                        onClick={() => moveImage(i, -1)}
-                        type="button"
-                      >
-                        ←
-                      </button>
-                      <button
-                        aria-label="Move down"
-                        className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
-                        disabled={i === values.images.length - 1}
-                        onClick={() => moveImage(i, 1)}
-                        type="button"
-                      >
-                        →
-                      </button>
-                    </div>
+                </div>
+                <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
+                  <div className="flex items-center gap-1">
                     <button
-                      className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
-                      onClick={() => removeImage(i)}
+                      aria-label="Move up"
+                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                      disabled={mounted && i === 0}
+                      onClick={() => moveImage(i, -1)}
                       type="button"
                     >
-                      {labels.removeImage}
+                      ←
+                    </button>
+                    <button
+                      aria-label="Move down"
+                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                      disabled={mounted && i === values.images.length - 1}
+                      onClick={() => moveImage(i, 1)}
+                      type="button"
+                    >
+                      →
                     </button>
                   </div>
-                </li>
-              );
-            })}
+                  <button
+                    className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
+                    onClick={() => removeImage(i)}
+                    type="button"
+                  >
+                    {labels.removeImage}
+                  </button>
+                </div>
+              </li>
+            ))}
             {pendingFiles.map((p) => (
               <li className="group relative" key={p.id}>
                 <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">

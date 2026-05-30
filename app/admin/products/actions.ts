@@ -1,6 +1,6 @@
 "use server";
 
-import { type BaseActionState, runAction } from "@/lib/action";
+import { type BaseActionState, wrapAction } from "@/lib/action";
 import { createProduct, deleteProduct, updateProduct } from "@/lib/db/queries";
 import { productSchema } from "@/lib/schemas";
 
@@ -10,7 +10,7 @@ export const createOrUpdateProductAction = async (
   mode: "create" | "edit" = "create",
   productId?: string
 ) =>
-  await runAction(
+  await wrapAction(
     async () => {
       const validatedData = productSchema.parse({
         ...Object.fromEntries(formData),
@@ -31,7 +31,7 @@ export const createOrUpdateProductAction = async (
     },
     {
       zodError: "Received invalid data, check form fields.",
-      failedError: "Failed to create a product",
+      failedError: `Failed to ${mode === "create" ? "create" : "update"} a product`,
     }
   );
 
@@ -39,7 +39,7 @@ export const deleteProductAction = async (
   _: BaseActionState,
   formData: FormData
 ) =>
-  await runAction(
+  await wrapAction(
     async () => {
       const id = formData.get("id");
       if (typeof id !== "string" || id.length === 0) {

@@ -36,6 +36,10 @@ export default async function EditProductPage({
     featured: product.featured,
     published: product.published,
   };
+  const formVersion = [
+    product.updatedAt.toISOString(),
+    product.images.map((image) => `${image.id}:${image.sortOrder}`).join("|"),
+  ].join(":");
 
   return (
     <AdminShell locale={locale} t={t}>
@@ -56,6 +60,7 @@ export default async function EditProductPage({
         <div className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
           <ProductForm
             initial={initial}
+            key={formVersion}
             labels={{
               fieldSlug: t.admin.fieldSlug,
               fieldSlugHelp: t.admin.fieldSlugHelp,
