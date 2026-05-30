@@ -1,25 +1,32 @@
 "use server";
 
 import { type BaseActionState, runAction } from "@/lib/action";
-import { createProduct, deleteProduct } from "@/lib/db/queries";
+import { createProduct, deleteProduct, updateProduct } from "@/lib/db/queries";
 import { productSchema } from "@/lib/schemas";
 
-export const createProductAction = async (
+export const createOrUpdateProductAction = async (
   _: BaseActionState,
-  formData: FormData
+  formData: FormData,
+  mode: "create" | "edit" = "create",
+  productId?: string
 ) =>
   await runAction(
     async () => {
       const validatedData = productSchema.parse({
         ...Object.fromEntries(formData),
         images: formData.getAll("images"),
+        existingImageIds: formData.getAll("existingImageIds"),
       });
 
-      await createProduct(validatedData);
+      if (mode === "create") {
+        await createProduct(validatedData);
+      } else if (mode === "edit" && productId) {
+        await updateProduct(productId, validatedData);
+      }
 
       return {
         status: "success",
-        message: "Product was created",
+        message: `Product was ${mode === "create" ? "created" : "updated"}`,
       };
     },
     {

@@ -1,11 +1,10 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { AdminShell } from "@/app/admin/_components/admin-shell";
 import {
   ProductForm,
   type ProductFormValues,
 } from "@/app/admin/_components/product-form";
-import { isAuthenticated } from "@/lib/auth";
-import { getProductById } from "@/lib/db";
+import { getProductById } from "@/lib/db/queries";
 import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
@@ -15,11 +14,9 @@ export default async function EditProductPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!(await isAuthenticated())) {
-    redirect("/admin/login");
-  }
   const { id } = await params;
-  const product = getProductById(id);
+  const product = await getProductById(id);
+
   if (!product) {
     notFound();
   }
@@ -30,9 +27,9 @@ export default async function EditProductPage({
   const initial: ProductFormValues = {
     id: product.id,
     slug: product.slug,
-    name: product.name,
-    description: product.description,
-    category: product.category,
+    name: { en: product.nameEn, ka: product.nameKa },
+    description: { en: product.descriptionEn, ka: product.descriptionKa },
+    category: { en: product.categoryEn, ka: product.descriptionKa },
     price: product.price,
     currency: product.currency,
     images: product.images,

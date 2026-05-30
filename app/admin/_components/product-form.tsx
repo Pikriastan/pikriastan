@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
 import { useActionStatus } from "@/hooks/use-action-status";
 import type { BaseActionState } from "@/lib/action";
-import { createProductAction } from "../products/actions";
+import type { ProductImage } from "@/lib/db/schema";
+import type { ProductImageWithUrl } from "@/lib/db/types";
+import { createOrUpdateProductAction } from "../products/actions";
 
 interface PendingFile {
   file: File;
@@ -19,7 +21,7 @@ export interface ProductFormValues {
   description: { en: string; ka: string };
   featured: boolean;
   id?: string;
-  images: string[];
+  images: string[] | ProductImageWithUrl[];
   name: { en: string; ka: string };
   price: number;
   published: boolean;
@@ -79,10 +81,16 @@ export function ProductForm({
   const [state, formAction, pending] = useActionState<
     BaseActionState,
     FormData
-  >(createProductAction, { status: "idle" });
+  >(
+    (status, formData) =>
+      createOrUpdateProductAction(status, formData, mode, initial.id),
+    { status: "idle" }
+  );
 
   useActionStatus(state, () => {
-    router.push("/admin");
+    if (mode === "create") {
+      router.push("/admin");
+    }
     router.refresh();
   });
 
@@ -132,24 +140,33 @@ export function ProductForm({
   }
 
   function removeImage(idx: number) {
-    setValues((v) => ({ ...v, images: v.images.filter((_, i) => i !== idx) }));
+    setValues((v) => ({
+      ...v,
+      images: v.images.filter((_, i) => i !== idx) as typeof v.images,
+    }));
   }
 
   function moveImage(idx: number, dir: -1 | 1) {
     setValues((v) => {
-      const next = [...v.images];
+      const next = [...(v.images as Array<string | ProductImage>)];
       const target = idx + dir;
       if (target < 0 || target >= next.length) {
         return v;
       }
       [next[idx], next[target]] = [next[target], next[idx]];
-      return { ...v, images: next };
+      return { ...v, images: next as typeof v.images };
     });
   }
 
   function newOnSubmit(formData: FormData) {
     for (const pendingFile of pendingFiles) {
       formData.append("images", pendingFile.file);
+    }
+    if (values.images.every((i) => typeof i === "object")) {
+      formData.append(
+        "existingImageIds",
+        String(values.images.map((i) => i.id))
+      );
     }
     formData.append("featured", String(values.featured));
     formData.append("published", String(values.published));
@@ -385,51 +402,56 @@ export function ProductForm({
           </div>
         ) : (
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {values.images.map((src, i) => (
-              <li className="group relative" key={src}>
-                <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
-                  <Image
-                    alt={`image ${i + 1}`}
-                    className="object-cover"
-                    fill
-                    sizes="220px"
-                    src={src}
-                  />
-                  <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
-                    {String(i + 1).padStart(2, "0")}
+            {values.images.map((src, i) => {
+              const isString = typeof src === "string";
+              const key = isString ? src : src.id;
+              const url = isString ? src : src.url;
+              return (
+                <li className="group relative" key={key}>
+                  <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
+                    <Image
+                      alt={`image ${i + 1}`}
+                      className="object-cover"
+                      fill
+                      sizes="220px"
+                      src={url}
+                    />
+                    <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
                   </div>
-                </div>
-                <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
-                  <div className="flex items-center gap-1">
+                  <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
+                    <div className="flex items-center gap-1">
+                      <button
+                        aria-label="Move up"
+                        className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                        disabled={i === 0}
+                        onClick={() => moveImage(i, -1)}
+                        type="button"
+                      >
+                        ←
+                      </button>
+                      <button
+                        aria-label="Move down"
+                        className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                        disabled={i === values.images.length - 1}
+                        onClick={() => moveImage(i, 1)}
+                        type="button"
+                      >
+                        →
+                      </button>
+                    </div>
                     <button
-                      aria-label="Move up"
-                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
-                      disabled={i === 0}
-                      onClick={() => moveImage(i, -1)}
+                      className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
+                      onClick={() => removeImage(i)}
                       type="button"
                     >
-                      ←
-                    </button>
-                    <button
-                      aria-label="Move down"
-                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
-                      disabled={i === values.images.length - 1}
-                      onClick={() => moveImage(i, 1)}
-                      type="button"
-                    >
-                      →
+                      {labels.removeImage}
                     </button>
                   </div>
-                  <button
-                    className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
-                    onClick={() => removeImage(i)}
-                    type="button"
-                  >
-                    {labels.removeImage}
-                  </button>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
             {pendingFiles.map((p) => (
               <li className="group relative" key={p.id}>
                 <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
 import { Skeleton } from "@/components/skeleton";
-import type { ProductWithImages } from "@/lib/db/queries";
+import type { ProductWithImages } from "@/lib/db/types";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Locale } from "@/lib/i18n/locales";
 import { fetcher, formatPrice, pickLocalized } from "@/lib/utils";

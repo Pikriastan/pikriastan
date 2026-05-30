@@ -15,6 +15,7 @@ export const productSchema = z.object({
   price: z.coerce.number().min(0),
   currency: z.string().min(1).max(8).default("GEL"),
   images: z.array(z.file()).max(20).default([]),
+  existingImageIds: z.array(z.string()).max(20).default([]),
   featured: z.stringbool().default(false),
   published: z.stringbool().default(true),
 });

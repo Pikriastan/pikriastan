@@ -1,21 +1,15 @@
 import "dotenv/config";
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray, notInArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { config } from "@/lib/config";
 import { WebError } from "@/lib/errors";
 import { deleteImage, uploadImage } from "@/lib/r2";
 import type { ProductData } from "@/lib/schemas";
-import {
-  type Product,
-  type ProductImage,
-  product,
-  productImage,
-} from "./schema";
+import { type Product, product, productImage } from "./schema";
+import type { ProductWithImages } from "./types";
+import { productsWithImageUrls } from "./utils";
 
 export const db = drizzle(config.DATABASE_URL);
-
-export type ProductImageWithUrl = ProductImage & { url: string };
-export type ProductWithImages = Product & { images: ProductImageWithUrl[] };
 
 export async function getProducts(): Promise<ProductWithImages[]> {
   try {
@@ -25,27 +19,29 @@ export async function getProducts(): Promise<ProductWithImages[]> {
       .leftJoin(productImage, eq(productImage.productId, product.id))
       .orderBy(asc(product.createdAt), asc(productImage.sortOrder));
 
-    const byId = new Map<string, ProductWithImages>();
-
-    for (const row of rows) {
-      const existing = byId.get(row.products.id);
-      const grouped = existing ?? { ...row.products, images: [] };
-
-      if (row.product_images) {
-        grouped.images.push({
-          ...row.product_images,
-          url: `${process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL}/${row.product_images.key}`,
-        });
-      }
-
-      if (!existing) {
-        byId.set(grouped.id, grouped);
-      }
-    }
-
-    return Array.from(byId.values());
+    return productsWithImageUrls(rows);
   } catch {
     throw new WebError("bad_request:database", "Failed to get products");
+  }
+}
+
+export async function getProductById(
+  productId: string
+): Promise<ProductWithImages> {
+  try {
+    const result = await db
+      .select()
+      .from(product)
+      .where(eq(product.id, productId))
+      .leftJoin(productImage, eq(productImage.productId, product.id));
+
+    if (result.length === 0) {
+      throw new WebError("not_found:database", "Product not found");
+    }
+
+    return productsWithImageUrls(result)[0];
+  } catch {
+    throw new WebError("bad_request:database", "Failed to get a product");
   }
 }
 
@@ -76,6 +72,61 @@ export async function createProduct(data: ProductData): Promise<Product> {
     }
     throw new WebError("bad_request:database", "Failed to create a product");
   }
+}
+
+export async function updateProduct(productId: string, data: ProductData) {
+  const { images, existingImageIds, ...productData } = data;
+
+  let removedKeys: string[] = [];
+
+  try {
+    await db.transaction(async (tx) => {
+      await tx
+        .update(product)
+        .set({ ...productData })
+        .where(eq(product.id, productId));
+
+      const orphans = await tx
+        .select({ id: productImage.id, key: productImage.key })
+        .from(productImage)
+        .where(
+          existingImageIds.length === 0
+            ? eq(productImage.productId, productId)
+            : and(
+                eq(productImage.productId, productId),
+                notInArray(productImage.id, existingImageIds)
+              )
+        );
+
+      if (orphans.length > 0) {
+        await tx.delete(productImage).where(
+          inArray(
+            productImage.id,
+            orphans.map((o) => o.id)
+          )
+        );
+      }
+
+      removedKeys = orphans.map((o) => o.key);
+
+      if (images.length > 0) {
+        const uploads = await Promise.all(
+          images.map((img) => uploadImage(productId, img))
+        );
+        await tx.insert(productImage).values(
+          uploads.map((u, i) => ({
+            productId,
+            key: u.key,
+            sortOrder: existingImageIds.length + i,
+          }))
+        );
+      }
+    });
+  } catch {
+    throw new WebError("bad_request:database", "Failed to update a product");
+  }
+
+  await Promise.all(removedKeys.map((key) => deleteImage(key)));
 }
 
 export async function deleteProduct(productId: string) {
