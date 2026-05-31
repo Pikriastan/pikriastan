@@ -1,16 +1,17 @@
-import { listProducts } from "@/lib/db";
+import type { Metadata } from "next";
+import { getProducts } from "@/lib/db/queries";
 import { getT } from "@/lib/i18n/server";
 import { ProductCard } from "../_components/product-card";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Collection",
 };
 
 export default async function CollectionPage() {
   const { locale, t } = await getT();
-  const products = listProducts({ publishedOnly: true });
+  const products = await getProducts({ publishedOnly: true });
 
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
   const countLabel =
@@ -20,7 +21,7 @@ export default async function CollectionPage() {
 
   return (
     <section className="hairline border-b">
-      <div className="mx-auto max-w-[1400px] px-6 pt-20 pb-24 md:px-12 md:pt-28 md:pb-32">
+      <div className="mx-auto max-w-350 px-6 pt-20 pb-24 md:px-12 md:pt-28 md:pb-32">
         <div className="mb-16 md:mb-24">
           <p className="eyebrow mb-6">{countLabel}</p>
           <h1

@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import {
-  Fraunces,
-  Inter,
-  JetBrains_Mono,
-  Noto_Serif_Georgian,
-} from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { getLocale } from "@/lib/i18n/server";
 import { ThemedToaster } from "./_components/themed-toaster";
@@ -29,11 +25,18 @@ const displayEn = Fraunces({
   display: "swap",
 });
 
-const displayKa = Noto_Serif_Georgian({
+const displayKa = localFont({
+  src: "../public/fonts/bpg_banner_supersquare_caps.woff2",
   variable: "--font-display-ka",
-  subsets: ["georgian"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
+  weight: "400",
+});
+
+const bodyKa = localFont({
+  src: "../public/fonts/bpg_glaho.woff2",
+  variable: "--font-body-ka",
+  display: "swap",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -55,7 +58,7 @@ export default async function RootLayout({
   const locale = await getLocale();
   return (
     <html
-      className={`${sansUi.variable} ${monoUi.variable} ${displayEn.variable} ${displayKa.variable} h-full antialiased`}
+      className={`${sansUi.variable} ${monoUi.variable} ${displayEn.variable} ${displayKa.variable} ${bodyKa.variable} h-full antialiased`}
       lang={locale}
       suppressHydrationWarning
     >

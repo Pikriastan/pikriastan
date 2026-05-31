@@ -14,7 +14,7 @@ import { primaryKeyId } from "./utils";
 
 export const product = pgTable("products", {
   id: primaryKeyId(),
-  slug: varchar().notNull(),
+  slug: varchar().unique().notNull(),
   nameEn: varchar("name_en").notNull(),
   nameKa: varchar("name_ka").notNull(),
   descriptionEn: text("description_en").notNull(),

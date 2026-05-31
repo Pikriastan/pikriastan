@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product } from "@/lib/db";
+import type { ProductWithImages } from "@/lib/db/types";
 import type { Locale } from "@/lib/i18n/locales";
 import { formatPrice, pickLocalized } from "@/lib/utils";
 
@@ -9,11 +9,14 @@ export function ProductCard({
   locale,
   index,
 }: {
-  product: Product;
+  product: ProductWithImages;
   locale: Locale;
   index: number;
 }) {
-  const name = pickLocalized(product.name, locale);
+  const name = pickLocalized(
+    { en: product.nameEn, ka: product.nameKa },
+    locale
+  );
   const cover = product.images[0];
   const second = product.images[1];
 
@@ -23,7 +26,7 @@ export function ProductCard({
       href={`/product/${product.slug}`}
       style={{ animationDelay: `${Math.min(index * 70, 420)}ms` }}
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper-deep">
+      <div className="relative aspect-4/5 w-full overflow-hidden bg-paper-deep">
         {cover ? (
           <>
             <Image
@@ -32,7 +35,7 @@ export function ProductCard({
               fill
               priority={index < 2}
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              src={cover}
+              src={cover.url}
             />
             {second && (
               <Image
@@ -40,7 +43,7 @@ export function ProductCard({
                 className="second-img absolute inset-0 object-cover"
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                src={second}
+                src={second.url}
               />
             )}
           </>

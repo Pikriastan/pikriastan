@@ -43,7 +43,7 @@ export default async function HomePage() {
 
       {/* FEATURED PIECES */}
       <section className="hairline border-b">
-        <div className="mx-auto max-w-[1400px] px-6 py-20 md:px-12 md:py-28">
+        <div className="mx-auto max-w-350 px-6 py-20 md:px-12 md:py-28">
           <div className="mb-14 flex items-end justify-between gap-6 md:mb-20">
             <div>
               <p className="eyebrow dot-accent mb-4">
@@ -87,7 +87,7 @@ export default async function HomePage() {
 
       {/* STUDIO STORY */}
       <section className="hairline border-b">
-        <div className="mx-auto max-w-[1400px] px-6 py-24 md:px-12 md:py-32">
+        <div className="mx-auto max-w-350 px-6 py-24 md:px-12 md:py-32">
           <div className="grid grid-cols-12 gap-8 md:gap-16">
             <div className="col-span-12 md:col-span-5">
               <p className="eyebrow mb-5">{t.home.storyEyebrow}</p>

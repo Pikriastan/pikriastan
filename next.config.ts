@@ -28,7 +28,7 @@ function readImageHosts(): { protocol: "https" | "http"; hostname: string }[] {
 
 const nextConfig: NextConfig = {
   images: {
-    qualities: [75, 90],
+    qualities: [75, 95],
     remotePatterns: readImageHosts(),
   },
 };

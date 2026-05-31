@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-// import { getProductBySlug } from "@/lib/db";
+import { getProductBySlug } from "@/lib/db/queries";
 import { getT } from "@/lib/i18n/server";
 import { formatPrice, pickLocalized } from "@/lib/utils";
 import { ProductGallery } from "../../_components/product-gallery";
@@ -14,13 +14,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
+
   if (!product) {
     return { title: "Not found" };
   }
+
   return {
-    title: product.name.en,
-    description: product.description.en?.slice(0, 160),
+    title: product.nameEn,
+    description: product.descriptionEn?.slice(0, 160),
   };
 }
 
@@ -31,14 +33,24 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const { locale, t } = await getT();
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
+
   if (!product.published) {
     notFound();
   }
 
-  const name = pickLocalized(product.name, locale);
-  const category = pickLocalized(product.category, locale);
-  const description = pickLocalized(product.description, locale);
+  const name = pickLocalized(
+    { en: product.nameEn, ka: product.nameKa },
+    locale
+  );
+  const category = pickLocalized(
+    { en: product.categoryEn, ka: product.categoryKa },
+    locale
+  );
+  const description = pickLocalized(
+    { en: product.descriptionEn, ka: product.descriptionKa },
+    locale
+  );
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
 
   return (
@@ -55,7 +67,10 @@ export default async function ProductPage({
 
         <div className="grid grid-cols-12 gap-10 md:gap-16">
           <div className="fade-up col-span-12 lg:col-span-7">
-            <ProductGallery alt={name} images={product.images} />
+            <ProductGallery
+              alt={name}
+              images={product.images.map((i) => i.url)}
+            />
           </div>
 
           <aside
@@ -90,7 +105,7 @@ export default async function ProductPage({
                 <span>{category || "\u2014"}</span>
               </div>
               <div className="flex justify-between gap-4">
-                <span className="text-muted">{"N\u00b0"}</span>
+                <span className="text-muted">"N\u00b0"</span>
                 <span>{product.id.slice(-6).toUpperCase()}</span>
               </div>
               <div className="flex justify-between gap-4">
@@ -104,7 +119,7 @@ export default async function ProductPage({
             <a
               className="btn btn-primary mt-12 w-full"
               href={`mailto:studio@amiranas-gamofena.test?subject=${encodeURIComponent(
-                `Inquiry: ${product.name.en} (${product.slug})`
+                `Inquiry: ${product.nameEn} (${product.slug})`
               )}`}
             >
               {t.product.inquire}

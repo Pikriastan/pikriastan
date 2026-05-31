@@ -11,17 +11,75 @@ import { productsWithImageUrls } from "./utils";
 
 export const db = drizzle(config.DATABASE_URL);
 
-export async function getProducts(): Promise<ProductWithImages[]> {
+export async function getProducts({
+  featuredOnly,
+  publishedOnly,
+  limit,
+  offset,
+}: {
+  featuredOnly?: boolean;
+  publishedOnly?: boolean;
+  limit?: number;
+  offset?: number;
+} = {}): Promise<ProductWithImages[]> {
   try {
-    const rows = await db
+    let productsQuery = db
       .select()
       .from(product)
-      .leftJoin(productImage, eq(productImage.productId, product.id))
-      .orderBy(
-        asc(product.createdAt),
-        asc(productImage.sortOrder),
-        asc(productImage.id)
-      );
+      .where(
+        and(
+          featuredOnly ? eq(product.featured, true) : undefined,
+          publishedOnly ? eq(product.published, true) : undefined
+        )
+      )
+      .orderBy(asc(product.createdAt))
+      .$dynamic();
+
+    if (limit !== undefined) {
+      productsQuery = productsQuery.limit(limit);
+    }
+    if (offset !== undefined) {
+      productsQuery = productsQuery.offset(offset);
+    }
+
+    const productsList = await productsQuery;
+
+    if (productsList.length === 0) {
+      return [];
+    }
+
+    const imagesList = await db
+      .select()
+      .from(productImage)
+      .where(
+        inArray(
+          productImage.productId,
+          productsList.map((p) => p.id)
+        )
+      )
+      .orderBy(asc(productImage.sortOrder), asc(productImage.id));
+
+    const imagesByProductId = new Map<string, typeof imagesList>();
+    for (const img of imagesList) {
+      if (!img.productId) {
+        continue;
+      }
+      const arr = imagesByProductId.get(img.productId) ?? [];
+      arr.push(img);
+      imagesByProductId.set(img.productId, arr);
+    }
+
+    interface Row {
+      product_images: (typeof imagesList)[number] | null;
+      products: (typeof productsList)[number];
+    }
+    const rows: Row[] = productsList.flatMap((p): Row[] => {
+      const imgs = imagesByProductId.get(p.id) ?? [];
+      if (imgs.length === 0) {
+        return [{ products: p, product_images: null }];
+      }
+      return imgs.map((img) => ({ products: p, product_images: img }));
+    });
 
     return productsWithImageUrls(rows);
   } catch {
@@ -41,7 +99,34 @@ export async function getProductById(
       .orderBy(asc(productImage.sortOrder), asc(productImage.id));
 
     if (result.length === 0) {
-      throw new WebError("not_found:database", "Product not found");
+      throw new WebError(
+        "not_found:database",
+        `Product with id ${productId} not found`
+      );
+    }
+
+    return productsWithImageUrls(result)[0];
+  } catch {
+    throw new WebError("bad_request:database", "Failed to get a product");
+  }
+}
+
+export async function getProductBySlug(
+  slug: string
+): Promise<ProductWithImages> {
+  try {
+    const result = await db
+      .select()
+      .from(product)
+      .where(eq(product.slug, slug))
+      .leftJoin(productImage, eq(productImage.productId, product.id))
+      .orderBy(asc(productImage.sortOrder), asc(productImage.id));
+
+    if (result.length === 0) {
+      throw new WebError(
+        "not_found:database",
+        `Product with slug ${slug} not found`
+      );
     }
 
     return productsWithImageUrls(result)[0];
