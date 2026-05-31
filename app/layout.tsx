@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 import { getLocale } from "@/lib/i18n/server";
 import { ThemedToaster } from "./_components/themed-toaster";
 
@@ -48,8 +49,6 @@ export const metadata: Metadata = {
     "An independent atelier from Tbilisi. Quietly considered garments, soft palettes, numbered runs.",
 };
 
-const themeInitScript = `(function(){try{var s=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s==='dark'||s==='light'?s:(m?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -62,13 +61,16 @@ export default async function RootLayout({
       lang={locale}
       suppressHydrationWarning
     >
-      <head>
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: theme init must run before paint to avoid FOUC */}
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
-        {children}
-        <ThemedToaster />
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
+        >
+          {children}
+          <ThemedToaster />
+        </ThemeProvider>
       </body>
     </html>
   );

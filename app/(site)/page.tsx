@@ -1,11 +1,21 @@
 import Link from "next/link";
+import { getProducts } from "@/lib/db/queries";
 import { getT } from "@/lib/i18n/server";
-// import { ProductCard } from "./_components/product-card";
+import { ProductCard } from "./_components/product-card";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const { locale, t } = await getT();
+  const featured = await getProducts({
+    featuredOnly: true,
+    publishedOnly: true,
+    limit: 6,
+  });
+  const latest =
+    featured.length === 0
+      ? await getProducts({ publishedOnly: true, limit: 6 })
+      : featured;
 
   const displayClass = locale === "ka" ? "font-display-ka" : "font-display";
 
@@ -63,19 +73,19 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {/*{latest.length === 0 ? (
-            <div className="border hairline border-dashed py-28 grid place-items-center text-center">
-              <p className="text-muted font-mono text-xs uppercase tracking-[0.24em] max-w-md">
+          {latest.length === 0 ? (
+            <div className="hairline grid place-items-center border border-dashed py-28 text-center">
+              <p className="max-w-md font-mono text-muted text-xs uppercase tracking-[0.24em]">
                 {t.collection.empty}
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-20">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-20 lg:grid-cols-3">
               {latest.map((p, i) => (
-                <ProductCard key={p.id} product={p} locale={locale} index={i} />
+                <ProductCard index={i} key={p.id} locale={locale} product={p} />
               ))}
             </div>
-          )}*/}
+          )}
 
           <div className="mt-14 md:hidden">
             <Link className="btn btn-ghost w-full" href="/collection">

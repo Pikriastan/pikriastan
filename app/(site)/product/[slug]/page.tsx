@@ -35,7 +35,7 @@ export default async function ProductPage({
   const { locale, t } = await getT();
   const product = await getProductBySlug(slug);
 
-  if (!product.published) {
+  if (!product?.published) {
     notFound();
   }
 

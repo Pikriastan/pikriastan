@@ -28,8 +28,13 @@ function readImageHosts(): { protocol: "https" | "http"; hostname: string }[] {
 
 const nextConfig: NextConfig = {
   images: {
-    qualities: [75, 95],
+    qualities: [75, 90, 95],
     remotePatterns: readImageHosts(),
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "4mb",
+    },
   },
 };
 

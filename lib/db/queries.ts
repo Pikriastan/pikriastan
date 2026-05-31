@@ -89,7 +89,7 @@ export async function getProducts({
 
 export async function getProductById(
   productId: string
-): Promise<ProductWithImages> {
+): Promise<ProductWithImages | null> {
   try {
     const result = await db
       .select()
@@ -99,10 +99,7 @@ export async function getProductById(
       .orderBy(asc(productImage.sortOrder), asc(productImage.id));
 
     if (result.length === 0) {
-      throw new WebError(
-        "not_found:database",
-        `Product with id ${productId} not found`
-      );
+      return null;
     }
 
     return productsWithImageUrls(result)[0];
@@ -113,7 +110,7 @@ export async function getProductById(
 
 export async function getProductBySlug(
   slug: string
-): Promise<ProductWithImages> {
+): Promise<ProductWithImages | null> {
   try {
     const result = await db
       .select()
@@ -123,10 +120,7 @@ export async function getProductBySlug(
       .orderBy(asc(productImage.sortOrder), asc(productImage.id));
 
     if (result.length === 0) {
-      throw new WebError(
-        "not_found:database",
-        `Product with slug ${slug} not found`
-      );
+      return null;
     }
 
     return productsWithImageUrls(result)[0];
