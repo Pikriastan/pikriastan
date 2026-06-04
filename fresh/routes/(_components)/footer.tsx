@@ -1,5 +1,6 @@
 import { LanguageSwitcher } from "@/islands/language-switcher.tsx";
-import { getT, type Locale } from "@/lib/i18n/locales.ts";
+import type { Locale } from "@/lib/constants.ts";
+import { getT } from "@/lib/i18n/locales.ts";
 
 interface FooterProps {
   locale: Locale;

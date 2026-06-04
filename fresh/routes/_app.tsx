@@ -4,7 +4,7 @@ import { Header } from "@/routes/(_components)/header.tsx";
 
 export default define.page(function App({ Component, state }) {
   return (
-    <html lang={state.locale}>
+    <html data-theme={state.theme} lang={state.locale}>
       <head>
         <meta charset="utf-8" />
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />

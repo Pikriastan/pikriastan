@@ -1,5 +1,7 @@
 import { LanguageSwitcher } from "@/islands/language-switcher.tsx";
-import { getT, type Locale } from "@/lib/i18n/locales.ts";
+import { ThemeToggle } from "@/islands/theme-toggle.tsx";
+import type { Locale } from "@/lib/constants.ts";
+import { getT } from "@/lib/i18n/locales.ts";
 
 export function Header({ locale }: { locale: Locale }) {
   const { t } = getT(locale);
@@ -26,7 +28,7 @@ export function Header({ locale }: { locale: Locale }) {
             ))}
           </nav>
           <div className="flex items-center gap-5">
-            {/*<ThemeToggle />*/}
+            <ThemeToggle />
             <LanguageSwitcher locale={locale} />
           </div>
         </div>

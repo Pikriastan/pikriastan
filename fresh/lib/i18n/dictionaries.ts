@@ -1,4 +1,4 @@
-import type { Locale } from "./locales.ts";
+import type { Locale } from "@/lib/constants.ts";
 
 export interface Dictionary {
   about: {
