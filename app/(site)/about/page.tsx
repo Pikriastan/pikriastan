@@ -10,7 +10,7 @@ export default async function AboutPage() {
 
   return (
     <section className="hairline border-b">
-      <div className="mx-auto max-w-[1400px] px-6 pt-20 pb-24 md:px-12 md:pt-28 md:pb-32">
+      <div className="mx-auto max-w-350 px-6 pt-20 pb-24 md:px-12 md:pt-28 md:pb-32">
         <p className="eyebrow mb-6">
           {`/ ${locale === "ka" ? "სტუდია" : "Studio"}`}
         </p>
