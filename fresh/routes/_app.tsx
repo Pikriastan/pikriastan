@@ -1,6 +1,4 @@
 import { define } from "@/lib/utils.ts";
-import { Footer } from "@/routes/(_components)/footer.tsx";
-import { Header } from "@/routes/(_components)/header.tsx";
 
 export default define.page(function App({ Component, state }) {
   return (
@@ -44,9 +42,7 @@ export default define.page(function App({ Component, state }) {
         )}
       </head>
       <body lang={state.locale}>
-        <Header locale={state.locale} />
         <Component />
-        <Footer locale={state.locale} />
       </body>
     </html>
   );

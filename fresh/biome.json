@@ -21,6 +21,7 @@
     }
   },
   "javascript": {
+    "globals": ["Deno"],
     "formatter": {
       "quoteStyle": "double"
     }
