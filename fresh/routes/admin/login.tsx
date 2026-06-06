@@ -1,3 +1,4 @@
+import { page } from "fresh";
 import {
   createSession,
   setSessionCookie,
@@ -7,8 +8,8 @@ import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { LoginForm } from "@/routes/admin/(_components)/login-form.tsx";
 
-export default define.page(function LoginPage(ctx) {
-  const { t } = getT(ctx.state.locale);
+export default define.page<typeof handler>(function LoginPage({ state, data }) {
+  const { t } = getT(state.locale);
 
   return (
     <div className="flex min-h-screen flex-col bg-paper">
@@ -18,7 +19,7 @@ export default define.page(function LoginPage(ctx) {
             className="font-display text-xl lowercase leading-none tracking-tight md:text-2xl"
             href="/"
           >
-            {ctx.state.locale === "ka" ? "ამირანას" : "amiranas"}
+            {state.locale === "ka" ? "ამირანას" : "amiranas"}
             <span className="ml-2 align-middle font-mono text-[10px] text-muted uppercase tracking-[0.32em]">
               {" / admin"}
             </span>
@@ -27,7 +28,7 @@ export default define.page(function LoginPage(ctx) {
             className="font-mono text-[10px] text-muted uppercase tracking-[0.28em] hover:text-ink"
             href="/"
           >
-            {`\u2190 ${ctx.state.locale === "ka" ? "უკან" : "Back"}`}
+            {`\u2190 ${state.locale === "ka" ? "უკან" : "Back"}`}
           </a>
         </div>
       </header>
@@ -35,18 +36,19 @@ export default define.page(function LoginPage(ctx) {
       <main className="grid flex-1 place-items-center px-6 py-20 md:px-12">
         <div className="w-full max-w-sm">
           <p className="eyebrow mb-6">
-            {`/ ${ctx.state.locale === "ka" ? "შესვლა" : "Access"}`}
+            {`/ ${state.locale === "ka" ? "შესვლა" : "Access"}`}
           </p>
           <h1 className="font-display text-5xl lowercase leading-none tracking-tight md:text-6xl">
             {t.admin.loginTitle}
           </h1>
           <p className="mt-3 text-[15px] text-muted">
-            {ctx.state.locale === "ka"
+            {state.locale === "ka"
               ? "შეიყვანე ადმინისტრატორის მონაცემები."
               : "Enter the studio credentials to continue."}
           </p>
           <div className="mt-10">
             <LoginForm
+              error={data.error}
               labels={{
                 email: t.admin.emailLabel,
                 password: t.admin.passwordLabel,
@@ -66,10 +68,15 @@ export const handler = define.handlers({
     const form = await ctx.req.formData();
     const email = String(form.get("email") ?? "");
     const password = String(form.get("password") ?? "");
-    const user = await verifyUserCredentials({ email, password });
 
+    const user = await verifyUserCredentials({ email, password });
     if (!user) {
-      return ctx.redirect("/admin/login");
+      return page(
+        { error: "Invalid credentials" },
+        {
+          status: 422,
+        }
+      );
     }
 
     const headers = new Headers({ location: "/admin" });

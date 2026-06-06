@@ -20,6 +20,7 @@ export interface Dictionary {
     logout: string;
     productsHeader: string;
     noProducts: string;
+    empty: string;
     edit: string;
     delete: string;
     confirmDelete: string;
@@ -197,6 +198,7 @@ const en: Dictionary = {
     logout: "Sign out",
     productsHeader: "Archive",
     noProducts: "No pieces yet. Add the first one.",
+    empty: "The archive is currently empty. New pieces are being prepared.",
     edit: "Edit",
     delete: "Delete",
     confirmDelete: "Delete this piece permanently?",
@@ -323,6 +325,7 @@ const ka: Dictionary = {
     logout: "გასვლა",
     productsHeader: "არქივი",
     noProducts: "ჯერ ნაკეთობები არ არის. დაამატე პირველი.",
+    empty: "არქივი ამჟამად ცარიელია. ახალი ნამუშევრები მზადდება.",
     edit: "შესწორება",
     delete: "წაშლა",
     confirmDelete: "სამუდამოდ წავშალოთ ეს ნაკეთობა?",

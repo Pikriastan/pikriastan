@@ -1,4 +1,5 @@
 interface LoginFormProps {
+  error: string | undefined;
   labels: {
     email: string;
     password: string;
@@ -7,12 +8,13 @@ interface LoginFormProps {
   };
 }
 
-export function LoginForm({ labels }: LoginFormProps) {
+export function LoginForm({ labels, error }: LoginFormProps) {
   return (
-    <form className="space-y-5" method="post">
+    <form className="space-y-5" method="POST">
       <label className="field">
         <span>{labels.email}</span>
         <input autoComplete="email" name="email" required type="email" />
+        {error && <p class="mt-2 text-red-500">{error}</p>}
       </label>
       <label className="field">
         <span>{labels.password}</span>
@@ -22,6 +24,7 @@ export function LoginForm({ labels }: LoginFormProps) {
           required
           type="password"
         />
+        {error && <p class="mt-2 text-red-500">{error}</p>}
       </label>
       <button className="btn btn-primary w-full" type="submit">
         {labels.submit}

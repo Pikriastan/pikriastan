@@ -1,9 +1,7 @@
+import "@std/dotenv/load";
 import { z } from "zod";
 
 const schema = z.object({
-  BETTER_AUTH_SECRET: z.string(),
-  BETTER_AUTH_URL: z.url(),
-
   DATABASE_URL: z.url(),
 
   R2_ACCOUNT_ID: z.string(),
@@ -13,4 +11,4 @@ const schema = z.object({
   R2_PUBLIC_BASE_URL: z.string(),
 });
 
-export const config = schema.parse(Deno.env);
+export const config = schema.parse(process.env);

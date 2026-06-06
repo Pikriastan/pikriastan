@@ -4,7 +4,7 @@ import { SESSION_COOKIE } from "@/lib/constants.ts";
 import { define } from "@/lib/utils.ts";
 
 export const handler = define.handlers({
-  async GET(ctx) {
+  async POST(ctx) {
     const cookies = getCookies(ctx.req.headers);
     const headers = new Headers({ location: "/" });
 

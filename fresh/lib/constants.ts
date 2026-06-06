@@ -1,7 +1,11 @@
-export const LOCALES = ["en", "ka"];
+export const LOCALES = ["en", "ka"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "en";
 export const LOCALE_COOKIE = "locale";
+
+export function isLocale(value: string | undefined): value is Locale {
+  return typeof value === "string" && LOCALES.includes(value as Locale);
+}
 
 export type Theme = "light" | "dark";
 export const DEFAULT_THEME: Theme = "light";

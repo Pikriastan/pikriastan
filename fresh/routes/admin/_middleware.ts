@@ -6,7 +6,7 @@ export default define.middleware(async (ctx) => {
   if (ctx.state.user && PUBLIC_ADMIN_PATHS.has(ctx.url.pathname)) {
     return ctx.redirect("/admin");
   }
-  
+
   if (ctx.state.user || PUBLIC_ADMIN_PATHS.has(ctx.url.pathname)) {
     return await ctx.next();
   }
