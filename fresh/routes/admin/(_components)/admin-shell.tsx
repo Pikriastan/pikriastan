@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import { LanguageSwitcher } from "@/islands/language-switcher.tsx";
 import { ThemeToggle } from "@/islands/theme-toggle.tsx";
 import type { Locale } from "@/lib/constants.ts";
 import type { Dictionary } from "@/lib/i18n/dictionaries.ts";
@@ -34,12 +35,7 @@ export function AdminShell({ t, locale, children }: AdminShellProps) {
               {locale === "ka" ? "საიტი ↗" : "Site ↗"}
             </a>
             <ThemeToggle />
-            {/*<a
-              href="/admin/logout"
-              className="font-mono text-[11px] text-ink uppercase tracking-[0.22em] hover:text-ink/70 disabled:opacity-50"
-            >
-              {t.admin.logout}
-            </a>*/}
+            <LanguageSwitcher locale={locale} />
             <LogoutButton label={t.admin.logout} />
           </div>
         </div>
