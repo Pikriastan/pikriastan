@@ -7,7 +7,7 @@
     "update": "deno run -A -r jsr:@fresh/update .",
     "check": "ultracite check",
     "fix": "ultracite fix",
-    "cli": "deno run -A cli.ts",
+    "cli": "deno run -A scripts/cli.ts",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
