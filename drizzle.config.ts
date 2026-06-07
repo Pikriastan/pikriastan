@@ -1,11 +1,12 @@
-import "dotenv/config";
+import "@std/dotenv/load";
 import { defineConfig } from "drizzle-kit";
+import { config } from "@/lib/config.ts";
 
 export default defineConfig({
   out: "./lib/db/migrations",
-  schema: ["./lib/db/schema.ts", "./lib/db/auth-schema.ts"],
+  schema: ["./lib/db/schema.ts"],
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "",
+    url: config.DATABASE_URL,
   },
 });

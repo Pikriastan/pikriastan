@@ -1,23 +1,20 @@
 import { type ClassValue, clsx } from "clsx";
+import { createDefine } from "fresh";
 import { twMerge } from "tailwind-merge";
-import { EXTENSION_RE } from "./constants";
-import { type ErrorCode, WebError } from "./errors";
-import type { Locale } from "./i18n/locales";
+import type { AuthUser } from "@/lib/auth.ts";
+import type { Locale, Theme } from "@/lib/constants.ts";
+
+export interface State {
+  locale: Locale;
+  theme: Theme;
+  user: AuthUser | null;
+}
+
+export const define = createDefine<State>();
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export const fetcher = async (url: string) => {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    const { code, cause } = await response.json();
-    throw new WebError(code as ErrorCode, cause);
-  }
-
-  return response.json();
-};
 
 const SYMBOLS: Record<string, string> = {
   GEL: "\u20BE",
@@ -29,7 +26,7 @@ const SYMBOLS: Record<string, string> = {
 export function formatPrice(
   amount: number,
   currency: string,
-  locale: Locale
+  locale: Locale,
 ): string {
   const sym = SYMBOLS[currency.toUpperCase()] ?? currency.toUpperCase();
   const fmt = new Intl.NumberFormat(locale === "ka" ? "ka-GE" : "en-US", {
@@ -44,21 +41,7 @@ export function formatPrice(
 
 export function pickLocalized<T extends { en: string; ka: string }>(
   field: T,
-  locale: Locale
+  locale: Locale,
 ): string {
   return field[locale] || field.en || field.ka;
-}
-
-export function pickExtension(filename: string, contentType: string): string {
-  const fromName = filename.split(".").pop();
-  if (fromName && EXTENSION_RE.test(fromName)) {
-    return fromName.toLowerCase();
-  }
-  const map: Record<string, string> = {
-    "image/jpeg": "jpg",
-    "image/jpg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-  };
-  return map[contentType.toLowerCase()] ?? "bin";
 }

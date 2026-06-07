@@ -1,110 +1,153 @@
-import { input, password } from "@inquirer/prompts";
-import { Command } from "commander";
-import { auth } from "./lib/auth";
+import { parseArgs } from "@std/cli/parse-args";
+import { promptSecret } from "@std/cli/prompt-secret";
+import {
+  createUser,
+  normalizeEmail,
+  validateEmail,
+  validatePassword,
+} from "@/lib/auth.ts";
+import { MIN_PASSWORD_LENGTH } from "@/lib/constants.ts";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_PASSWORD_LENGTH = 8;
+const textEncoder = new TextEncoder();
+const textDecoder = new TextDecoder();
 
 interface CreateAdminOptions {
-  interaction?: boolean;
+  interaction: boolean;
   mail?: string;
-  name?: string;
   password?: string;
 }
 
-const cli = new Command();
+const [command, ...commandArgs] = Deno.args;
 
-cli.name("amiranas-butiki").description("CLI for creating admin users");
+if (command === "create-admin-user") {
+  await createAdminUser(parseCreateAdminOptions(commandArgs));
+} else {
+  usage(command ? `Unknown command: ${command}` : undefined);
+}
 
-function isPromptCancel(error: unknown): boolean {
-  return (
-    error instanceof Error &&
-    (error.name === "ExitPromptError" ||
-      error.message.includes("force closed the prompt"))
-  );
+function parseCreateAdminOptions(args: string[]): CreateAdminOptions {
+  const parsed = parseArgs(args, {
+    alias: {
+      m: "mail",
+      p: "password",
+    },
+    boolean: ["no-interaction"],
+    string: ["mail", "password"],
+  });
+
+  return {
+    interaction: parsed["no-interaction"] !== true,
+    mail: parsed.mail,
+    password: parsed.password,
+  };
+}
+
+async function createAdminUser(options: CreateAdminOptions) {
+  const email = await resolveEmail(options);
+  const password = resolvePassword(options);
+
+  if (!(email && password)) {
+    fail("Email and password are required");
+  }
+
+  try {
+    const user = await createUser({ email, password });
+    // deno-lint-ignore no-console
+    console.log(`User ${user.email} was successfully created`);
+    Deno.exit(0);
+  } catch (error) {
+    fail(error instanceof Error ? error.message : "Failed to create the user");
+  }
+}
+
+async function resolveEmail(
+  options: CreateAdminOptions,
+): Promise<string | undefined> {
+  let email = options.mail ? normalizeEmail(options.mail) : undefined;
+
+  if (email && !validateEmail(email)) {
+    fail(`Invalid email: ${email}`);
+  }
+
+  if (!(options.interaction || email)) {
+    fail("--mail is required when using --no-interaction");
+  }
+
+  while (options.interaction && !email) {
+    email = normalizeEmail(await readLine("Email: "));
+
+    if (!validateEmail(email)) {
+      // deno-lint-ignore no-console
+      console.error("Enter a valid email.");
+      email = undefined;
+    }
+  }
+
+  return email;
+}
+
+function resolvePassword(options: CreateAdminOptions): string | undefined {
+  if (options.password && !validatePassword(options.password)) {
+    fail(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+  }
+
+  if (!(options.interaction || options.password)) {
+    fail("--password is required when using --no-interaction");
+  }
+
+  return options.password ?? promptPassword();
+}
+
+function promptPassword(): string | undefined {
+  let password: string | undefined;
+
+  while (!password) {
+    password = promptSecret("Password: ") ?? undefined;
+
+    if (password && !validatePassword(password)) {
+      // deno-lint-ignore no-console
+      console.error(
+        `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`,
+      );
+      password = undefined;
+    }
+  }
+
+  return password;
+}
+
+async function readLine(label: string): Promise<string> {
+  await Deno.stdout.write(textEncoder.encode(label));
+
+  const buffer = new Uint8Array(1024);
+  const bytesRead = await Deno.stdin.read(buffer);
+
+  if (bytesRead === null) {
+    return "";
+  }
+
+  return textDecoder.decode(buffer.subarray(0, bytesRead)).trim();
+}
+
+function usage(error?: string): never {
+  if (error) {
+    // deno-lint-ignore no-console
+    console.error(error);
+  }
+
+  // deno-lint-ignore no-console
+  console.error(`Usage:
+  deno run -A cli.ts create-admin-user [options]
+
+Options:
+  -m, --mail <email>       Admin email
+  -p, --password <value>   Admin password
+  --no-interaction         Fail instead of prompting for missing values`);
+  Deno.exit(error ? 1 : 0);
 }
 
 function fail(message: string): never {
-  cli.error(message);
-  process.exit(1);
+  // deno-lint-ignore no-console
+  console.error(message);
+  Deno.exit(1);
 }
-
-cli
-  .command("create-admin-user")
-  .description("Create admin panel user")
-  .option("-n, --name <name>", "Admin name")
-  .option("-m, --mail <email>", "Admin email")
-  .option("-p, --password <password>", "Admin password")
-  .option("--no-interaction", "Fail instead of prompting for missing values")
-  .action(async (options: CreateAdminOptions) => {
-    let name = options.name;
-    let email = options.mail;
-    let pwd = options.password;
-
-    if (email && !EMAIL_REGEX.test(email)) {
-      cli.error(`Invalid email: ${email}`);
-    }
-
-    if (pwd && pwd.length < MIN_PASSWORD_LENGTH) {
-      cli.error(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
-    }
-
-    if (options.interaction === false) {
-      if (!email) {
-        cli.error("--mail is required when using --no-interaction");
-      }
-      if (!pwd) {
-        cli.error("--password is required when using --no-interaction");
-      }
-    } else {
-      if (!name) {
-        name = await input({
-          message: "Name:",
-        });
-      }
-
-      if (!email) {
-        email = await input({
-          message: "Email:",
-          validate: (value) => EMAIL_REGEX.test(value) || "Enter a valid email",
-        });
-      }
-
-      if (!pwd) {
-        pwd = await password({
-          message: "Password:",
-          mask: "*",
-          validate: (value) =>
-            value.length >= MIN_PASSWORD_LENGTH ||
-            `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
-        });
-      }
-    }
-
-    if (!(name && email && pwd)) {
-      fail("Email and password are required");
-    }
-
-    const response = await auth.api.signUpEmail({
-      body: {
-        name,
-        email,
-        password: pwd,
-      },
-    });
-
-    if (response.token) {
-      console.log(`User ${email} was successfully created`);
-    } else {
-      cli.error("Failed to create the user");
-    }
-  });
-
-cli.parseAsync().catch((error: unknown) => {
-  if (isPromptCancel(error)) {
-    console.log("\nCancelled.");
-    process.exit(0);
-  }
-
-  throw error;
-});

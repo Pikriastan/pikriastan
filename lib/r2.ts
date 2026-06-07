@@ -3,11 +3,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import sharp from "sharp";
-import { v4 as uuidv4 } from "uuid";
-import { config } from "./config";
-import { ALLOWED_IMAGE_TYPES, MAX_BYTES } from "./constants";
-import { WebError } from "./errors";
+import { config } from "./config.ts";
+import { ALLOWED_IMAGE_TYPES, MAX_BYTES } from "./constants.ts";
+import { WebError } from "./errors.ts";
 
 const r2 = new S3Client({
   region: "auto",
@@ -32,8 +30,9 @@ export async function uploadImage(productId: string, file: File) {
   }
 
   try {
-    const key = `products/${productId}/${uuidv4()}.webp`;
+    const key = `products/${productId}/${crypto.randomUUID()}.webp`;
 
+    const { default: sharp } = await import(/* @vite-ignore */ "sharp");
     const input = Buffer.from(await file.arrayBuffer());
     const image = await sharp(input).rotate().webp({ quality: 92 }).toBuffer();
 
@@ -43,7 +42,7 @@ export async function uploadImage(productId: string, file: File) {
         Key: key,
         Body: image,
         ContentType: "image/webp",
-      })
+      }),
     );
 
     return { key };
@@ -58,7 +57,7 @@ export async function deleteImage(key: string) {
       new DeleteObjectCommand({
         Bucket: config.R2_BUCKET,
         Key: key,
-      })
+      }),
     );
   } catch {
     throw new WebError("bad_request:r2", "Failed to delete an image from R2");
