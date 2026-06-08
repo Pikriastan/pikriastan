@@ -139,17 +139,20 @@ export async function createProduct(data: ProductData): Promise<Product> {
         images.map((img) => uploadImage(row.id, img)),
       );
 
-      await tx.insert(productImage).values(
-        uploads.map((u, i) => ({
-          productId: row.id,
-          key: u.key,
-          sortOrder: i,
-        })),
-      );
+      if (uploads.length > 0) {
+        await tx.insert(productImage).values(
+          uploads.map((u, i) => ({
+            productId: row.id,
+            key: u.key,
+            sortOrder: i,
+          })),
+        );
+      }
 
       return row;
     });
   } catch (err) {
+    console.log(err);
     if (err instanceof WebError) {
       throw err;
     }

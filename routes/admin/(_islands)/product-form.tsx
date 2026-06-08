@@ -1,18 +1,7 @@
 import { useSignal } from "@preact/signals";
 import { useRef } from "preact/hooks";
 import type { ProductImageWithUrl } from "@/lib/db/types.ts";
-
-const emptyValues: ProductFormValues = {
-  slug: "",
-  name: { en: "", ka: "" },
-  description: { en: "", ka: "" },
-  category: { en: "", ka: "" },
-  price: 0,
-  currency: "GEL",
-  images: [],
-  featured: false,
-  published: true,
-};
+import { useFormAction } from "@/hooks/use-form-action.ts";
 
 interface PendingFile {
   file: File;
@@ -57,9 +46,10 @@ export interface ProductFormLabels {
 }
 
 interface ProductFormProps {
-  error?: string;
+  initial: ProductFormValues;
   labels: ProductFormLabels;
   mode: "create" | "edit";
+  error?: unknown;
 }
 
 function slugify(s: string): string {
@@ -72,12 +62,18 @@ function slugify(s: string): string {
     .slice(0, 60);
 }
 
-export function ProductForm({ labels, error, mode }: ProductFormProps) {
+export function ProductForm(
+  { initial, labels, error, mode }: ProductFormProps,
+) {
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const values = useSignal<ProductFormValues>(emptyValues);
+  const values = useSignal<ProductFormValues>(initial);
   const customError = useSignal<string | null>(null);
   const pendingFiles = useSignal<PendingFile[]>([]);
   const slugTouched = useSignal(mode === "edit");
+
+  const [_, formProps, isPending] = useFormAction(
+    mode === "create" ? "/api/products" : `/api/products/${initial.id}`,
+  );
 
   function patch<K extends keyof ProductFormValues>(
     key: K,
@@ -145,7 +141,7 @@ export function ProductForm({ labels, error, mode }: ProductFormProps) {
   }
 
   return (
-    <form className="space-y-12">
+    <form className="space-y-12" {...formProps}>
       {error && (
         <div className="border-ink border-l-2 bg-paper-deep py-2 pl-4">
           <p className="font-mono text-ink text-xs uppercase tracking-[0.18em]">
@@ -443,7 +439,7 @@ export function ProductForm({ labels, error, mode }: ProductFormProps) {
       <div className="hairline flex flex-col-reverse gap-3 border-t pt-8 sm:flex-row sm:justify-end">
         <button
           className="btn btn-ghost"
-          // disabled={pending}
+          disabled={isPending}
           onClick={() => (globalThis.location.href = "/admin")}
           type="button"
         >
@@ -451,10 +447,10 @@ export function ProductForm({ labels, error, mode }: ProductFormProps) {
         </button>
         <button
           className="btn btn-primary"
-          // disabled={pending || uploading}
+          disabled={isPending}
           type="submit"
         >
-          {false ? labels.saving : labels.save}
+          {isPending ? labels.saving : labels.save}
         </button>
       </div>
     </form>
