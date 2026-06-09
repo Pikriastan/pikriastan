@@ -73,6 +73,18 @@ export function ProductForm(
 
   const [_, formProps, isPending] = useFormAction(
     mode === "create" ? "/api/products" : `/api/products/${initial.id}`,
+    {
+      submitFunc: (formData) => {
+        for (const pendingFile of pendingFiles.value) {
+          formData.append("images", pendingFile.file);
+        }
+        for (const image of values.value.images) {
+          formData.append("existingImageIds", image.id);
+        }
+        formData.append("featured", String(values.value.featured));
+        formData.append("published", String(values.value.published));
+      },
+    },
   );
 
   function patch<K extends keyof ProductFormValues>(

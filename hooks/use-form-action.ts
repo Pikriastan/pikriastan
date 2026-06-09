@@ -7,6 +7,7 @@ export interface FormAction<TData, TError> {
 
 export interface UseFormActionOptions {
   contentType?: "application/json" | "multipart/form-data";
+  submitFunc?: (formData: FormData) => void;
 }
 
 export function useFormAction<TData = unknown, TError = unknown>(
@@ -85,6 +86,10 @@ export function useFormAction<TData = unknown, TError = unknown>(
       e.preventDefault();
       const form = e.currentTarget as HTMLFormElement;
       const formData = new FormData(form);
+
+      if (typeof options.submitFunc !== "undefined") {
+        await options.submitFunc(formData);
+      }
 
       // Absorb the rejection so it doesn't cause uncaught runtime errors in console
       await execute(formData).catch(() => {});

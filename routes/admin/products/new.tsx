@@ -24,8 +24,6 @@ const initialValues: ProductFormValues = {
 export default define.page(({ state, error }) => {
   const { t } = getT(state.locale);
 
-  console.log(error);
-
   return (
     <AdminShell locale={state.locale} t={t}>
       <section className="hairline border-b">

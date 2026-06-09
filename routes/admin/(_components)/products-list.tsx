@@ -44,7 +44,7 @@ export async function AdminProducts({
                       ? (
                         <img
                           alt={name}
-                          className="object-cover"
+                          className="w-24 h-24 md:w-30 md:h-30 object-cover"
                           sizes="(min-width: 768px) 120px, 96px"
                           src={p.images[0].url}
                         />

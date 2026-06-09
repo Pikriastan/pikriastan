@@ -152,7 +152,6 @@ export async function createProduct(data: ProductData): Promise<Product> {
       return row;
     });
   } catch (err) {
-    console.log(err);
     if (err instanceof WebError) {
       throw err;
     }
