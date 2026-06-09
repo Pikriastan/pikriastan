@@ -1,4 +1,5 @@
 import { define } from "@/lib/utils.ts";
+import { Toaster } from "@/islands/toast.tsx";
 
 export default define.page(function App({ Component, state }) {
   return (
@@ -45,6 +46,7 @@ export default define.page(function App({ Component, state }) {
       </head>
       <body lang={state.locale}>
         <Component />
+        <Toaster />
       </body>
     </html>
   );

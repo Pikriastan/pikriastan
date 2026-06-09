@@ -1,5 +1,6 @@
 import { useSignal } from "@preact/signals";
 import { useFormAction } from "@/hooks/use-form-action.ts";
+import { toast } from "@/lib/toast.ts";
 
 export function DeleteProductButton({
   id,
@@ -12,7 +13,10 @@ export function DeleteProductButton({
 }) {
   const confirming = useSignal(false);
 
-  const [_, formProps, isPending] = useFormAction(`/api/products/${id}`);
+  const [_, formProps, isPending] = useFormAction(`/api/products/${id}`, {
+    onSuccess: () => globalThis.location.reload(),
+    onError: (message) => toast.error(message),
+  });
 
   let buttonLabel = label;
   if (confirming) {

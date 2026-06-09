@@ -5,14 +5,16 @@ export interface FormAction<TData, TError> {
   error: TError | null;
 }
 
-export interface UseFormActionOptions {
+export interface UseFormActionOptions<TData = unknown> {
   contentType?: "application/json" | "multipart/form-data";
   submitFunc?: (formData: FormData) => void;
+  onSuccess?: (data: TData) => void;
+  onError?: (message: string) => void;
 }
 
 export function useFormAction<TData = unknown, TError = unknown>(
   endpoint?: string,
-  options: UseFormActionOptions = {},
+  options: UseFormActionOptions<TData> = {},
 ) {
   const data = useSignal<TData | null>(null);
   const error = useSignal<TError | null>(null);
@@ -66,12 +68,14 @@ export function useFormAction<TData = unknown, TError = unknown>(
       }
 
       data.value = result;
+      options.onSuccess?.(result as TData);
       return result;
     } catch (err) {
       const msg = err instanceof Error
         ? err.message
         : "An unknown error occurred";
       error.value = msg as TError;
+      options.onError?.(msg);
       throw err;
     } finally {
       isPending.value = false;

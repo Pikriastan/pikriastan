@@ -2,6 +2,7 @@ import { useSignal } from "@preact/signals";
 import { useRef } from "preact/hooks";
 import type { ProductImageWithUrl } from "@/lib/db/types.ts";
 import { useFormAction } from "@/hooks/use-form-action.ts";
+import { toast } from "@/lib/toast.ts";
 
 interface PendingFile {
   file: File;
@@ -83,6 +84,9 @@ export function ProductForm(
         }
         formData.append("featured", String(values.value.featured));
         formData.append("published", String(values.value.published));
+      },
+      onError: (message) => {
+        toast.error(labels.saveError, { description: message });
       },
     },
   );
