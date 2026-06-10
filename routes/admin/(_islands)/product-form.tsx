@@ -75,7 +75,7 @@ export function ProductForm({
   const pendingFiles = useSignal<PendingFile[]>([]);
   const slugTouched = useSignal(mode === "edit");
 
-  const [_, formProps, isPending] = useFormAction(
+  const [formProps, isPending] = useFormAction(
     mode === "create" ? "/api/products" : `/api/products/${initial.id}`,
     {
       method: mode === "create" ? "POST" : "PUT",

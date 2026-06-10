@@ -101,9 +101,9 @@ export function useFormAction<TData = unknown, TError = unknown>(
   };
 
   return [
-    { data: data.value, error: error.value },
     formProps,
     isPending.value,
+    { data: data.value, error: error.value },
     execute,
   ] as const;
 }

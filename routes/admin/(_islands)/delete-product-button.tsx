@@ -13,7 +13,7 @@ export function DeleteProductButton({
 }) {
   const confirming = useSignal(false);
 
-  const [_, formProps, isPending] = useFormAction(`/api/products/${id}`, {
+  const [formProps, isPending] = useFormAction(`/api/products/${id}`, {
     method: "DELETE",
     onSuccess: () => globalThis.location.reload(),
     onError: (message) => toast.error(message),
