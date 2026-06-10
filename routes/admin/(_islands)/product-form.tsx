@@ -155,7 +155,7 @@ export function ProductForm({
       return;
     }
     [next[idx], next[target]] = [next[target], next[idx]];
-    return { ...values.value, images: next as typeof values.value.images };
+    values.value = { ...values.value, images: next as typeof values.value.images };
   }
 
   return (
