@@ -1,18 +1,18 @@
 import type { Locale } from "@/lib/constants.ts";
-import { getProducts } from "@/lib/db/queries.ts";
 import type { Dictionary } from "@/lib/i18n/dictionaries.ts";
 import { formatPrice, pickLocalized } from "@/lib/utils.ts";
 import { DeleteProductButton } from "@/routes/admin/(_islands)/delete-product-button.tsx";
+import type { ProductWithImages } from "@/lib/db/types.ts";
 
-export async function AdminProducts({
+export function AdminProducts({
   locale,
   t,
+  data,
 }: {
   locale: Locale;
   t: Dictionary["admin"];
+  data: ProductWithImages[];
 }) {
-  const data = await getProducts();
-
   if (data.length === 0) {
     return <ProductsEmpty t={t} />;
   }

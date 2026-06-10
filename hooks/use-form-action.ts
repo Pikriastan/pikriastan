@@ -6,6 +6,7 @@ export interface FormAction<TData, TError> {
 }
 
 export interface UseFormActionOptions<TData = unknown> {
+  method?: "POST" | "PUT";
   contentType?: "application/json" | "multipart/form-data";
   submitFunc?: (formData: FormData) => void;
   onSuccess?: (data: TData) => void;
@@ -14,7 +15,7 @@ export interface UseFormActionOptions<TData = unknown> {
 
 export function useFormAction<TData = unknown, TError = unknown>(
   endpoint?: string,
-  options: UseFormActionOptions<TData> = {},
+  options: UseFormActionOptions<TData> = { method: "POST" },
 ) {
   const data = useSignal<TData | null>(null);
   const error = useSignal<TError | null>(null);
@@ -47,7 +48,7 @@ export function useFormAction<TData = unknown, TError = unknown>(
         : (payload as FormData);
 
       const response = await fetch(resolveEndpoint(), {
-        method: "POST",
+        method: options.method,
         headers,
         body,
       });
@@ -82,7 +83,6 @@ export function useFormAction<TData = unknown, TError = unknown>(
     }
   };
 
-  // Automated attributes for standard <form> bindings
   const formProps = {
     action: resolveEndpoint(),
     method: "POST",
@@ -92,7 +92,7 @@ export function useFormAction<TData = unknown, TError = unknown>(
       const formData = new FormData(form);
 
       if (typeof options.submitFunc !== "undefined") {
-        await options.submitFunc(formData);
+        options.submitFunc(formData);
       }
 
       // Absorb the rejection so it doesn't cause uncaught runtime errors in console

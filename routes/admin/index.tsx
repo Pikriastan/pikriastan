@@ -4,11 +4,12 @@ import { SESSION_COOKIE } from "@/lib/constants.ts";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { AdminShell } from "@/routes/admin/(_components)/admin-shell.tsx";
+import { getProducts } from "@/lib/db/queries.ts";
 import { AdminProducts } from "@/routes/admin/(_components)/products-list.tsx";
 
 export default define.page(async function AdminPage({ state }) {
   const { t } = getT(state.locale);
-  const products = await AdminProducts({ locale: state.locale, t: t.admin });
+  const products = await getProducts();
 
   return (
     <AdminShell locale={state.locale} t={t}>
@@ -33,7 +34,7 @@ export default define.page(async function AdminPage({ state }) {
         </div>
       </section>
 
-      {products}
+      <AdminProducts locale={state.locale} t={t.admin} data={products} />
     </AdminShell>
   );
 });
