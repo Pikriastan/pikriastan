@@ -14,17 +14,16 @@ export function DeleteProductButton({
   const confirming = useSignal(false);
 
   const [_, formProps, isPending] = useFormAction(`/api/products/${id}`, {
+    method: "DELETE",
     onSuccess: () => globalThis.location.reload(),
     onError: (message) => toast.error(message),
   });
 
-  let buttonLabel = label;
-  if (confirming) {
-    buttonLabel = confirmLabel;
-  }
-  if (isPending) {
-    buttonLabel = "\u2026";
-  }
+  const buttonLabel = isPending
+    ? "\u2026"
+    : confirming.value
+    ? confirmLabel
+    : label;
 
   function onClick(event: MouseEvent) {
     if (!confirming.value) {

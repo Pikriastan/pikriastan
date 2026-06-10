@@ -89,6 +89,9 @@ export function ProductForm({
         formData.append("featured", String(values.value.featured));
         formData.append("published", String(values.value.published));
       },
+      onSuccess: () => {
+        globalThis.location.href = "/admin";
+      },
       onError: (message) => {
         toast.error(labels.saveError, { description: message });
       },

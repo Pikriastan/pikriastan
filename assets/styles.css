@@ -348,13 +348,20 @@ body {
   transition: background 300ms ease, color 300ms ease, border-color 300ms ease;
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+  background: var(--bg-deep);
+  border-color: var(--line-strong);
+}
+
 .btn-primary {
   color: var(--bg);
   background: var(--accent);
   border: 1px solid var(--ink);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: var(--accent-soft);
 }
 
@@ -364,7 +371,7 @@ body {
   border: 1px solid var(--ink);
 }
 
-.btn-ghost:hover {
+.btn-ghost:hover:not(:disabled) {
   color: var(--bg);
   background: var(--ink);
 }

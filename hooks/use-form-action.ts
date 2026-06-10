@@ -6,7 +6,7 @@ export interface FormAction<TData, TError> {
 }
 
 export interface UseFormActionOptions<TData = unknown> {
-  method?: "POST" | "PUT";
+  method?: "POST" | "PUT" | "DELETE";
   contentType?: "application/json" | "multipart/form-data";
   submitFunc?: (formData: FormData) => void;
   onSuccess?: (data: TData) => void;
