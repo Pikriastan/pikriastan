@@ -2,7 +2,10 @@ import { define } from "@/lib/utils.ts";
 import { AdminShell } from "@/routes/admin/(_components)/admin-shell.tsx";
 import { getT } from "@/lib/i18n/locales.ts";
 import { getProductById } from "@/lib/db/queries.ts";
-import { ProductForm, type ProductFormValues } from "@/routes/admin/(_islands)/product-form.tsx";
+import {
+  ProductForm,
+  type ProductFormValues,
+} from "@/routes/admin/(_islands)/product-form.tsx";
 import { HttpError } from "fresh/runtime";
 
 export default define.page(async ({ params, state }) => {

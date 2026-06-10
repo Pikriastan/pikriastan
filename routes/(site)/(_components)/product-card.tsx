@@ -30,7 +30,7 @@ export function ProductCard({
             <>
               <img
                 alt={name}
-                className="product-card-img object-cover"
+                className="product-card-img absolute inset-0 h-full w-full object-cover"
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 src={cover.url}
               />
