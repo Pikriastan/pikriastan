@@ -1,13 +1,12 @@
-import "dotenv/config";
 import { and, asc, eq, inArray, notInArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { config } from "@/lib/config";
-import { WebError } from "@/lib/errors";
-import { deleteImage, uploadImage } from "@/lib/r2";
-import type { ProductData } from "@/lib/schemas";
-import { type Product, product, productImage } from "./schema";
-import type { ProductWithImages } from "./types";
-import { productsWithImageUrls } from "./utils";
+import { config } from "@/lib/config.ts";
+import { WebError } from "@/lib/errors.ts";
+import { deleteImage, uploadImage } from "@/lib/r2.ts";
+import type { ProductData } from "@/lib/schemas.ts";
+import { type Product, product, productImage } from "./schema.ts";
+import type { ProductWithImages } from "./types.ts";
+import { productsWithImageUrls } from "./utils.ts";
 
 export const db = drizzle(config.DATABASE_URL);
 
@@ -29,8 +28,8 @@ export async function getProducts({
       .where(
         and(
           featuredOnly ? eq(product.featured, true) : undefined,
-          publishedOnly ? eq(product.published, true) : undefined
-        )
+          publishedOnly ? eq(product.published, true) : undefined,
+        ),
       )
       .orderBy(asc(product.createdAt))
       .$dynamic();
@@ -54,8 +53,8 @@ export async function getProducts({
       .where(
         inArray(
           productImage.productId,
-          productsList.map((p) => p.id)
-        )
+          productsList.map((p) => p.id),
+        ),
       )
       .orderBy(asc(productImage.sortOrder), asc(productImage.id));
 
@@ -88,7 +87,7 @@ export async function getProducts({
 }
 
 export async function getProductById(
-  productId: string
+  productId: string,
 ): Promise<ProductWithImages | null> {
   try {
     const result = await db
@@ -109,7 +108,7 @@ export async function getProductById(
 }
 
 export async function getProductBySlug(
-  slug: string
+  slug: string,
 ): Promise<ProductWithImages | null> {
   try {
     const result = await db
@@ -137,16 +136,18 @@ export async function createProduct(data: ProductData): Promise<Product> {
       const [row] = await tx.insert(product).values(productData).returning();
 
       const uploads = await Promise.all(
-        images.map((img) => uploadImage(row.id, img))
+        images.map((img) => uploadImage(row.id, img)),
       );
 
-      await tx.insert(productImage).values(
-        uploads.map((u, i) => ({
-          productId: row.id,
-          key: u.key,
-          sortOrder: i,
-        }))
-      );
+      if (uploads.length > 0) {
+        await tx.insert(productImage).values(
+          uploads.map((u, i) => ({
+            productId: row.id,
+            key: u.key,
+            sortOrder: i,
+          })),
+        );
+      }
 
       return row;
     });
@@ -177,17 +178,17 @@ export async function updateProduct(productId: string, data: ProductData) {
           existingImageIds.length === 0
             ? eq(productImage.productId, productId)
             : and(
-                eq(productImage.productId, productId),
-                notInArray(productImage.id, existingImageIds)
-              )
+              eq(productImage.productId, productId),
+              notInArray(productImage.id, existingImageIds),
+            ),
         );
 
       if (orphans.length > 0) {
         await tx.delete(productImage).where(
           inArray(
             productImage.id,
-            orphans.map((o) => o.id)
-          )
+            orphans.map((o) => o.id),
+          ),
         );
       }
 
@@ -196,9 +197,9 @@ export async function updateProduct(productId: string, data: ProductData) {
       if (existingImageIds.length > 0) {
         const cases = sql.join(
           existingImageIds.map(
-            (id, i) => sql`WHEN ${productImage.id} = ${id} THEN ${i}`
+            (id, i) => sql`WHEN ${productImage.id} = ${id} THEN ${i}`,
           ),
-          sql` `
+          sql` `,
         );
         await tx
           .update(productImage)
@@ -206,21 +207,21 @@ export async function updateProduct(productId: string, data: ProductData) {
           .where(
             and(
               eq(productImage.productId, productId),
-              inArray(productImage.id, existingImageIds)
-            )
+              inArray(productImage.id, existingImageIds),
+            ),
           );
       }
 
       if (images.length > 0) {
         const uploads = await Promise.all(
-          images.map((img) => uploadImage(productId, img))
+          images.map((img) => uploadImage(productId, img)),
         );
         await tx.insert(productImage).values(
           uploads.map((u, i) => ({
             productId,
             key: u.key,
             sortOrder: existingImageIds.length + i,
-          }))
+          })),
         );
       }
     });

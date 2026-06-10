@@ -10,7 +10,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { primaryKeyId } from "./utils";
+import { primaryKeyId } from "./utils.ts";
 
 export const product = pgTable("products", {
   id: primaryKeyId(),
@@ -48,10 +48,42 @@ export const productImage = pgTable(
   (t) => [
     index("product_images_product_id_sort_order_idx").on(
       t.productId,
-      t.sortOrder
+      t.sortOrder,
     ),
     uniqueIndex("product_images_key_uq").on(t.key),
-  ]
+  ],
 );
 
 export type ProductImage = InferSelectModel<typeof productImage>;
+
+export const user = pgTable("users", {
+  id: primaryKeyId(),
+  email: varchar().unique().notNull(),
+  passwordHash: text("password_hash").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type User = InferSelectModel<typeof user>;
+
+export const userSession = pgTable(
+  "user_sessions",
+  {
+    id: primaryKeyId(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").unique().notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("user_sessions_user_id_idx").on(t.userId),
+    index("user_sessions_expires_at_idx").on(t.expiresAt),
+  ],
+);
+
+export type UserSession = InferSelectModel<typeof userSession>;

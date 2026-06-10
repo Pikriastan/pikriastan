@@ -1,6 +1,7 @@
-import { cn } from "@/lib/utils";
+import type { ComponentProps } from "preact";
+import { cn } from "@/lib/utils.ts";
 
-function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
+function Skeleton({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       className={cn("skeleton", className)}

@@ -1,4 +1,4 @@
-import type { Locale } from "./locales";
+import type { Locale } from "@/lib/constants.ts";
 
 export interface Dictionary {
   about: {
@@ -20,6 +20,7 @@ export interface Dictionary {
     logout: string;
     productsHeader: string;
     noProducts: string;
+    empty: string;
     edit: string;
     delete: string;
     confirmDelete: string;
@@ -88,6 +89,14 @@ export interface Dictionary {
     about: string;
     contact: string;
   };
+  notFound: {
+    eyebrow: string;
+    code: string;
+    title: string;
+    body: string;
+    home: string;
+    collection: string;
+  };
   product: {
     back: string;
     description: string;
@@ -144,6 +153,15 @@ const en: Dictionary = {
     countOne: "1 piece",
     countMany: (n: number) => `${n} pieces`,
   },
+  notFound: {
+    eyebrow: "Error 404",
+    code: "404",
+    title: "This page slipped out of frame.",
+    body:
+      "The page you are looking for has been moved, archived, or never existed. The collection, however, is still here.",
+    home: "Return home",
+    collection: "Browse the collection",
+  },
   product: {
     back: "Back to collection",
     description: "Description",
@@ -168,11 +186,13 @@ const en: Dictionary = {
     values: [
       {
         title: "Made in Tbilisi",
-        body: "Patterned, cut and stitched within walking distance of the studio.",
+        body:
+          "Patterned, cut and stitched within walking distance of the studio.",
       },
       {
         title: "Numbered runs",
-        body: "Each piece is part of a finite series. No restocks, no replicas.",
+        body:
+          "Each piece is part of a finite series. No restocks, no replicas.",
       },
       {
         title: "Lifetime mending",
@@ -197,6 +217,7 @@ const en: Dictionary = {
     logout: "Sign out",
     productsHeader: "Archive",
     noProducts: "No pieces yet. Add the first one.",
+    empty: "The archive is currently empty. New pieces are being prepared.",
     edit: "Edit",
     delete: "Delete",
     confirmDelete: "Delete this piece permanently?",
@@ -271,6 +292,15 @@ const ka: Dictionary = {
     countOne: "1 ნაკეთობა",
     countMany: (n: number) => `${n} ნაკეთობა`,
   },
+  notFound: {
+    eyebrow: "შეცდომა 404",
+    code: "404",
+    title: "ეს გვერდი კადრს გასცდა.",
+    body:
+      "გვერდი, რომელსაც ეძებთ, გადატანილია, დაარქივებულია ან საერთოდ არ არსებობდა. კოლექცია კი ისევ აქ არის.",
+    home: "მთავარზე დაბრუნება",
+    collection: "კოლექციის დათვალიერება",
+  },
   product: {
     back: "კოლექციაში დაბრუნება",
     description: "აღწერა",
@@ -323,6 +353,7 @@ const ka: Dictionary = {
     logout: "გასვლა",
     productsHeader: "არქივი",
     noProducts: "ჯერ ნაკეთობები არ არის. დაამატე პირველი.",
+    empty: "არქივი ამჟამად ცარიელია. ახალი ნამუშევრები მზადდება.",
     edit: "შესწორება",
     delete: "წაშლა",
     confirmDelete: "სამუდამოდ წავშალოთ ეს ნაკეთობა?",

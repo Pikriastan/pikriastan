@@ -1,16 +1,17 @@
+// deno-lint-ignore no-import-prefix no-unversioned-import
+import { v7 } from "jsr:@std/uuid";
 import { uuid } from "drizzle-orm/pg-core";
-import { v7 as uuidv7 } from "uuid";
-import type { Product, ProductImage } from "./schema";
-import type { ProductWithImages } from "./types";
+import type { Product, ProductImage } from "./schema.ts";
+import type { ProductWithImages } from "./types.ts";
 
 export const primaryKeyId = () =>
   uuid("id")
     .primaryKey()
     .notNull()
-    .$defaultFn(() => uuidv7());
+    .$defaultFn(() => v7.generate());
 
 export function productsWithImageUrls(
-  rows: { products: Product; product_images: ProductImage | null }[]
+  rows: { products: Product; product_images: ProductImage | null }[],
 ): ProductWithImages[] {
   const byId = new Map<string, ProductWithImages>();
 
@@ -21,7 +22,8 @@ export function productsWithImageUrls(
     if (row.product_images) {
       grouped.images.push({
         ...row.product_images,
-        url: `${process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL}/${row.product_images.key}`,
+        url:
+          `${process.env.FRESH_PUBLIC_R2_PUBLIC_BASE_URL}/${row.product_images.key}`,
       });
     }
 

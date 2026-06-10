@@ -1,0 +1,78 @@
+service: amiranas-gamofena
+image: ccxlv/amiranas-gamofena
+
+retain_containers: 1
+
+registry:
+  server: ghcr.io
+  username: <%= ENV.fetch("KAMAL_REGISTRY_USERNAME").downcase %>
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  dockerfile: ./Dockerfile
+  arch: amd64
+
+ssh:
+  user: kamal-deploy
+  key_data:
+    - SSH_PRIVATE_KEY
+
+env:
+  secret:
+    - DATABASE_URL
+    - R2_ACCOUNT_ID
+    - R2_ACCESS_KEY_ID
+    - R2_SECRET_ACCESS_KEY
+    - R2_BUCKET
+    - R2_PUBLIC_BASE_URL
+    - FRESH_PUBLIC_R2_PUBLIC_BASE_URL
+    - CERTIFICATE_PEM
+    - PRIVATE_KEY_PEM
+
+servers:
+  web:
+    hosts:
+      - 34.179.221.169
+    options:
+      network: "web-network"
+      memory: 2gb
+
+accessories:
+  db:
+    image: postgres:18.3
+    host: 34.179.221.169
+    env:
+      secret:
+        - POSTGRES_USER
+        - POSTGRES_PASSWORD
+        - POSTGRES_DB
+    directories:
+      - data:/var/lib/postgresql/data
+    options:
+      network: "web-network"
+      label: "com.centurylinklabs.watchtower.enable=false"
+
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    host: 178.104.187.56
+    env:
+      clear:
+        POOL_MODE: "transaction"
+        AUTH_TYPE: "scram-sha-256"
+      secret:
+        - DB_USER
+        - DB_PASSWORD
+        - DB_NAME
+        - DB_HOST
+        - DB_PORT
+    options:
+      network: "web-network"
+      memory: 256mb
+
+proxy:
+  host: pikriastan.ge
+  app_port: 8000
+  ssl:
+    certificate_pem: CERTIFICATE_PEM
+    private_key_pem: PRIVATE_KEY_PEM
