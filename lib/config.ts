@@ -1,7 +1,7 @@
 import { load } from "@std/dotenv";
 import { z } from "zod";
 
-const env = await load();
+const env = { ...await load(), ...Deno.env.toObject() };
 
 const schema = z.object({
   DATABASE_URL: z.url(),
