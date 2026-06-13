@@ -16,7 +16,7 @@ export function Footer({ locale }: FooterProps) {
         <div className="grid grid-cols-12 gap-10 md:gap-12">
           <div className="col-span-12 md:col-span-5">
             <div className="font-display text-3xl lowercase leading-none tracking-tight md:text-4xl">
-              {locale === "ka" ? "ამირანას გამოფენა" : "amiranas gamofena"}
+              pikriastan
             </div>
             <p className="mt-5 max-w-sm text-[15px] text-ink/75 leading-relaxed">
               {t.brand.tagline}
@@ -48,7 +48,7 @@ export function Footer({ locale }: FooterProps) {
         </div>
 
         <div className="hairline mt-12 flex flex-col items-start justify-between gap-3 border-t pt-6 font-mono text-[10px] text-muted uppercase tracking-[0.22em] md:mt-16 md:flex-row md:items-center">
-          <span>{`\u00a9 ${year} Amiranas Gamofena. ${t.footer.rights}`}</span>
+          <span>{`\u00a9 ${year} Pikriastan. ${t.footer.rights}`}</span>
           <span>{`v01 \u2014 ${year}`}</span>
         </div>
       </div>

@@ -178,7 +178,7 @@ const en: Dictionary = {
   about: {
     title: "Studio",
     intro:
-      "Amira\u02bcnas Gamofena is a quiet, garment-focused practice operating from Tbilisi.",
+      "Pikriastan is a quiet, garment-focused practice operating from Tbilisi.",
     body1:
       "We work in small numbered runs, with an emphasis on weight, drape and an honest construction. Patterns are developed slowly. Many are reworked across multiple seasons before they are released.",
     body2:
@@ -316,7 +316,7 @@ const ka: Dictionary = {
   about: {
     title: "სტუდია",
     intro:
-      "ამირანას გამოფენა არის მდუმარე, ტანსაცმელზე ორიენტირებული პრაქტიკა თბილისიდან.",
+      "Pikriastan არის მდუმარე, ტანსაცმელზე ორიენტირებული პრაქტიკა თბილისიდან.",
     body1:
       "ჩვენ ვმუშაობთ მცირე, ნომრიან სერიებად, წონის, ჩამოვარდნისა და გულწრფელი კონსტრუქციის გათვალისწინებით. ნიმუშები ვითარდება ნელა — ხშირად რამდენიმე სეზონის განმავლობაში.",
     body2:
