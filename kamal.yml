@@ -3,9 +3,6 @@ image: ccxlv/amiranas-gamofena
 
 retain_containers: 1
 
-hooks_path: ./kamal/hooks
-deploy_timeout: 60
-
 registry:
   server: ghcr.io
   username: <%= ENV.fetch("KAMAL_REGISTRY_USERNAME").downcase %>
