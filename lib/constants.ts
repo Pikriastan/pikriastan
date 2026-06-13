@@ -26,3 +26,5 @@ export const ALLOWED_IMAGE_TYPES = new Set([
   "image/png",
   "image/webp",
 ]);
+
+export const INQUIRY_EMAIL = "pikriastan@gmail.com";

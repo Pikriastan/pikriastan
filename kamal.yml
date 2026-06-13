@@ -21,6 +21,7 @@ ssh:
 env:
   secret:
     - DATABASE_URL
+    - DATABASE_DIRECT_URL
     - R2_ACCOUNT_ID
     - R2_ACCESS_KEY_ID
     - R2_SECRET_ACCESS_KEY
@@ -35,7 +36,6 @@ servers:
     hosts:
       - 34.179.221.169
     options:
-      network: "web-network"
       memory: 2gb
 
 accessories:
@@ -48,14 +48,13 @@ accessories:
         - POSTGRES_PASSWORD
         - POSTGRES_DB
     directories:
-      - data:/var/lib/postgresql/data
+      - data:/var/lib/postgresql
     options:
-      network: "web-network"
       label: "com.centurylinklabs.watchtower.enable=false"
 
   pgbouncer:
     image: edoburu/pgbouncer:latest
-    host: 178.104.187.56
+    host: 34.179.221.169
     env:
       clear:
         POOL_MODE: "transaction"
@@ -67,12 +66,13 @@ accessories:
         - DB_HOST
         - DB_PORT
     options:
-      network: "web-network"
       memory: 256mb
 
 proxy:
   host: pikriastan.ge
   app_port: 8000
+  healthcheck:
+    path: /up
   ssl:
     certificate_pem: CERTIFICATE_PEM
     private_key_pem: PRIVATE_KEY_PEM

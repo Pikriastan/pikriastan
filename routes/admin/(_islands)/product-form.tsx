@@ -90,7 +90,11 @@ export function ProductForm({
         formData.append("published", String(values.value.published));
       },
       onSuccess: () => {
-        globalThis.location.href = "/admin";
+        if (mode === "create") {
+          globalThis.location.href = "/admin";
+        } else {
+          globalThis.location.reload();
+        }
       },
       onError: (message) => {
         toast.error(labels.saveError, { description: message });
