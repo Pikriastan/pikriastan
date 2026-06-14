@@ -43,8 +43,8 @@ export default define.page(async ({ params, state }) => {
             </a>
           </div>
 
-          <div className="grid grid-cols-12 gap-10 md:gap-16">
-            <div className="fade-up col-span-12 lg:col-span-7">
+          <div className="grid min-w-0 grid-cols-12 gap-10 md:gap-16">
+            <div className="fade-up col-span-12 min-w-0 lg:col-span-7">
               <ProductGallery
                 alt={name}
                 images={product.images.map((i) => i.url)}
@@ -52,7 +52,7 @@ export default define.page(async ({ params, state }) => {
             </div>
 
             <aside
-              className="fade-up col-span-12 lg:sticky lg:top-32 lg:col-span-5 lg:self-start"
+              className="fade-up col-span-12 min-w-0 lg:sticky lg:top-32 lg:col-span-5 lg:self-start"
               style={{ animationDelay: "100ms" }}
             >
               {category && <p className="eyebrow mb-6">{category}</p>}
@@ -74,24 +74,30 @@ export default define.page(async ({ params, state }) => {
               </div>
 
               <div className="hairline mt-10 space-y-4 border-t pt-7 font-mono text-[11px] uppercase tracking-[0.2em]">
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted">{t.product.category}</span>
-                  <span>{category || "\u2014"}</span>
+                <div className="flex min-w-0 justify-between gap-4">
+                  <span className="shrink-0 text-muted">
+                    {t.product.category}
+                  </span>
+                  <span className="min-w-0 wrap-break-word text-right">
+                    {category || "\u2014"}
+                  </span>
                 </div>
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted">N°</span>
-                  <span>{product.id.slice(-6).toUpperCase()}</span>
+                <div className="flex min-w-0 justify-between gap-4">
+                  <span className="shrink-0 text-muted">N°</span>
+                  <span className="min-w-0 wrap-break-word text-right">
+                    {product.id.slice(-6).toUpperCase()}
+                  </span>
                 </div>
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted">{t.product.price}</span>
-                  <span>
+                <div className="flex min-w-0 justify-between gap-4">
+                  <span className="shrink-0 text-muted">{t.product.price}</span>
+                  <span className="min-w-0 wrap-break-word text-right">
                     {formatPrice(product.price, product.currency, state.locale)}
                   </span>
                 </div>
               </div>
 
               <a
-                className="btn btn-primary mt-12 w-full"
+                className="btn btn-primary mt-12 min-w-0 max-w-full whitespace-normal text-center w-full"
                 href={`mailto:${INQUIRY_EMAIL}?subject=${
                   encodeURIComponent(
                     `Inquiry: ${product.nameEn} (${product.slug})`,

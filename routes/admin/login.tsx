@@ -14,9 +14,9 @@ export default define.page<typeof handler>(function LoginPage({ state, data }) {
   return (
     <div className="flex min-h-screen flex-col bg-paper">
       <header className="hairline border-b">
-        <div className="mx-auto flex max-w-350 items-center justify-between px-6 py-5 md:px-12 md:py-6">
+        <div className="mx-auto flex max-w-350 items-center justify-between gap-3 px-5 py-5 sm:px-6 md:px-12 md:py-6">
           <a
-            className="font-display text-xl lowercase leading-none tracking-tight md:text-2xl"
+            className="min-w-0 truncate font-display text-xl lowercase leading-none tracking-tight md:text-2xl"
             href="/"
           >
             {state.locale === "ka" ? "ამირანას" : "amiranas"}
@@ -25,7 +25,7 @@ export default define.page<typeof handler>(function LoginPage({ state, data }) {
             </span>
           </a>
           <a
-            className="font-mono text-[10px] text-muted uppercase tracking-[0.28em] hover:text-ink"
+            className="shrink-0 font-mono text-[10px] text-muted uppercase tracking-[0.28em] hover:text-ink"
             href="/"
           >
             {`\u2190 ${state.locale === "ka" ? "უკან" : "Back"}`}
@@ -33,7 +33,7 @@ export default define.page<typeof handler>(function LoginPage({ state, data }) {
         </div>
       </header>
 
-      <main className="grid flex-1 place-items-center px-6 py-20 md:px-12">
+      <main className="grid flex-1 place-items-center px-5 py-20 sm:px-6 md:px-12">
         <div className="w-full max-w-sm">
           <p className="eyebrow mb-6">
             {`/ ${state.locale === "ka" ? "შესვლა" : "Access"}`}

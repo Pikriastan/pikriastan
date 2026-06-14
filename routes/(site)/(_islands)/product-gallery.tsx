@@ -19,8 +19,8 @@ export const ProductGallery = ({
   const current = images[active.value] ?? images[0];
 
   return (
-    <div className="flex flex-col gap-3 md:gap-4">
-      <div className="relative aspect-3/4 w-full overflow-hidden bg-paper-deep">
+    <div className="flex min-w-0 max-w-full flex-col gap-3 md:gap-4">
+      <div className="relative aspect-3/4 w-full max-w-full overflow-hidden bg-paper-deep">
         <img
           alt={alt}
           className="product-card-img absolute inset-0 h-full w-full object-cover"
@@ -29,11 +29,11 @@ export const ProductGallery = ({
         />
       </div>
       {images.length > 1 && (
-        <div className="grid grid-cols-4 gap-2 md:grid-cols-6 md:gap-3">
+        <div className="grid min-w-0 grid-cols-4 gap-2 md:grid-cols-6 md:gap-3">
           {images.map((src, i) => (
             <button
               aria-label={`Image ${i + 1}`}
-              className={`relative aspect-4/5 overflow-hidden transition-opacity ${
+              className={`relative min-w-0 overflow-hidden aspect-4/5 transition-opacity ${
                 active.value === i
                   ? "opacity-100"
                   : "opacity-60 hover:opacity-100"

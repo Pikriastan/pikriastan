@@ -19,7 +19,7 @@ export function AdminProducts({
 
   return (
     <section>
-      <div className="mx-auto max-w-350 px-6 py-12 md:px-12 md:py-16">
+      <div className="mx-auto max-w-350 px-5 py-12 sm:px-6 md:px-12 md:py-16">
         <div className="mb-6 flex items-center justify-between gap-4">
           <h2 className="font-mono text-[11px] text-muted uppercase tracking-[0.28em]">
             {`${t.productsHeader} \u2014 ${data.length}`}
@@ -44,7 +44,7 @@ export function AdminProducts({
                       ? (
                         <img
                           alt={name}
-                          className="w-24 h-24 md:w-30 md:h-30 object-cover"
+                          className="absolute inset-0 h-full w-full object-cover"
                           sizes="(min-width: 768px) 120px, 96px"
                           src={p.images[0].url}
                         />
@@ -98,7 +98,7 @@ export function AdminProducts({
 function ProductsEmpty({ t }: { t: Dictionary["admin"] }) {
   return (
     <section>
-      <div className="mx-auto max-w-350 px-6 py-12 md:px-12 md:py-16">
+      <div className="mx-auto max-w-350 px-5 py-12 sm:px-6 md:px-12 md:py-16">
         <div className="mb-6 flex items-center justify-between gap-4">
           <h2 className="font-mono text-[11px] text-muted uppercase tracking-[0.28em]">
             {`${t.productsHeader} \u2014 0`}

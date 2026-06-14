@@ -10,7 +10,7 @@ export function NotFound({ locale }: { locale: Locale }) {
     <main>
       <Header locale={locale} />
       <section className="hero-glow hairline border-b">
-        <div className="mx-auto flex min-h-[68vh] max-w-350 flex-col justify-center px-6 py-24 md:px-12 md:py-32">
+        <div className="mx-auto flex min-h-[68vh] max-w-350 flex-col justify-center px-5 py-24 sm:px-6 md:px-12 md:py-32">
           <p className="eyebrow dot-accent fade-up mb-8">
             {t.notFound.eyebrow}
           </p>

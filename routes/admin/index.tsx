@@ -14,7 +14,7 @@ export default define.page(async function AdminPage({ state }) {
   return (
     <AdminShell locale={state.locale} t={t}>
       <section className="hairline border-b">
-        <div className="mx-auto max-w-350 px-6 py-14 md:px-12 md:py-20">
+        <div className="mx-auto max-w-350 px-5 py-14 sm:px-6 md:px-12 md:py-20">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow mb-4">

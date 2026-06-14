@@ -15,9 +15,9 @@ export function AdminShell({ t, locale, children }: AdminShellProps) {
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
       <header className="hairline sticky top-0 z-30 border-b bg-paper/95 backdrop-blur">
-        <div className="mx-auto flex max-w-350 items-center justify-between px-6 py-5 md:px-12 md:py-6">
+        <div className="mx-auto flex max-w-350 items-center justify-between gap-3 px-5 py-5 sm:px-6 md:px-12 md:py-6">
           <a
-            className="font-display text-xl lowercase leading-none tracking-tight md:text-2xl"
+            className="min-w-0 truncate font-display text-xl lowercase leading-none tracking-tight md:text-2xl"
             href="/admin"
           >
             {locale === "ka" ? "ამირანას" : "amiranas"}
@@ -25,7 +25,7 @@ export function AdminShell({ t, locale, children }: AdminShellProps) {
               {" / admin"}
             </span>
           </a>
-          <div className="flex items-center gap-6">
+          <div className="flex shrink-0 items-center gap-4 sm:gap-6">
             <a
               className="hidden font-mono text-[11px] text-muted uppercase tracking-[0.22em] hover:text-ink sm:inline-flex"
               href="/"

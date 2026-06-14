@@ -44,7 +44,7 @@ export default define.page(function App({ Component, state }) {
             />
           )}
       </head>
-      <body lang={state.locale}>
+      <body className="overflow-x-clip" lang={state.locale}>
         <Component />
         <Toaster />
       </body>
