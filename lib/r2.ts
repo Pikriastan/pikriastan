@@ -32,7 +32,12 @@ export async function uploadImage(productId: string, file: File) {
   try {
     const key = `products/${productId}/${crypto.randomUUID()}.webp`;
 
-    const { default: sharp } = await import(/* @vite-ignore */ "sharp");
+    // The specifier is intentionally non-literal so the bundler cannot
+    // statically resolve and inline sharp into the server build. sharp must
+    // stay external and be loaded from node_modules at runtime, otherwise its
+    // native (.node) binary can't be located and it throws in production.
+    const sharpSpecifier = "sharp";
+    const { default: sharp } = await import(/* @vite-ignore */ sharpSpecifier);
     const input = Buffer.from(await file.arrayBuffer());
     const image = await sharp(input).rotate().webp({ quality: 92 }).toBuffer();
 

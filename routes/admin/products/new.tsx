@@ -1,13 +1,10 @@
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
-import { page } from "fresh";
 import { AdminShell } from "@/routes/admin/(_components)/admin-shell.tsx";
 import {
   ProductForm,
   type ProductFormValues,
 } from "@/routes/admin/(_islands)/product-form.tsx";
-import { productSchema } from "@/lib/schemas.ts";
-import { createProduct } from "@/lib/db/queries.ts";
 
 const initialValues: ProductFormValues = {
   slug: "",
@@ -67,25 +64,4 @@ export default define.page(({ state, error }) => {
       </section>
     </AdminShell>
   );
-});
-
-export const handler = define.handlers({
-  async POST(ctx) {
-    const formData = await ctx.req.formData();
-    const validatedDataResult = await productSchema.safeParseAsync({
-      ...Object.fromEntries(formData),
-      images: formData.getAll("images"),
-      existingImageIds: formData.getAll("existingImageIds"),
-    });
-
-    if (validatedDataResult.error) {
-      return page({ error: "Received invalid data, check form fields." }, {
-        status: 422,
-      });
-    }
-
-    await createProduct(validatedDataResult.data);
-
-    return ctx.redirect("/admin");
-  },
 });
