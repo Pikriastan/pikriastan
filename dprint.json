@@ -1,6 +1,4 @@
 {
-  "typescript": {
-  },
   "excludes": [
     "**/node_modules",
     "**/*-lock.json",
