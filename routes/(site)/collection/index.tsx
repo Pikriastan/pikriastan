@@ -1,8 +1,8 @@
-import { define } from "@/lib/utils.ts";
-import { getT } from "@/lib/i18n/locales.ts";
-import { Head } from "fresh/runtime";
-import { ProductCard } from "@/routes/(site)/(_components)/product-card.tsx";
 import { getProducts } from "@/lib/db/queries.ts";
+import { getT } from "@/lib/i18n/locales.ts";
+import { define } from "@/lib/utils.ts";
+import { ProductCard } from "@/routes/(site)/(_components)/product-card.tsx";
+import { Head } from "fresh/runtime";
 
 export default define.page(async ({ state }) => {
   const { t } = getT(state.locale);

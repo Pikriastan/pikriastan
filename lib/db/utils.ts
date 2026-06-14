@@ -1,6 +1,5 @@
-// deno-lint-ignore no-import-prefix no-unversioned-import
-import { v7 } from "jsr:@std/uuid";
 import { uuid } from "drizzle-orm/pg-core";
+import { v7 } from "@std/uuid";
 import type { Product, ProductImage } from "./schema.ts";
 import type { ProductWithImages } from "./types.ts";
 

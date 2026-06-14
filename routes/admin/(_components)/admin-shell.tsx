@@ -1,9 +1,9 @@
-import type { ComponentChildren } from "preact";
 import { LanguageSwitcher } from "@/islands/language-switcher.tsx";
 import { ThemeToggle } from "@/islands/theme-toggle.tsx";
 import type { Locale } from "@/lib/constants.ts";
 import type { Dictionary } from "@/lib/i18n/dictionaries.ts";
 import { LogoutButton } from "@/routes/admin/(_components)/logout-button.tsx";
+import type { ComponentChildren } from "preact";
 
 interface AdminShellProps {
   children: ComponentChildren;

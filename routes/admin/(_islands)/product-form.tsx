@@ -1,8 +1,8 @@
+import { useFormAction } from "@/hooks/use-form-action.ts";
+import type { ProductImageWithUrl } from "@/lib/db/types.ts";
+import { toast } from "@/lib/toast.ts";
 import { useSignal } from "@preact/signals";
 import { useRef } from "preact/hooks";
-import type { ProductImageWithUrl } from "@/lib/db/types.ts";
-import { useFormAction } from "@/hooks/use-form-action.ts";
-import { toast } from "@/lib/toast.ts";
 
 interface PendingFile {
   file: File;

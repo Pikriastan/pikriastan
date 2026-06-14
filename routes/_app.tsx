@@ -1,5 +1,5 @@
-import { define } from "@/lib/utils.ts";
 import { Toaster } from "@/islands/toast.tsx";
+import { define } from "@/lib/utils.ts";
 
 export default define.page(function App({ Component, state }) {
   return (

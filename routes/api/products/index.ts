@@ -1,7 +1,7 @@
-import { define } from "@/lib/utils.ts";
-import { productSchema } from "@/lib/schemas.ts";
-import { page } from "fresh";
 import { createProduct, updateProduct } from "@/lib/db/queries.ts";
+import { productSchema } from "@/lib/schemas.ts";
+import { define } from "@/lib/utils.ts";
+import { page } from "fresh";
 
 export async function handleProductCreateOrUpdate(
   formData: FormData,

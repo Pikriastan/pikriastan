@@ -1,13 +1,13 @@
-import { and, asc, eq, inArray, notInArray, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
 import { config } from "@/lib/config.ts";
 import { WebError } from "@/lib/errors.ts";
+import { logger } from "@/lib/logger.ts";
 import { deleteImage, uploadImage } from "@/lib/r2.ts";
 import type { ProductData } from "@/lib/schemas.ts";
+import { and, asc, eq, inArray, notInArray, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { type Product, product, productImage } from "./schema.ts";
 import type { ProductWithImages } from "./types.ts";
 import { productsWithImageUrls } from "./utils.ts";
-import { logger } from "@/lib/logger.ts";
 
 export const db = drizzle(config.DATABASE_URL);
 

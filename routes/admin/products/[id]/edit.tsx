@@ -1,7 +1,7 @@
+import { getProductById } from "@/lib/db/queries.ts";
+import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { AdminShell } from "@/routes/admin/(_components)/admin-shell.tsx";
-import { getT } from "@/lib/i18n/locales.ts";
-import { getProductById } from "@/lib/db/queries.ts";
 import {
   ProductForm,
   type ProductFormValues,

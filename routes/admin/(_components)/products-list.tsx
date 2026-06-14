@@ -1,8 +1,8 @@
 import type { Locale } from "@/lib/constants.ts";
+import type { ProductWithImages } from "@/lib/db/types.ts";
 import type { Dictionary } from "@/lib/i18n/dictionaries.ts";
 import { formatPrice, pickLocalized } from "@/lib/utils.ts";
 import { DeleteProductButton } from "@/routes/admin/(_islands)/delete-product-button.tsx";
-import type { ProductWithImages } from "@/lib/db/types.ts";
 
 export function AdminProducts({
   locale,

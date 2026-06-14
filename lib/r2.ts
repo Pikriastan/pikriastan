@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger.ts";
 import {
   DeleteObjectCommand,
   PutObjectCommand,
@@ -6,7 +7,6 @@ import {
 import { config } from "./config.ts";
 import { ALLOWED_IMAGE_TYPES, MAX_BYTES } from "./constants.ts";
 import { WebError } from "./errors.ts";
-import { logger } from "@/lib/logger.ts";
 
 const r2 = new S3Client({
   region: "auto",

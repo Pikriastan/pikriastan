@@ -1,6 +1,6 @@
-import { Head } from "fresh/runtime";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
+import { Head } from "fresh/runtime";
 
 export default define.page(function About(ctx) {
   const { t } = getT(ctx.state.locale);

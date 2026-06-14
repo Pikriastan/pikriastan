@@ -1,5 +1,3 @@
-import { useSignal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
 import {
   CheckIcon,
   CloseIcon,
@@ -12,6 +10,8 @@ import {
   toasts,
   type ToastType,
 } from "@/lib/toast.ts";
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 
 const EXIT_MS = 220;
 

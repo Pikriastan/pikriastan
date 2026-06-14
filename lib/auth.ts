@@ -1,14 +1,14 @@
-import { deleteCookie, setCookie } from "@std/http";
-import { and, eq, gt } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { config } from "@/lib/config.ts";
 import {
-  EMAIL_REGEX,
   MIN_PASSWORD_LENGTH,
   SESSION_COOKIE,
   SESSION_MAX_AGE_SECONDS,
 } from "@/lib/constants.ts";
 import { type User, user, userSession } from "@/lib/db/schema.ts";
-import "@std/dotenv/load";
+import { deleteCookie, setCookie } from "@std/http";
+import { and, eq, gt } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { z } from "zod";
 
 const PASSWORD_PREFIX = "pbkdf2:v1";
 const PASSWORD_ITERATIONS = 310_000;
@@ -17,29 +17,25 @@ const PASSWORD_KEY_BITS = 256;
 const SESSION_TOKEN_BYTES = 32;
 const textEncoder = new TextEncoder();
 
-const databaseUrl = Deno.env.get("DATABASE_URL");
+const db = drizzle(config.DATABASE_URL);
 
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is required");
-}
+const emailSchema = z.string().trim().toLowerCase().pipe(
+  z.email("Invalid email"),
+);
 
-const db = drizzle(databaseUrl);
+export const createUserSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(
+    MIN_PASSWORD_LENGTH,
+    `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+  ),
+});
+
+type CreateUserInput = z.input<typeof createUserSchema>;
 
 export interface AuthUser {
   email: string;
   id: string;
-}
-
-export function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase();
-}
-
-export function validateEmail(email: string): boolean {
-  return EMAIL_REGEX.test(email);
-}
-
-export function validatePassword(password: string): boolean {
-  return password.length >= MIN_PASSWORD_LENGTH;
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -47,9 +43,7 @@ export async function hashPassword(password: string): Promise<string> {
   const key = await derivePasswordKey(password, salt, PASSWORD_ITERATIONS);
 
   return `${PASSWORD_PREFIX}:${PASSWORD_ITERATIONS}:${toHex(salt)}:${
-    toHex(
-      key,
-    )
+    toHex(key)
   }`;
 }
 
@@ -78,27 +72,14 @@ export async function verifyPassword(
 export async function createUser({
   email,
   password,
-}: {
-  email: string;
-  password: string;
-}): Promise<AuthUser> {
-  const normalizedEmail = normalizeEmail(email);
-
-  if (!validateEmail(normalizedEmail)) {
-    throw new Error(`Invalid email: ${email}`);
-  }
-
-  if (!validatePassword(password)) {
-    throw new Error(
-      `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
-    );
-  }
+}: CreateUserInput): Promise<AuthUser> {
+  const input = createUserSchema.parse({ email, password });
 
   const [created] = await db
     .insert(user)
     .values({
-      email: normalizedEmail,
-      passwordHash: await hashPassword(password),
+      email: input.email,
+      passwordHash: await hashPassword(input.password),
     })
     .returning({ id: user.id, email: user.email });
 
@@ -112,11 +93,16 @@ export async function verifyUserCredentials({
   email: string;
   password: string;
 }): Promise<AuthUser | null> {
-  const normalizedEmail = normalizeEmail(email);
+  const normalizedEmail = emailSchema.safeParse(email);
+
+  if (!normalizedEmail.success) {
+    return null;
+  }
+
   const [found] = await db
     .select()
     .from(user)
-    .where(eq(user.email, normalizedEmail))
+    .where(eq(user.email, normalizedEmail.data))
     .limit(1);
 
   if (!(found && (await verifyPassword(password, found.passwordHash)))) {

@@ -1,7 +1,7 @@
-import { getCookies } from "@std/http";
 import { deleteSession, deleteSessionCookie } from "@/lib/auth.ts";
 import { SESSION_COOKIE } from "@/lib/constants.ts";
 import { define } from "@/lib/utils.ts";
+import { getCookies } from "@std/http";
 
 export const handler = define.handlers({
   async POST(ctx) {

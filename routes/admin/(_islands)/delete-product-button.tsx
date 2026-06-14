@@ -1,6 +1,6 @@
-import { useSignal } from "@preact/signals";
 import { useFormAction } from "@/hooks/use-form-action.ts";
 import { toast } from "@/lib/toast.ts";
+import { useSignal } from "@preact/signals";
 
 export function DeleteProductButton({
   id,

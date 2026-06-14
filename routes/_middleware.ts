@@ -1,4 +1,3 @@
-import { getCookies } from "@std/http";
 import { getUserBySessionToken } from "@/lib/auth.ts";
 import {
   DEFAULT_LOCALE,
@@ -9,6 +8,7 @@ import {
   THEME_COOKIE,
 } from "@/lib/constants.ts";
 import { define } from "@/lib/utils.ts";
+import { getCookies } from "@std/http";
 
 export default define.middleware(async (ctx) => {
   const pathname = new URL(ctx.req.url).pathname;

@@ -1,15 +1,6 @@
+import { createUser, createUserSchema } from "@/lib/auth.ts";
 import { parseArgs } from "@std/cli/parse-args";
 import { promptSecret } from "@std/cli/prompt-secret";
-import {
-  createUser,
-  normalizeEmail,
-  validateEmail,
-  validatePassword,
-} from "@/lib/auth.ts";
-import { MIN_PASSWORD_LENGTH } from "@/lib/constants.ts";
-
-const textEncoder = new TextEncoder();
-const textDecoder = new TextDecoder();
 
 interface CreateAdminOptions {
   interaction: boolean;
@@ -43,15 +34,14 @@ function parseCreateAdminOptions(args: string[]): CreateAdminOptions {
 }
 
 async function createAdminUser(options: CreateAdminOptions) {
-  const email = await resolveEmail(options);
-  const password = resolvePassword(options);
+  const input = createUserSchema.safeParse(resolveUserInput(options));
 
-  if (!(email && password)) {
-    fail("Email and password are required");
+  if (!input.success) {
+    fail(input.error.issues.map((issue) => issue.message).join("\n"));
   }
 
   try {
-    const user = await createUser({ email, password });
+    const user = await createUser(input.data);
     // deno-lint-ignore no-console
     console.log(`User ${user.email} was successfully created`);
     Deno.exit(0);
@@ -60,73 +50,25 @@ async function createAdminUser(options: CreateAdminOptions) {
   }
 }
 
-async function resolveEmail(
+function resolveUserInput(
   options: CreateAdminOptions,
-): Promise<string | undefined> {
-  let email = options.mail ? normalizeEmail(options.mail) : undefined;
+): { email: string; password: string } {
+  const email = options.mail ?? (options.interaction ? prompt("Email:") : "");
+  const password = options.password ?? promptPassword(options.interaction);
 
-  if (email && !validateEmail(email)) {
-    fail(`Invalid email: ${email}`);
-  }
-
-  if (!(options.interaction || email)) {
+  if (!options.interaction && !options.mail) {
     fail("--mail is required when using --no-interaction");
   }
 
-  while (options.interaction && !email) {
-    email = normalizeEmail(await readLine("Email: "));
-
-    if (!validateEmail(email)) {
-      // deno-lint-ignore no-console
-      console.error("Enter a valid email.");
-      email = undefined;
-    }
-  }
-
-  return email;
-}
-
-function resolvePassword(options: CreateAdminOptions): string | undefined {
-  if (options.password && !validatePassword(options.password)) {
-    fail(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
-  }
-
-  if (!(options.interaction || options.password)) {
+  if (!options.interaction && !options.password) {
     fail("--password is required when using --no-interaction");
   }
 
-  return options.password ?? promptPassword();
+  return { email: email ?? "", password };
 }
 
-function promptPassword(): string | undefined {
-  let password: string | undefined;
-
-  while (!password) {
-    password = promptSecret("Password: ") ?? undefined;
-
-    if (password && !validatePassword(password)) {
-      // deno-lint-ignore no-console
-      console.error(
-        `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`,
-      );
-      password = undefined;
-    }
-  }
-
-  return password;
-}
-
-async function readLine(label: string): Promise<string> {
-  await Deno.stdout.write(textEncoder.encode(label));
-
-  const buffer = new Uint8Array(1024);
-  const bytesRead = await Deno.stdin.read(buffer);
-
-  if (bytesRead === null) {
-    return "";
-  }
-
-  return textDecoder.decode(buffer.subarray(0, bytesRead)).trim();
+function promptPassword(interaction: boolean): string {
+  return interaction ? promptSecret("Password: ") ?? "" : "";
 }
 
 function usage(error?: string): never {

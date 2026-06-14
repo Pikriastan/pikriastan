@@ -1,10 +1,10 @@
-import { define, formatPrice, pickLocalized } from "@/lib/utils.ts";
-import { Head } from "fresh/runtime";
+import { INQUIRY_EMAIL } from "@/lib/constants.ts";
 import { getProductBySlug } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
-import { HttpError } from "fresh";
+import { define, formatPrice, pickLocalized } from "@/lib/utils.ts";
 import { ProductGallery } from "@/routes/(site)/(_islands)/product-gallery.tsx";
-import { INQUIRY_EMAIL } from "@/lib/constants.ts";
+import { HttpError } from "fresh";
+import { Head } from "fresh/runtime";
 
 export default define.page(async ({ params, state }) => {
   const { t } = getT(state.locale);

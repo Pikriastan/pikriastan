@@ -1,4 +1,3 @@
-import { page } from "fresh";
 import {
   createSession,
   setSessionCookie,
@@ -7,6 +6,7 @@ import {
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { LoginForm } from "@/routes/admin/(_components)/login-form.tsx";
+import { page } from "fresh";
 
 export default define.page<typeof handler>(function LoginPage({ state, data }) {
   const { t } = getT(state.locale);
