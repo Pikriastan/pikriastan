@@ -43,7 +43,7 @@ export default define.page(async ({ params, state }) => {
             </a>
           </div>
 
-          <div className="grid min-w-0 grid-cols-12 gap-10 md:gap-16">
+          <div className="grid min-w-0 grid-cols-12 gap-y-10 md:gap-y-16 lg:gap-x-16 lg:gap-y-0">
             <div className="fade-up col-span-12 min-w-0 lg:col-span-7">
               <ProductGallery
                 alt={name}

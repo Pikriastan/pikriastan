@@ -13,8 +13,8 @@ export function Footer({ locale }: FooterProps) {
   return (
     <footer className="hairline border-t">
       <div className="mx-auto max-w-350 px-5 py-16 sm:px-6 md:px-12 md:py-20">
-        <div className="grid grid-cols-12 gap-10 md:gap-12">
-          <div className="col-span-12 md:col-span-5">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-12 md:gap-12">
+          <div className="col-span-2 md:col-span-5">
             <div className="font-display text-3xl lowercase leading-none tracking-tight md:text-4xl">
               pikriastan
             </div>
@@ -22,7 +22,7 @@ export function Footer({ locale }: FooterProps) {
               {t.brand.tagline}
             </p>
           </div>
-          <div className="col-span-6 flex flex-col gap-2.5 font-mono text-[11px] uppercase tracking-[0.22em] md:col-span-3">
+          <div className="col-span-1 flex flex-col gap-2.5 font-mono text-[11px] uppercase tracking-[0.22em] md:col-span-3">
             <span className="text-muted">
               {locale === "ka" ? "ნავიგაცია" : "Index"}
             </span>
@@ -36,12 +36,12 @@ export function Footer({ locale }: FooterProps) {
               {t.nav.about}
             </a>
           </div>
-          <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
+          <div className="col-span-1 flex flex-col gap-4 md:col-span-4">
             <span className="font-mono text-[11px] text-muted uppercase tracking-[0.22em]">
               {t.footer.languageLabel}
             </span>
             <LanguageSwitcher locale={locale} />
-            <span className="mt-3 font-mono text-[11px] text-muted uppercase tracking-[0.22em]">
+            <span className="mt-3 font-mono text-[11px] text-muted uppercase tracking-[0.22em] wrap-break-word">
               {t.footer.madeIn}
             </span>
           </div>
