@@ -1,3 +1,5 @@
+import { logger } from "@/lib/logger.ts";
+
 export type ErrorType =
   | "bad_request"
   | "unauthorized"
@@ -38,6 +40,15 @@ export class WebError extends Error {
     const visibility = visibilityBySurface[this.surface];
 
     const { message, cause, statusCode } = this;
+
+    const level = statusCode >= 500 ? "error" : "warn";
+    logger[level]("{code} ({statusCode}): {cause}", {
+      code,
+      type: this.type,
+      surface: this.surface,
+      statusCode,
+      cause: cause ?? "(no detail)",
+    });
 
     if (visibility === "log") {
       return Response.json(

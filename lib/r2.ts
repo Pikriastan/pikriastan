@@ -1,4 +1,3 @@
-import { logger } from "@/lib/logger.ts";
 import {
   DeleteObjectCommand,
   PutObjectCommand,
@@ -52,8 +51,7 @@ export async function uploadImage(productId: string, file: File) {
     );
 
     return { key };
-  } catch (err) {
-    logger.error(`bad_request:r2:upload - ${String(err)}`);
+  } catch {
     throw new WebError("bad_request:r2", "Failed to upload an image to R2");
   }
 }

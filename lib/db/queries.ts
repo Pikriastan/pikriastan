@@ -1,6 +1,5 @@
 import { config } from "@/lib/config.ts";
 import { WebError } from "@/lib/errors.ts";
-import { logger } from "@/lib/logger.ts";
 import { deleteImage, uploadImage } from "@/lib/r2.ts";
 import type { ProductData } from "@/lib/schemas.ts";
 import { and, asc, eq, inArray, notInArray, sql } from "drizzle-orm";
@@ -153,7 +152,6 @@ export async function createProduct(data: ProductData): Promise<Product> {
       return row;
     });
   } catch (err) {
-    logger.error(`bad_request:database:createProduct - ${String(err)}`);
     if (err instanceof WebError) {
       throw err;
     }
