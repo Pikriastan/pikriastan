@@ -13,14 +13,14 @@ export default define.page(function App({ Component, state }) {
         <meta property="og:title" content="Pikriastan" />
         <meta
           property="og:description"
-          content="An independent garment studio in Tbilisi. Considered cuts, raw textures, and finite series \u2014 a quiet refusal of trend."
+          content="An independent garment studio in Tbilisi. Considered cuts, raw textures, and finite series a quiet refusal of trend."
         />
         <meta
           property="og:image"
-          content="https://pikriastan.ge/images/banner.png"
+          content="https://pikriastan.ge/images/og-eng.png"
         />
-        <meta property="og:image:width" content="780" />
-        <meta property="og:image:height" content="500" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
         <title>Pikriastan</title>
         <link
