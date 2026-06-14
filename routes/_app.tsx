@@ -7,6 +7,21 @@ export default define.page(function App({ Component, state }) {
       <head>
         <meta charset="utf-8" />
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://pikriastan.ge" />
+        <meta property="og:title" content="Pikriastan" />
+        <meta
+          property="og:description"
+          content="An independent garment studio in Tbilisi. Considered cuts, raw textures, and finite series \u2014 a quiet refusal of trend."
+        />
+        <meta
+          property="og:image"
+          content="https://pikriastan.ge/images/banner.png"
+        />
+        <meta property="og:image:width" content="780" />
+        <meta property="og:image:height" content="500" />
+
         <title>Pikriastan</title>
         <link
           as="font"
