@@ -6,6 +6,7 @@ import {
 import { config } from "./config.ts";
 import { ALLOWED_IMAGE_TYPES, MAX_BYTES } from "./constants.ts";
 import { WebError } from "./errors.ts";
+import { logger } from "@/lib/logger.ts";
 
 const r2 = new S3Client({
   region: "auto",
@@ -51,7 +52,8 @@ export async function uploadImage(productId: string, file: File) {
     );
 
     return { key };
-  } catch {
+  } catch (err) {
+    logger.error(`bad_request:r2:upload - ${String(err)}`);
     throw new WebError("bad_request:r2", "Failed to upload an image to R2");
   }
 }

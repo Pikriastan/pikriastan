@@ -8,6 +8,7 @@
     "jsr:@fresh/core@2": "2.3.3",
     "jsr:@fresh/core@^2.3.3": "2.3.3",
     "jsr:@fresh/plugin-vite@^1.1.2": "1.1.2",
+    "jsr:@logtape/logtape@^2.1.4": "2.1.4",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/cli@^1.0.30": "1.0.30",
     "jsr:@std/crypto@^1.1.0": "1.1.0",
@@ -131,6 +132,9 @@
         "npm:rollup",
         "npm:vite@^7.1.4"
       ]
+    },
+    "@logtape/logtape@2.1.4": {
+      "integrity": "5f22088a90ccfd2f907d677f078232a9cc7fa63b320c365b954f9666175789b1"
     },
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
@@ -2556,6 +2560,7 @@
     "dependencies": [
       "jsr:@fresh/core@^2.3.3",
       "jsr:@fresh/plugin-vite@^1.1.2",
+      "jsr:@logtape/logtape@^2.1.4",
       "jsr:@std/cli@^1.0.30",
       "jsr:@std/dotenv@~0.225.7",
       "jsr:@std/http@^1.1.1",
