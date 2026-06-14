@@ -19,7 +19,7 @@ export default define.page(async function Home({ state }) {
     <>
       {/* HERO */}
       <section className="hero-glow hairline border-b">
-        <div className="mx-auto max-w-350 px-6 pt-24 pb-24 md:px-12 md:pt-32 md:pb-32">
+        <div className="mx-auto max-w-350 px-5 pt-24 pb-24 sm:px-6 md:px-12 md:pt-32 md:pb-32">
           <p className="eyebrow fade-up mb-10">{t.hero.eyebrow}</p>
           <div className="grid grid-cols-12 items-end gap-8 md:gap-12">
             <h1
@@ -49,7 +49,7 @@ export default define.page(async function Home({ state }) {
 
       {/* FEATURED PIECES */}
       <section className="hairline border-b">
-        <div className="mx-auto max-w-350 px-6 py-20 md:px-12 md:py-28">
+        <div className="mx-auto max-w-350 px-5 py-20 sm:px-6 md:px-12 md:py-28">
           <div className="mb-14 flex items-end justify-between gap-6 md:mb-20">
             <div>
               <p className="eyebrow dot-accent mb-4">
@@ -98,7 +98,7 @@ export default define.page(async function Home({ state }) {
 
       {/* STUDIO STORY */}
       <section className="hairline border-b">
-        <div className="mx-auto max-w-350 px-6 py-24 md:px-12 md:py-32">
+        <div className="mx-auto max-w-350 px-5 py-24 sm:px-6 md:px-12 md:py-32">
           <div className="grid grid-cols-12 gap-8 md:gap-16">
             <div className="col-span-12 md:col-span-5">
               <p className="eyebrow mb-5">{t.home.storyEyebrow}</p>
@@ -123,7 +123,7 @@ export default define.page(async function Home({ state }) {
 
       {/* MANIFESTO */}
       <section className="hairline border-b">
-        <div className="mx-auto max-w-350 px-6 py-24 md:px-12 md:py-32">
+        <div className="mx-auto max-w-350 px-5 py-24 sm:px-6 md:px-12 md:py-32">
           <p className="eyebrow mb-12">{t.home.manifestoTitle}</p>
           <ol className="space-y-0">
             {t.home.manifestoLines.map((line, i) => (

@@ -33,7 +33,7 @@ export default define.page(async ({ params, state }) => {
         <title>Pikriastan - {product.nameEn}</title>
       </Head>
       <article className="hairline border-b">
-        <div className="mx-auto max-w-350 px-6 pt-10 pb-24 md:px-12 md:pt-14 md:pb-32">
+        <div className="mx-auto max-w-350 px-5 pt-10 pb-24 sm:px-6 md:px-12 md:pt-14 md:pb-32">
           <div className="mb-10 md:mb-14">
             <a
               className="link-underline inline-block pb-1 font-mono text-[10px] text-muted uppercase tracking-[0.28em] hover:text-ink"

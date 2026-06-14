@@ -14,7 +14,7 @@ export function Header({ locale }: { locale: Locale }) {
 
   return (
     <header className="hairline sticky top-0 z-40 border-b bg-paper/95 backdrop-blur supports-backdrop-filter:bg-paper/75">
-      <div className="mx-auto max-w-350 px-6 md:px-12">
+      <div className="mx-auto max-w-350 px-5 sm:px-6 md:px-12">
         <div className="flex items-center justify-between py-5 md:py-6">
           <nav className="hidden items-center gap-10 font-mono text-[11px] uppercase tracking-[0.24em] md:flex">
             {nav.map((n) => (

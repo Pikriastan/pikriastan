@@ -11,7 +11,7 @@ export default define.page(function About(ctx) {
         <title>Pikriastan - About</title>
       </Head>
       <section className="hairline border-b">
-        <div className="mx-auto max-w-350 px-6 pt-20 pb-24 md:px-12 md:pt-28 md:pb-32">
+        <div className="mx-auto max-w-350 px-5 pt-20 pb-24 sm:px-6 md:px-12 md:pt-28 md:pb-32">
           <p className="eyebrow mb-6">
             {`/ ${ctx.state.locale === "ka" ? "სტუდია" : "Studio"}`}
           </p>

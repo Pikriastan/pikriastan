@@ -12,7 +12,7 @@ export function Footer({ locale }: FooterProps) {
 
   return (
     <footer className="hairline border-t">
-      <div className="mx-auto max-w-350 px-6 py-16 md:px-12 md:py-20">
+      <div className="mx-auto max-w-350 px-5 py-16 sm:px-6 md:px-12 md:py-20">
         <div className="grid grid-cols-12 gap-10 md:gap-12">
           <div className="col-span-12 md:col-span-5">
             <div className="font-display text-3xl lowercase leading-none tracking-tight md:text-4xl">
