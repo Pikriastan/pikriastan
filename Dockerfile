@@ -1,13 +1,21 @@
-FROM denoland/deno:2.8.2
-
-ARG GIT_REVISION
-ENV DENO_DEPLOYMENT_ID=${GIT_REVISION}
+FROM denoland/deno:2.8.2 AS build
 
 WORKDIR /app
 
 COPY . .
 RUN deno install --allow-scripts
 RUN deno task build
+
+FROM denoland/deno:2.8.2 AS runtime
+
+ARG GIT_REVISION
+ENV DENO_DEPLOYMENT_ID=${GIT_REVISION}
+
+WORKDIR /app
+
+COPY --from=build /app/deno.json /app/deno.lock ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/_fresh ./_fresh
 
 EXPOSE 8000
 
