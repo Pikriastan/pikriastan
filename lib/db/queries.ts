@@ -7,6 +7,7 @@ import type { ProductData } from "@/lib/schemas.ts";
 import { type Product, product, productImage } from "./schema.ts";
 import type { ProductWithImages } from "./types.ts";
 import { productsWithImageUrls } from "./utils.ts";
+import { logger } from "@/lib/logger.ts";
 
 export const db = drizzle(config.DATABASE_URL);
 
@@ -152,6 +153,7 @@ export async function createProduct(data: ProductData): Promise<Product> {
       return row;
     });
   } catch (err) {
+    logger.error(`bad_request:database:createProduct - ${String(err)}`);
     if (err instanceof WebError) {
       throw err;
     }
