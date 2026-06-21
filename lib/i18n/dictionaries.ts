@@ -157,8 +157,7 @@ const en: Dictionary = {
     eyebrow: "Error 404",
     code: "404",
     title: "This page slipped out of frame.",
-    body:
-      "The page you are looking for has been moved, archived, or never existed. The collection, however, is still here.",
+    body: "The page you are looking for has been moved, archived, or never existed. The collection, however, is still here.",
     home: "Return home",
     collection: "Browse the collection",
   },
@@ -186,13 +185,11 @@ const en: Dictionary = {
     values: [
       {
         title: "Made in Tbilisi",
-        body:
-          "Patterned, cut and stitched within walking distance of the studio.",
+        body: "Patterned, cut and stitched within walking distance of the studio.",
       },
       {
         title: "Numbered runs",
-        body:
-          "Each piece is part of a finite series. No restocks, no replicas.",
+        body: "Each piece is part of a finite series. No restocks, no replicas.",
       },
       {
         title: "Lifetime mending",
@@ -296,8 +293,7 @@ const ka: Dictionary = {
     eyebrow: "შეცდომა 404",
     code: "404",
     title: "ეს გვერდი კადრს გასცდა.",
-    body:
-      "გვერდი, რომელსაც ეძებთ, გადატანილია, დაარქივებულია ან საერთოდ არ არსებობდა. კოლექცია კი ისევ აქ არის.",
+    body: "გვერდი, რომელსაც ეძებთ, გადატანილია, დაარქივებულია ან საერთოდ არ არსებობდა. კოლექცია კი ისევ აქ არის.",
     home: "მთავარზე დაბრუნება",
     collection: "კოლექციის დათვალიერება",
   },

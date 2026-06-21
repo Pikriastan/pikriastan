@@ -1,8 +1,8 @@
-import type { AuthUser } from "@/lib/auth.ts";
-import type { Locale, Theme } from "@/lib/constants.ts";
 import { type ClassValue, clsx } from "clsx";
 import { createDefine } from "fresh";
 import { twMerge } from "tailwind-merge";
+import type { AuthUser } from "@/lib/auth.ts";
+import type { Locale, Theme } from "@/lib/constants.ts";
 
 export interface State {
   locale: Locale;

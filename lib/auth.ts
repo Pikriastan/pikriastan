@@ -1,3 +1,7 @@
+import { deleteCookie, setCookie } from "@std/http";
+import { and, eq, gt } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { z } from "zod";
 import { config } from "@/lib/config.ts";
 import {
   MIN_PASSWORD_LENGTH,
@@ -5,10 +9,6 @@ import {
   SESSION_MAX_AGE_SECONDS,
 } from "@/lib/constants.ts";
 import { type User, user, userSession } from "@/lib/db/schema.ts";
-import { deleteCookie, setCookie } from "@std/http";
-import { and, eq, gt } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { z } from "zod";
 
 const PASSWORD_PREFIX = "pbkdf2:v1";
 const PASSWORD_ITERATIONS = 310_000;
@@ -19,16 +19,20 @@ const textEncoder = new TextEncoder();
 
 const db = drizzle(config.DATABASE_URL);
 
-const emailSchema = z.string().trim().toLowerCase().pipe(
-  z.email("Invalid email"),
-);
+const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email("Invalid email"));
 
 export const createUserSchema = z.object({
   email: emailSchema,
-  password: z.string().min(
-    MIN_PASSWORD_LENGTH,
-    `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
-  ),
+  password: z
+    .string()
+    .min(
+      MIN_PASSWORD_LENGTH,
+      `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    ),
 });
 
 type CreateUserInput = z.input<typeof createUserSchema>;
@@ -42,18 +46,17 @@ export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(PASSWORD_SALT_BYTES);
   const key = await derivePasswordKey(password, salt, PASSWORD_ITERATIONS);
 
-  return `${PASSWORD_PREFIX}:${PASSWORD_ITERATIONS}:${toHex(salt)}:${
-    toHex(key)
-  }`;
+  return `${PASSWORD_PREFIX}:${PASSWORD_ITERATIONS}:${toHex(salt)}:${toHex(
+    key,
+  )}`;
 }
 
 export async function verifyPassword(
   password: string,
   passwordHash: string,
 ): Promise<boolean> {
-  const [algorithm, version, iterations, salt, storedKey] = passwordHash.split(
-    ":",
-  );
+  const [algorithm, version, iterations, salt, storedKey] =
+    passwordHash.split(":");
 
   if (
     `${algorithm}:${version}` !== PASSWORD_PREFIX ||
@@ -250,7 +253,6 @@ function constantTimeEqual(left: Uint8Array, right: Uint8Array): boolean {
   let diff = 0;
 
   for (let i = 0; i < left.length; i += 1) {
-    // biome-ignore lint/suspicious/noBitwiseOperators: Constant-time byte comparison needs bitwise operations.
     diff |= left[i] ^ right[i];
   }
 

@@ -23,7 +23,7 @@ export function useFormAction<TData = unknown, TError = unknown>(
 
   const resolveEndpoint = () =>
     endpoint ??
-      (typeof window === "undefined" ? "" : globalThis.location.pathname);
+    (typeof window === "undefined" ? "" : globalThis.location.pathname);
 
   const execute = async (payload: FormData | Record<string, unknown>) => {
     if (isPending.value) {
@@ -43,9 +43,10 @@ export function useFormAction<TData = unknown, TError = unknown>(
         headers["Content-Type"] = "application/json";
       }
 
-      const body = isJson && !(payload instanceof FormData)
-        ? JSON.stringify(payload)
-        : (payload as FormData);
+      const body =
+        isJson && !(payload instanceof FormData)
+          ? JSON.stringify(payload)
+          : (payload as FormData);
 
       const response = await fetch(resolveEndpoint(), {
         method: options.method,
@@ -54,6 +55,7 @@ export function useFormAction<TData = unknown, TError = unknown>(
       });
 
       const contentTypeHeader = response.headers.get("content-type") || "";
+      // biome-ignore lint/suspicious/noImplicitAnyLet: not a big deal
       let result;
 
       if (contentTypeHeader.includes("application/json")) {
@@ -63,6 +65,9 @@ export function useFormAction<TData = unknown, TError = unknown>(
       }
 
       if (!response.ok) {
+        if (typeof result === "object" && "message" in result) {
+          throw new Error(result.message);
+        }
         throw new Error(
           result?.error || result || `Server error: ${response.status}`,
         );
@@ -72,9 +77,8 @@ export function useFormAction<TData = unknown, TError = unknown>(
       options.onSuccess?.(result as TData);
       return result;
     } catch (err) {
-      const msg = err instanceof Error
-        ? err.message
-        : "An unknown error occurred";
+      const msg =
+        err instanceof Error ? err.message : "An unknown error occurred";
       error.value = msg as TError;
       options.onError?.(msg);
       throw err;

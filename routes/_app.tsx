@@ -30,34 +30,32 @@ export default define.page(function App({ Component, state }) {
           rel="preload"
           type="font/woff2"
         />
-        {state.locale === "ka"
-          ? (
-            <>
-              <link
-                as="font"
-                crossOrigin="anonymous"
-                href="/fonts/bpg_banner_supersquare_caps.woff2"
-                rel="preload"
-                type="font/woff2"
-              />
-              <link
-                as="font"
-                crossOrigin="anonymous"
-                href="/fonts/bpg_glaho.woff2"
-                rel="preload"
-                type="font/woff2"
-              />
-            </>
-          )
-          : (
+        {state.locale === "ka" ? (
+          <>
             <link
               as="font"
               crossOrigin="anonymous"
-              href="/fonts/Fraunces-Variable.woff2"
+              href="/fonts/bpg_banner_supersquare_caps.woff2"
               rel="preload"
               type="font/woff2"
             />
-          )}
+            <link
+              as="font"
+              crossOrigin="anonymous"
+              href="/fonts/bpg_glaho.woff2"
+              rel="preload"
+              type="font/woff2"
+            />
+          </>
+        ) : (
+          <link
+            as="font"
+            crossOrigin="anonymous"
+            href="/fonts/Fraunces-Variable.woff2"
+            rel="preload"
+            type="font/woff2"
+          />
+        )}
       </head>
       <body className="overflow-x-clip" lang={state.locale}>
         <Component />

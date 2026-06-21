@@ -1,5 +1,5 @@
 import { MoonIcon, SunIcon } from "@/components/icons.tsx";
-import { type Theme, THEME_COOKIE } from "@/lib/constants.ts";
+import { THEME_COOKIE, type Theme } from "@/lib/constants.ts";
 
 export function ThemeToggle() {
   async function toggleTheme() {

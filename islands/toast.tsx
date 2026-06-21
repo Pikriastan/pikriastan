@@ -1,3 +1,5 @@
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 import {
   CheckIcon,
   CloseIcon,
@@ -7,11 +9,9 @@ import {
 import {
   removeToast,
   type ToastItem,
-  toasts,
   type ToastType,
+  toasts,
 } from "@/lib/toast.ts";
-import { useSignal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
 
 const EXIT_MS = 220;
 
@@ -44,7 +44,7 @@ function Toast({ item }: { item: ToastItem }) {
   return (
     <output
       className={`toast toast-${item.type}${
-        leaving.value ? " toast-leaving" : ""
+        leaving.value ? "toast-leaving" : ""
       }`}
     >
       <span aria-hidden className="toast-icon">
@@ -82,8 +82,10 @@ function Toast({ item }: { item: ToastItem }) {
 
 export function Toaster() {
   return (
-    <div aria-live="polite" className="toaster" role="region">
-      {toasts.value.map((item) => <Toast item={item} key={item.id} />)}
-    </div>
+    <section aria-live="polite" className="toaster">
+      {toasts.value.map((item) => (
+        <Toast item={item} key={item.id} />
+      ))}
+    </section>
   );
 }

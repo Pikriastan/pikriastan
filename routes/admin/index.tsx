@@ -1,3 +1,4 @@
+import { getCookies } from "@std/http";
 import { deleteSession, deleteSessionCookie } from "@/lib/auth.ts";
 import { SESSION_COOKIE } from "@/lib/constants.ts";
 import { getProducts } from "@/lib/db/queries.ts";
@@ -5,7 +6,6 @@ import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { AdminShell } from "@/routes/admin/(_components)/admin-shell.tsx";
 import { AdminProducts } from "@/routes/admin/(_components)/products-list.tsx";
-import { getCookies } from "@std/http";
 
 export default define.page(async function AdminPage({ state }) {
   const { t } = getT(state.locale);

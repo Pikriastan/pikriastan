@@ -1,4 +1,4 @@
-import { type Locale, LOCALE_COOKIE } from "@/lib/constants.ts";
+import { LOCALE_COOKIE, type Locale } from "@/lib/constants.ts";
 
 export function LanguageSwitcher({ locale }: { locale: Locale }) {
   async function handleLanguageChange(language: Locale) {

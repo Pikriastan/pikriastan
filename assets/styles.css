@@ -345,7 +345,10 @@ body {
   letter-spacing: 0.14em;
   cursor: default;
   border-radius: 0;
-  transition: background 300ms ease, color 300ms ease, border-color 300ms ease;
+  transition:
+    background 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease;
 }
 
 .btn:disabled {
@@ -588,7 +591,9 @@ input[type="checkbox"] {
   background: transparent;
   border: 1px solid currentColor;
   border-radius: 0;
-  transition: background 200ms ease, color 200ms ease;
+  transition:
+    background 200ms ease,
+    color 200ms ease;
 }
 
 .toast-action:hover {
@@ -610,7 +615,9 @@ input[type="checkbox"] {
   background: transparent;
   border: none;
   opacity: 0;
-  transition: opacity 200ms ease, color 200ms ease;
+  transition:
+    opacity 200ms ease,
+    color 200ms ease;
 }
 
 .toast:hover .toast-close {

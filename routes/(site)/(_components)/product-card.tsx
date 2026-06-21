@@ -25,30 +25,28 @@ export function ProductCard({
       style={{ animationDelay: `${Math.min(index * 70, 420)}ms` }}
     >
       <div className="relative aspect-4/5 w-full overflow-hidden bg-paper-deep">
-        {cover
-          ? (
-            <>
+        {cover ? (
+          <>
+            <img
+              alt={name}
+              className="product-card-img absolute inset-0 h-full w-full object-cover"
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              src={cover.url}
+            />
+            {second && (
               <img
-                alt={name}
-                className="product-card-img absolute inset-0 h-full w-full object-cover"
+                alt=""
+                className="second-img absolute inset-0 object-cover"
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                src={cover.url}
+                src={second.url}
               />
-              {second && (
-                <img
-                  alt=""
-                  className="second-img absolute inset-0 object-cover"
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  src={second.url}
-                />
-              )}
-            </>
-          )
-          : (
-            <div className="absolute inset-0 grid place-items-center font-mono text-[10px] text-muted uppercase tracking-[0.3em]">
-              {"\u2014"}
-            </div>
-          )}
+            )}
+          </>
+        ) : (
+          <div className="absolute inset-0 grid place-items-center font-mono text-[10px] text-muted uppercase tracking-[0.3em]">
+            {"\u2014"}
+          </div>
+        )}
       </div>
       <div className="mt-5 flex items-baseline justify-between gap-4">
         <h3

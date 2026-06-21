@@ -40,16 +40,14 @@ export function AdminProducts({
               >
                 <div className="col-span-2 md:col-span-1">
                   <div className="relative aspect-4/5 w-full overflow-hidden bg-paper-deep">
-                    {p.images[0]
-                      ? (
-                        <img
-                          alt={name}
-                          className="absolute inset-0 h-full w-full object-cover"
-                          sizes="(min-width: 768px) 120px, 96px"
-                          src={p.images[0].url}
-                        />
-                      )
-                      : null}
+                    {p.images[0] ? (
+                      <img
+                        alt={name}
+                        className="absolute inset-0 h-full w-full object-cover"
+                        sizes="(min-width: 768px) 120px, 96px"
+                        src={p.images[0].url}
+                      />
+                    ) : null}
                   </div>
                 </div>
                 <div className="col-span-10 min-w-0 md:col-span-5">

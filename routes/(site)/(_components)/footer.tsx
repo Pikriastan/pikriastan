@@ -41,7 +41,7 @@ export function Footer({ locale }: FooterProps) {
               {t.footer.languageLabel}
             </span>
             <LanguageSwitcher locale={locale} />
-            <span className="mt-3 font-mono text-[11px] text-muted uppercase tracking-[0.22em] wrap-break-word">
+            <span className="wrap-break-word mt-3 font-mono text-[11px] text-muted uppercase tracking-[0.22em]">
               {t.footer.madeIn}
             </span>
           </div>

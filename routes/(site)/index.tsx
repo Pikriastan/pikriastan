@@ -11,9 +11,10 @@ export default define.page(async function Home({ state }) {
     publishedOnly: true,
     limit: 6,
   });
-  const latest = featured.length === 0
-    ? await getProducts({ publishedOnly: true, limit: 6 })
-    : featured;
+  const latest =
+    featured.length === 0
+      ? await getProducts({ publishedOnly: true, limit: 6 })
+      : featured;
 
   return (
     <>
@@ -67,26 +68,24 @@ export default define.page(async function Home({ state }) {
             </a>
           </div>
 
-          {latest.length === 0
-            ? (
-              <div className="hairline grid place-items-center border border-dashed py-28 text-center">
-                <p className="max-w-md font-mono text-muted text-xs uppercase tracking-[0.24em]">
-                  {t.collection.empty}
-                </p>
-              </div>
-            )
-            : (
-              <div className="grid grid-cols-2 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-20 lg:grid-cols-3">
-                {latest.map((p, i) => (
-                  <ProductCard
-                    index={i}
-                    key={p.id}
-                    locale={state.locale}
-                    product={p}
-                  />
-                ))}
-              </div>
-            )}
+          {latest.length === 0 ? (
+            <div className="hairline grid place-items-center border border-dashed py-28 text-center">
+              <p className="max-w-md font-mono text-muted text-xs uppercase tracking-[0.24em]">
+                {t.collection.empty}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-20 lg:grid-cols-3">
+              {latest.map((p, i) => (
+                <ProductCard
+                  index={i}
+                  key={p.id}
+                  locale={state.locale}
+                  product={p}
+                />
+              ))}
+            </div>
+          )}
 
           <div className="mt-14 md:hidden">
             <a className="btn btn-ghost w-full" href="/collection">

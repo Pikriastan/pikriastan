@@ -1,10 +1,10 @@
+import { HttpError } from "fresh";
+import { Head } from "fresh/runtime";
 import { INQUIRY_EMAIL } from "@/lib/constants.ts";
 import { getProductBySlug } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define, formatPrice, pickLocalized } from "@/lib/utils.ts";
 import { ProductGallery } from "@/routes/(site)/(_islands)/product-gallery.tsx";
-import { HttpError } from "fresh";
-import { Head } from "fresh/runtime";
 
 export default define.page(async ({ params, state }) => {
   const { t } = getT(state.locale);
@@ -78,31 +78,29 @@ export default define.page(async ({ params, state }) => {
                   <span className="shrink-0 text-muted">
                     {t.product.category}
                   </span>
-                  <span className="min-w-0 wrap-break-word text-right">
+                  <span className="wrap-break-word min-w-0 text-right">
                     {category || "\u2014"}
                   </span>
                 </div>
                 <div className="flex min-w-0 justify-between gap-4">
                   <span className="shrink-0 text-muted">N°</span>
-                  <span className="min-w-0 wrap-break-word text-right">
+                  <span className="wrap-break-word min-w-0 text-right">
                     {product.id.slice(-6).toUpperCase()}
                   </span>
                 </div>
                 <div className="flex min-w-0 justify-between gap-4">
                   <span className="shrink-0 text-muted">{t.product.price}</span>
-                  <span className="min-w-0 wrap-break-word text-right">
+                  <span className="wrap-break-word min-w-0 text-right">
                     {formatPrice(product.price, product.currency, state.locale)}
                   </span>
                 </div>
               </div>
 
               <a
-                className="btn btn-primary mt-12 min-w-0 max-w-full whitespace-normal text-center w-full"
-                href={`mailto:${INQUIRY_EMAIL}?subject=${
-                  encodeURIComponent(
-                    `Inquiry: ${product.nameEn} (${product.slug})`,
-                  )
-                }`}
+                className="btn btn-primary mt-12 w-full min-w-0 max-w-full whitespace-normal text-center"
+                href={`mailto:${INQUIRY_EMAIL}?subject=${encodeURIComponent(
+                  `Inquiry: ${product.nameEn} (${product.slug})`,
+                )}`}
               >
                 {t.product.inquire}
               </a>

@@ -1,3 +1,4 @@
+import { HttpError } from "fresh/runtime";
 import { getProductById } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
@@ -6,7 +7,6 @@ import {
   ProductForm,
   type ProductFormValues,
 } from "@/routes/admin/(_islands)/product-form.tsx";
-import { HttpError } from "fresh/runtime";
 
 export default define.page(async ({ params, state }) => {
   const { t } = getT(state.locale);

@@ -1,6 +1,6 @@
-import { createUser, createUserSchema } from "@/lib/auth.ts";
 import { parseArgs } from "@std/cli/parse-args";
 import { promptSecret } from "@std/cli/prompt-secret";
+import { createUser, createUserSchema } from "@/lib/auth.ts";
 
 interface CreateAdminOptions {
   interaction: boolean;
@@ -50,9 +50,10 @@ async function createAdminUser(options: CreateAdminOptions) {
   }
 }
 
-function resolveUserInput(
-  options: CreateAdminOptions,
-): { email: string; password: string } {
+function resolveUserInput(options: CreateAdminOptions): {
+  email: string;
+  password: string;
+} {
   const email = options.mail ?? (options.interaction ? prompt("Email:") : "");
   const password = options.password ?? promptPassword(options.interaction);
 
@@ -68,7 +69,7 @@ function resolveUserInput(
 }
 
 function promptPassword(interaction: boolean): string {
-  return interaction ? promptSecret("Password: ") ?? "" : "";
+  return interaction ? (promptSecret("Password: ") ?? "") : "";
 }
 
 function usage(error?: string): never {

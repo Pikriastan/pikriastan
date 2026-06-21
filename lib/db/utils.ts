@@ -1,5 +1,5 @@
-import { uuid } from "drizzle-orm/pg-core";
 import { v7 } from "@std/uuid";
+import { uuid } from "drizzle-orm/pg-core";
 import type { Product, ProductImage } from "./schema.ts";
 import type { ProductWithImages } from "./types.ts";
 
@@ -21,8 +21,7 @@ export function productsWithImageUrls(
     if (row.product_images) {
       grouped.images.push({
         ...row.product_images,
-        url:
-          `${process.env.FRESH_PUBLIC_R2_PUBLIC_BASE_URL}/${row.product_images.key}`,
+        url: `${process.env.FRESH_PUBLIC_R2_PUBLIC_BASE_URL}/${row.product_images.key}`,
       });
     }
 

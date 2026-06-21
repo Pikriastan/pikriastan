@@ -1,6 +1,6 @@
+import { useSignal } from "@preact/signals";
 import { useFormAction } from "@/hooks/use-form-action.ts";
 import { toast } from "@/lib/toast.ts";
-import { useSignal } from "@preact/signals";
 
 export function DeleteProductButton({
   id,
@@ -22,8 +22,8 @@ export function DeleteProductButton({
   const buttonLabel = isPending
     ? "\u2026"
     : confirming.value
-    ? confirmLabel
-    : label;
+      ? confirmLabel
+      : label;
 
   function onClick(event: MouseEvent) {
     if (!confirming.value) {

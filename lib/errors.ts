@@ -52,7 +52,10 @@ export class WebError extends Error {
 
     if (visibility === "log") {
       return Response.json(
-        { code: "", message: "Something went wrong. Please try again later." },
+        {
+          code: "",
+          message: cause ?? "Something went wrong. Please try again later.",
+        },
         { status: statusCode },
       );
     }
@@ -118,4 +121,17 @@ function getStatusCodeByType(type: ErrorType) {
     default:
       return 500;
   }
+}
+
+interface DatabaseDriverError {
+  code?: string;
+  message: string;
+}
+
+export function isDriverError(cause: unknown): cause is DatabaseDriverError {
+  return (
+    typeof cause === "object" &&
+    cause !== null &&
+    ("code" in cause || "errno" in cause || "message" in cause)
+  );
 }

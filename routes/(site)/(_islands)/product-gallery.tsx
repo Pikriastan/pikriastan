@@ -33,13 +33,13 @@ export const ProductGallery = ({
           {images.map((src, i) => (
             <button
               aria-label={`Image ${i + 1}`}
-              className={`relative min-w-0 overflow-hidden aspect-4/5 transition-opacity ${
+              className={`relative aspect-4/5 min-w-0 overflow-hidden transition-opacity ${
                 active.value === i
                   ? "opacity-100"
                   : "opacity-60 hover:opacity-100"
               }`}
               key={src}
-              onClick={() => active.value = i}
+              onClick={() => (active.value = i)}
               type="button"
             >
               <img

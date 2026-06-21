@@ -1,7 +1,8 @@
+import { page } from "fresh";
 import { createProduct, updateProduct } from "@/lib/db/queries.ts";
+import { WebError } from "@/lib/errors.ts";
 import { productSchema } from "@/lib/schemas.ts";
 import { define } from "@/lib/utils.ts";
-import { page } from "fresh";
 
 export async function handleProductCreateOrUpdate(
   formData: FormData,
@@ -15,9 +16,12 @@ export async function handleProductCreateOrUpdate(
   });
 
   if (validatedDataResult.error) {
-    return page({ error: "Received invalid data, check form fields." }, {
-      status: 422,
-    });
+    return page(
+      { error: "Received invalid data, check form fields." },
+      {
+        status: 422,
+      },
+    );
   }
 
   if (mode === "create") {
@@ -31,8 +35,12 @@ export const handler = define.handlers({
   async POST(ctx) {
     const formData = await ctx.req.formData();
 
-    await handleProductCreateOrUpdate(formData, "create");
-
-    return new Response("Successfully created a product");
+    try {
+      await handleProductCreateOrUpdate(formData, "create");
+      return new Response("Successfully created a product");
+    } catch (err) {
+      if (err instanceof WebError) return err.toResponse();
+      throw err;
+    }
   },
 });

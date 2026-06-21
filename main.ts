@@ -1,5 +1,5 @@
-import type { State } from "@/lib/utils.ts";
 import { App, staticFiles } from "fresh";
+import type { State } from "@/lib/utils.ts";
 
 const FONT_CACHE_CONTROL = "public, max-age=31536000, immutable";
 

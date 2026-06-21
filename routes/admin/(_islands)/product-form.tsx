@@ -1,8 +1,8 @@
+import { useSignal } from "@preact/signals";
+import { useRef } from "preact/hooks";
 import { useFormAction } from "@/hooks/use-form-action.ts";
 import type { ProductImageWithUrl } from "@/lib/db/types.ts";
 import { toast } from "@/lib/toast.ts";
-import { useSignal } from "@preact/signals";
-import { useRef } from "preact/hooks";
 
 interface PendingFile {
   file: File;
@@ -126,11 +126,9 @@ export function ProductForm({
     }
     customError.value = null;
     const next: PendingFile[] = Array.from(files).map((file) => ({
-      id: `${Date.now()}-${
-        Math.random()
-          .toString(36)
-          .slice(2, 8)
-      }-${file.name}`,
+      id: `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 8)}-${file.name}`,
       file,
       previewUrl: URL.createObjectURL(file),
     }));
@@ -264,13 +262,15 @@ export function ProductForm({
             <span>{labels.fieldCategoryEn}</span>
             <input
               name="categoryEn"
-              onChange={(e) => (values.value = {
-                ...values.value,
-                category: {
-                  ...values.value.category,
-                  en: e.currentTarget.value,
-                },
-              })}
+              onChange={(e) =>
+                (values.value = {
+                  ...values.value,
+                  category: {
+                    ...values.value.category,
+                    en: e.currentTarget.value,
+                  },
+                })
+              }
               placeholder="Outerwear"
               type="text"
               value={values.value.category.en}
@@ -282,13 +282,15 @@ export function ProductForm({
             <span>{labels.fieldCategoryKa}</span>
             <input
               name="categoryKa"
-              onChange={(e) => (values.value = {
-                ...values.value,
-                category: {
-                  ...values.value.category,
-                  ka: e.currentTarget.value,
-                },
-              })}
+              onChange={(e) =>
+                (values.value = {
+                  ...values.value,
+                  category: {
+                    ...values.value.category,
+                    ka: e.currentTarget.value,
+                  },
+                })
+              }
               placeholder="გარესაცმელი"
               type="text"
               value={values.value.category.ka}
@@ -301,13 +303,15 @@ export function ProductForm({
             <span>{labels.fieldDescriptionEn}</span>
             <textarea
               name="descriptionEn"
-              onChange={(e) => (values.value = {
-                ...values.value,
-                description: {
-                  ...values.value.description,
-                  en: e.currentTarget.value,
-                },
-              })}
+              onChange={(e) =>
+                (values.value = {
+                  ...values.value,
+                  description: {
+                    ...values.value.description,
+                    en: e.currentTarget.value,
+                  },
+                })
+              }
               placeholder="Patterned and cut in Tbilisi. Heavy wool, raw selvedge edges, hand-finished buttonholes."
               rows={6}
               value={values.value.description.en}
@@ -319,13 +323,15 @@ export function ProductForm({
             <span>{labels.fieldDescriptionKa}</span>
             <textarea
               name="descriptionKa"
-              onChange={(e) => (values.value = {
-                ...values.value,
-                description: {
-                  ...values.value.description,
-                  ka: e.currentTarget.value,
-                },
-              })}
+              onChange={(e) =>
+                (values.value = {
+                  ...values.value,
+                  description: {
+                    ...values.value.description,
+                    ka: e.currentTarget.value,
+                  },
+                })
+              }
               placeholder="ნიმუში მოჭრილია თბილისში. მძიმე მატყლი, ნედლი კიდეები, ხელით დასრულებული ღილკილოები."
               rows={6}
               value={values.value.description.ka}
@@ -340,8 +346,8 @@ export function ProductForm({
             {`${labels.fieldImages}${
               values.value.images.length + pendingFiles.value.length > 0
                 ? ` \u2014 ${
-                  values.value.images.length + pendingFiles.value.length
-                }`
+                    values.value.images.length + pendingFiles.value.length
+                  }`
                 : ""
             }`}
           </h3>
@@ -357,89 +363,84 @@ export function ProductForm({
             {`+ ${labels.uploadImages}`}
           </label>
         </div>
-        {values.value.images.length === 0 && pendingFiles.value.length === 0
-          ? (
-            <div className="hairline grid place-items-center border border-dashed py-20 text-center font-mono text-[11px] text-muted uppercase tracking-[0.24em]">
-              {labels.uploadImages}
-            </div>
-          )
-          : (
-            <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {values.value.images.map((src, i) => (
-                <li className="group relative" key={src.id}>
-                  <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
-                    <img
-                      alt={`product-icon ${i + 1}`}
-                      className="absolute inset-0 h-full w-full object-cover"
-                      width={400}
-                      height={500}
-                      src={src.url}
-                    />
-                    <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
-                      {String(i + 1).padStart(2, "0")}
-                    </div>
+        {values.value.images.length === 0 && pendingFiles.value.length === 0 ? (
+          <div className="hairline grid place-items-center border border-dashed py-20 text-center font-mono text-[11px] text-muted uppercase tracking-[0.24em]">
+            {labels.uploadImages}
+          </div>
+        ) : (
+          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {values.value.images.map((src, i) => (
+              <li className="group relative" key={src.id}>
+                <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
+                  <img
+                    alt={`product-icon ${i + 1}`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    width={400}
+                    height={500}
+                    src={src.url}
+                  />
+                  <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
+                    {String(i + 1).padStart(2, "0")}
                   </div>
-                  <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
-                    <div className="flex items-center gap-1">
-                      <button
-                        aria-label="Move up"
-                        className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
-                        disabled={i === 0}
-                        onClick={() =>
-                          moveImage(i, -1)}
-                        type="button"
-                      >
-                        ←
-                      </button>
-                      <button
-                        aria-label="Move down"
-                        className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
-                        disabled={i === values.value.images.length - 1}
-                        onClick={() =>
-                          moveImage(i, 1)}
-                        type="button"
-                      >
-                        →
-                      </button>
-                    </div>
+                </div>
+                <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
+                  <div className="flex items-center gap-1">
                     <button
-                      className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
-                      onClick={() => removeImage(i)}
+                      aria-label="Move up"
+                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                      disabled={i === 0}
+                      onClick={() => moveImage(i, -1)}
                       type="button"
                     >
-                      {labels.removeImage}
+                      ←
                     </button>
-                  </div>
-                </li>
-              ))}
-              {pendingFiles.value.map((p) => (
-                <li className="group relative" key={p.id}>
-                  <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
-                    <img
-                      alt={p.file.name}
-                      className="absolute inset-0 h-full w-full object-cover"
-                      width={400}
-                      height={500}
-                      src={p.previewUrl}
-                    />
-                    <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
-                      {"pending"}
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-center justify-end gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
                     <button
-                      className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
-                      onClick={() =>
-                        removePending(p.id)}
+                      aria-label="Move down"
+                      className="hairline-strong border px-1.5 py-0.5 text-ink disabled:opacity-30"
+                      disabled={i === values.value.images.length - 1}
+                      onClick={() => moveImage(i, 1)}
                       type="button"
                     >
-                      {labels.removeImage}
+                      →
                     </button>
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
+                  <button
+                    className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
+                    onClick={() => removeImage(i)}
+                    type="button"
+                  >
+                    {labels.removeImage}
+                  </button>
+                </div>
+              </li>
+            ))}
+            {pendingFiles.value.map((p) => (
+              <li className="group relative" key={p.id}>
+                <div className="relative aspect-4/5 overflow-hidden bg-paper-deep">
+                  <img
+                    alt={p.file.name}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    width={400}
+                    height={500}
+                    src={p.previewUrl}
+                  />
+                  <div className="absolute top-1.5 left-1.5 bg-paper/85 px-1 py-0.5 font-mono text-[10px] uppercase tracking-[0.22em]">
+                    {"pending"}
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center justify-end gap-2 font-mono text-[10px] uppercase tracking-[0.18em]">
+                  <button
+                    className="underline decoration-line-strong underline-offset-4 hover:decoration-ink"
+                    onClick={() => removePending(p.id)}
+                    type="button"
+                  >
+                    {labels.removeImage}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="hairline flex flex-col gap-4 border-t pt-10 sm:flex-row sm:gap-10">

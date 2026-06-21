@@ -1,16 +1,17 @@
+import { Head } from "fresh/runtime";
 import { getProducts } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { ProductCard } from "@/routes/(site)/(_components)/product-card.tsx";
-import { Head } from "fresh/runtime";
 
 export default define.page(async ({ state }) => {
   const { t } = getT(state.locale);
   const products = await getProducts({ publishedOnly: true });
 
-  const countLabel = products.length === 1
-    ? t.collection.countOne
-    : t.collection.countMany(products.length);
+  const countLabel =
+    products.length === 1
+      ? t.collection.countOne
+      : t.collection.countMany(products.length);
 
   return (
     <>
@@ -29,26 +30,24 @@ export default define.page(async ({ state }) => {
             </p>
           </div>
 
-          {products.length === 0
-            ? (
-              <div className="hairline grid place-items-center border border-dashed py-28 text-center">
-                <p className="max-w-md font-mono text-muted text-xs uppercase tracking-[0.24em]">
-                  {t.collection.empty}
-                </p>
-              </div>
-            )
-            : (
-              <div className="grid grid-cols-2 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-24 lg:grid-cols-3">
-                {products.map((p, i) => (
-                  <ProductCard
-                    index={i}
-                    key={p.id}
-                    locale={state.locale}
-                    product={p}
-                  />
-                ))}
-              </div>
-            )}
+          {products.length === 0 ? (
+            <div className="hairline grid place-items-center border border-dashed py-28 text-center">
+              <p className="max-w-md font-mono text-muted text-xs uppercase tracking-[0.24em]">
+                {t.collection.empty}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-24 lg:grid-cols-3">
+              {products.map((p, i) => (
+                <ProductCard
+                  index={i}
+                  key={p.id}
+                  locale={state.locale}
+                  product={p}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

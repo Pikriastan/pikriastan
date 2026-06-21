@@ -8,7 +8,7 @@ export default defineConfig({
   schema: ["./lib/db/schema.ts"],
   dialect: "postgresql",
   dbCredentials: {
-    url: Deno.env.get("DATABASE_DIRECT_URL") ?? Deno.env.get("DATABASE_URL") ??
-      "",
+    url:
+      Deno.env.get("DATABASE_DIRECT_URL") ?? Deno.env.get("DATABASE_URL") ?? "",
   },
 });
