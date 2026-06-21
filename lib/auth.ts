@@ -166,7 +166,7 @@ export function setSessionCookie(headers: Headers, token: string): void {
     value: token,
     path: "/",
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "Lax",
     maxAge: SESSION_MAX_AGE_SECONDS,
   });

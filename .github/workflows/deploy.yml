@@ -19,10 +19,14 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     env:
-      KAMAL_REGISTRY_USERNAME: ${{ github.actor }}
-      KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      KAMAL_REGISTRY_USERNAME: ${{ github.repository_owner }}
+      KAMAL_REGISTRY_PASSWORD: ${{ github.token }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DATABASE_DIRECT_URL: ${{ secrets.DATABASE_DIRECT_URL }}
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
