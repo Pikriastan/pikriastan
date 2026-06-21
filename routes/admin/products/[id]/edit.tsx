@@ -21,7 +21,7 @@ export default define.page(async ({ params, state }) => {
     slug: product.slug,
     name: { en: product.nameEn, ka: product.nameKa },
     description: { en: product.descriptionEn, ka: product.descriptionKa },
-    category: { en: product.categoryEn, ka: product.descriptionKa },
+    category: { en: product.categoryEn, ka: product.categoryKa },
     price: product.price,
     currency: product.currency,
     images: product.images,

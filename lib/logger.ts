@@ -8,7 +8,7 @@ await configure({
   filters: {},
   loggers: [
     { category: ["logtape", "meta"], sinks: ["meta"], lowestLevel: "warning" },
-    { category: ["app"], sinks: ["console"] },
+    { category: ["app", "server"], sinks: ["console"] },
   ],
 });
 

@@ -6,9 +6,12 @@ export const handler = define.handlers({
   async PUT(ctx) {
     const productId = ctx.params.id;
     const formData = await ctx.req.formData();
-
-    await handleProductCreateOrUpdate(formData, "update", productId);
-
+    const result = await handleProductCreateOrUpdate(
+      formData,
+      "update",
+      productId,
+    );
+    if (result) return result;
     return new Response(`Successfully updated the product: ${productId}`);
   },
   async DELETE(ctx) {
