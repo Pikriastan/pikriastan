@@ -1,5 +1,5 @@
-service: amiranas-gamofena
-image: ccxlv/amiranas-gamofena
+service: pikriastan
+image: pikriastan/pikriastan
 
 retain_containers: 1
 
