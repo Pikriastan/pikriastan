@@ -34,14 +34,14 @@ env:
 servers:
   web:
     hosts:
-      - 34.179.221.169
+      - <%= ENV.fetch("HOST_IP") %>
     options:
       memory: 2gb
 
 accessories:
   db:
     image: postgres:18.3
-    host: 34.179.221.169
+    host: <%= ENV.fetch("HOST_IP") %>
     env:
       secret:
         - POSTGRES_USER
@@ -54,7 +54,7 @@ accessories:
 
   pgbouncer:
     image: edoburu/pgbouncer:latest
-    host: 34.179.221.169
+    host: <%= ENV.fetch("HOST_IP") %>
     env:
       clear:
         POOL_MODE: "transaction"
