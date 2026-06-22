@@ -15,3 +15,5 @@ deno task dev
 ```
 
 This will watch the project directory and restart as necessary.
+
+[![Made with Fresh](https://usefresh.dev/fresh-badge.svg)](https://usefresh.dev)

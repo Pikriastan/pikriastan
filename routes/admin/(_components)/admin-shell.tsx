@@ -20,7 +20,7 @@ export function AdminShell({ t, locale, children }: AdminShellProps) {
             className="min-w-0 truncate font-display text-xl lowercase leading-none tracking-tight md:text-2xl"
             href="/admin"
           >
-            {locale === "ka" ? "ამირანას" : "amiranas"}
+            Pikriastan
             <span className="ml-2 align-middle font-mono text-[10px] text-muted uppercase tracking-[0.32em]">
               {" / admin"}
             </span>
