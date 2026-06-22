@@ -22,7 +22,7 @@ jobs:
       HOST_IP: ${{ secrets.HOST_IP }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       KAMAL_REGISTRY_USERNAME: ${{ github.repository_owner }}
-      KAMAL_REGISTRY_PASSWORD: ${{ github.token }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DATABASE_DIRECT_URL: ${{ secrets.DATABASE_DIRECT_URL }}
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
