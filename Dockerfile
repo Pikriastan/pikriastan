@@ -16,6 +16,8 @@ WORKDIR /app
 COPY --from=build /app/deno.json /app/deno.lock ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/_fresh ./_fresh
+COPY --from=build /app/drizzle.config.ts ./
+COPY --from=build /app/lib/db.migrations ./lib/db/migrations
 
 EXPOSE 8000
 
