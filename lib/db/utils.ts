@@ -16,7 +16,7 @@ export function productsWithImageUrls(
 
   for (const row of rows) {
     const existing = byId.get(row.products.id);
-    const grouped = existing ?? { ...row.products, images: [] };
+    const grouped = existing ?? { ...row.products, category: null, images: [] };
 
     if (row.product_images) {
       grouped.images.push({

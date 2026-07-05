@@ -264,7 +264,7 @@ export function ProductForm({
           </label>
         </div>
 
-        <div className="col-span-12 md:col-span-6">
+        <div className="col-span-12">
           <label className="field">
             <span>{labels.fieldCategory}</span>
             <select

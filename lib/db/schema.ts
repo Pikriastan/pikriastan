@@ -23,8 +23,6 @@ export const products = pgTable(
     descriptionKa: text("description_ka").notNull(),
     price: integer().notNull(),
     currency: varchar().default("GEL").notNull(),
-    categoryEn: varchar("category_en").notNull(),
-    categoryKa: varchar("category_ka").notNull(),
     categoryId: uuid("category_id").references(() => categories.id),
     featured: boolean().notNull(),
     published: boolean().notNull().default(false),

@@ -91,14 +91,6 @@ export async function updateCategory(
       throw new WebError("not_found:database", "Category not found");
     }
 
-    await db
-      .update(products)
-      .set({
-        categoryEn: row.nameEn,
-        categoryKa: row.nameKa,
-      })
-      .where(eq(products.categoryId, categoryId));
-
     return row;
   } catch (err) {
     if (err instanceof WebError) {
@@ -108,22 +100,42 @@ export async function updateCategory(
   }
 }
 
-async function resolveProductCategoryFields(categoryId: string): Promise<
-  Pick<ProductData, "categoryId"> & {
-    categoryEn: string;
-    categoryKa: string;
-  }
-> {
+async function resolveProductCategoryId(categoryId: string): Promise<string> {
   const category = await getCategoryById(categoryId);
   if (!category) {
     throw new WebError("bad_request:database", "Category not found");
   }
 
-  return {
-    categoryId: category.id,
-    categoryEn: category.nameEn,
-    categoryKa: category.nameKa,
-  };
+  return category.id;
+}
+
+async function attachCategories(
+  items: ProductWithImages[],
+): Promise<ProductWithImages[]> {
+  const categoryIds = [
+    ...new Set(
+      items
+        .map((product) => product.categoryId)
+        .filter((id): id is string => id != null),
+    ),
+  ];
+
+  if (categoryIds.length === 0) {
+    return items.map((product) => ({ ...product, category: null }));
+  }
+
+  const rows = await db
+    .select()
+    .from(categories)
+    .where(inArray(categories.id, categoryIds));
+  const categoryById = new Map(rows.map((row) => [row.id, row]));
+
+  return items.map((product) => ({
+    ...product,
+    category: product.categoryId
+      ? categoryById.get(product.categoryId) ?? null
+      : null,
+  }));
 }
 
 export async function getProducts({
@@ -196,7 +208,7 @@ export async function getProducts({
       return imgs.map((img) => ({ products: p, product_images: img }));
     });
 
-    return productsWithImageUrls(rows);
+    return await attachCategories(productsWithImageUrls(rows));
   } catch {
     throw new WebError("bad_request:database", "Failed to get products");
   }
@@ -217,7 +229,8 @@ export async function getProductById(
       return null;
     }
 
-    return productsWithImageUrls(result)[0];
+    const [product] = await attachCategories(productsWithImageUrls(result));
+    return product ?? null;
   } catch {
     throw new WebError("bad_request:database", "Failed to get a product");
   }
@@ -238,7 +251,8 @@ export async function getProductBySlug(
       return null;
     }
 
-    return productsWithImageUrls(result)[0];
+    const [product] = await attachCategories(productsWithImageUrls(result));
+    return product ?? null;
   } catch {
     throw new WebError("bad_request:database", "Failed to get a product");
   }
@@ -246,13 +260,13 @@ export async function getProductBySlug(
 
 export async function createProduct(data: ProductData): Promise<Product> {
   const { images, categoryId, ...productData } = data;
-  const categoryFields = await resolveProductCategoryFields(categoryId);
+  const resolvedCategoryId = await resolveProductCategoryId(categoryId);
 
   try {
     return await db.transaction(async (tx) => {
       const [row] = await tx
         .insert(products)
-        .values({ ...productData, ...categoryFields })
+        .values({ ...productData, categoryId: resolvedCategoryId })
         .returning();
 
       const uploads = await Promise.all(
@@ -287,7 +301,7 @@ export async function createProduct(data: ProductData): Promise<Product> {
 
 export async function updateProduct(productId: string, data: ProductData) {
   const { images, existingImageIds, categoryId, ...productData } = data;
-  const categoryFields = await resolveProductCategoryFields(categoryId);
+  const resolvedCategoryId = await resolveProductCategoryId(categoryId);
 
   let removedKeys: string[] = [];
 
@@ -295,7 +309,7 @@ export async function updateProduct(productId: string, data: ProductData) {
     await db.transaction(async (tx) => {
       await tx
         .update(products)
-        .set({ ...productData, ...categoryFields })
+        .set({ ...productData, categoryId: resolvedCategoryId })
         .where(eq(products.id, productId));
 
       const orphans = await tx

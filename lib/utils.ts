@@ -3,6 +3,7 @@ import { createDefine } from "fresh";
 import { twMerge } from "tailwind-merge";
 import type { AuthUser } from "@/lib/auth.ts";
 import type { Locale, Theme } from "@/lib/constants.ts";
+import type { Category } from "@/lib/db/schema.ts";
 
 export interface State {
   locale: Locale;
@@ -44,4 +45,18 @@ export function pickLocalized<T extends { en: string; ka: string }>(
   locale: Locale,
 ): string {
   return field[locale] || field.en || field.ka;
+}
+
+export function categoryLabel(
+  category: Category | null | undefined,
+  locale: Locale,
+): string {
+  if (!category) {
+    return "";
+  }
+
+  return pickLocalized(
+    { en: category.nameEn, ka: category.nameKa },
+    locale,
+  );
 }

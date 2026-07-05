@@ -1,9 +1,9 @@
 import { HttpError } from "fresh";
 import { Head } from "fresh/runtime";
 import { INQUIRY_EMAIL } from "@/lib/constants.ts";
-import { getProductBySlug } from "@/lib/db/queries.ts";
+import { getCategoryById, getProductBySlug } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
-import { define, formatPrice, pickLocalized } from "@/lib/utils.ts";
+import { categoryLabel, define, formatPrice, pickLocalized } from "@/lib/utils.ts";
 import { ProductGallery } from "@/routes/(site)/(_islands)/product-gallery.tsx";
 
 export default define.page(async ({ params, state }) => {
@@ -18,10 +18,10 @@ export default define.page(async ({ params, state }) => {
     { en: product.nameEn, ka: product.nameKa },
     state.locale,
   );
-  const category = pickLocalized(
-    { en: product.categoryEn, ka: product.categoryKa },
-    state.locale,
-  );
+  const categoryRecord = product.categoryId
+    ? await getCategoryById(product.categoryId)
+    : null;
+  const category = categoryLabel(categoryRecord, state.locale);
   const description = pickLocalized(
     { en: product.descriptionEn, ka: product.descriptionKa },
     state.locale,

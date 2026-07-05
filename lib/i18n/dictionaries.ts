@@ -69,9 +69,17 @@ export interface Dictionary {
     title: string;
     subtitle: string;
     empty: string;
+    noResults: string;
+    searchPlaceholder: string;
+    filterAll: string;
+    sortLabel: string;
     sortNewest: string;
+    sortOldest: string;
+    sortPriceLow: string;
+    sortPriceHigh: string;
     countOne: string;
     countMany: (n: number) => string;
+    countManyTemplate: string;
   };
   footer: {
     rights: string;
@@ -162,9 +170,17 @@ const en: Dictionary = {
     title: "Collection",
     subtitle: "Every piece in the current archive.",
     empty: "The archive is currently empty. New pieces are being prepared.",
+    noResults: "No pieces match your search or filters.",
+    searchPlaceholder: "Search by name or description",
+    filterAll: "All",
+    sortLabel: "Sort",
     sortNewest: "Most recent",
+    sortOldest: "Oldest",
+    sortPriceLow: "Price: low to high",
+    sortPriceHigh: "Price: high to low",
     countOne: "1 piece",
     countMany: (n: number) => `${n} pieces`,
+    countManyTemplate: "{n} pieces",
   },
   notFound: {
     eyebrow: "Error 404",
@@ -311,9 +327,17 @@ const ka: Dictionary = {
     title: "კოლექცია",
     subtitle: "ყველა ნაკეთობა მიმდინარე არქივიდან.",
     empty: "არქივი ამჟამად ცარიელია. ახალი ნამუშევრები მზადდება.",
+    noResults: "ძიებას ან ფილტრებს არც ერთი ნაკეთობა არ შეესაბამება.",
+    searchPlaceholder: "ძიება სახელით ან აღწერით",
+    filterAll: "ყველა",
+    sortLabel: "დალაგება",
     sortNewest: "უახლესი",
+    sortOldest: "ძველი",
+    sortPriceLow: "ფასი: დაბლიდან მაღლისკენ",
+    sortPriceHigh: "ფასი: მაღლიდან დაბლისკენ",
     countOne: "1 ნაკეთობა",
     countMany: (n: number) => `${n} ნაკეთობა`,
+    countManyTemplate: "{n} ნაკეთობა",
   },
   notFound: {
     eyebrow: "შეცდომა 404",

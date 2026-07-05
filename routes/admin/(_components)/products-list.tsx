@@ -1,7 +1,7 @@
 import type { Locale } from "@/lib/constants.ts";
 import type { ProductWithImages } from "@/lib/db/types.ts";
 import type { Dictionary } from "@/lib/i18n/dictionaries.ts";
-import { formatPrice, pickLocalized } from "@/lib/utils.ts";
+import { formatPrice, categoryLabel, pickLocalized } from "@/lib/utils.ts";
 import { DeleteProductButton } from "@/routes/admin/(_islands)/delete-product-button.tsx";
 
 export function AdminProducts({
@@ -29,10 +29,7 @@ export function AdminProducts({
         <ul className="hairline border-t">
           {data.map((p) => {
             const name = pickLocalized({ en: p.nameEn, ka: p.nameKa }, locale);
-            const category = pickLocalized(
-              { en: p.categoryEn, ka: p.categoryKa },
-              locale,
-            );
+            const category = categoryLabel(p.category, locale);
             return (
               <li
                 className="hairline grid grid-cols-12 items-center gap-4 border-b py-5"

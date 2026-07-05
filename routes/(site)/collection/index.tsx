@@ -1,12 +1,15 @@
 import { Head } from "fresh/runtime";
-import { getProducts } from "@/lib/db/queries.ts";
+import { getAllCategories, getProducts } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
-import { ProductCard } from "@/routes/(site)/(_components)/product-card.tsx";
+import { CollectionGrid } from "@/routes/(site)/(_islands)/collection-grid.tsx";
 
 export default define.page(async ({ state }) => {
   const { t } = getT(state.locale);
-  const products = await getProducts({ publishedOnly: true });
+  const [products, categories] = await Promise.all([
+    getProducts({ publishedOnly: true }),
+    getAllCategories(),
+  ]);
 
   const countLabel =
     products.length === 1
@@ -30,24 +33,24 @@ export default define.page(async ({ state }) => {
             </p>
           </div>
 
-          {products.length === 0 ? (
-            <div className="hairline grid place-items-center border border-dashed py-28 text-center">
-              <p className="max-w-md font-mono text-muted text-xs uppercase tracking-[0.24em]">
-                {t.collection.empty}
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-x-6 gap-y-14 md:gap-x-10 md:gap-y-24 lg:grid-cols-3">
-              {products.map((p, i) => (
-                <ProductCard
-                  index={i}
-                  key={p.id}
-                  locale={state.locale}
-                  product={p}
-                />
-              ))}
-            </div>
-          )}
+          <CollectionGrid
+            categories={categories}
+            labels={{
+              countManyTemplate: t.collection.countManyTemplate,
+              countOne: t.collection.countOne,
+              empty: t.collection.empty,
+              filterAll: t.collection.filterAll,
+              noResults: t.collection.noResults,
+              searchPlaceholder: t.collection.searchPlaceholder,
+              sortLabel: t.collection.sortLabel,
+              sortNewest: t.collection.sortNewest,
+              sortOldest: t.collection.sortOldest,
+              sortPriceHigh: t.collection.sortPriceHigh,
+              sortPriceLow: t.collection.sortPriceLow,
+            }}
+            locale={state.locale}
+            products={products}
+          />
         </div>
       </section>
     </>
