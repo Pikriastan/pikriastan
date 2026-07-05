@@ -1,4 +1,4 @@
-import type { InferSelectModel } from "drizzle-orm";
+import { defineRelations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -12,33 +12,38 @@ import {
 } from "drizzle-orm/pg-core";
 import { primaryKeyId } from "./utils.ts";
 
-export const product = pgTable("products", {
-  id: primaryKeyId(),
-  slug: varchar().unique().notNull(),
-  nameEn: varchar("name_en").notNull(),
-  nameKa: varchar("name_ka").notNull(),
-  descriptionEn: text("description_en").notNull(),
-  descriptionKa: text("description_ka").notNull(),
-  price: integer().notNull(),
-  currency: varchar().default("GEL").notNull(),
-  categoryEn: varchar("category_en").notNull(),
-  categoryKa: varchar("category_ka").notNull(),
-  featured: boolean().notNull(),
-  published: boolean().notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
+export const products = pgTable(
+  "products",
+  {
+    id: primaryKeyId(),
+    slug: varchar().unique().notNull(),
+    nameEn: varchar("name_en").notNull(),
+    nameKa: varchar("name_ka").notNull(),
+    descriptionEn: text("description_en").notNull(),
+    descriptionKa: text("description_ka").notNull(),
+    price: integer().notNull(),
+    currency: varchar().default("GEL").notNull(),
+    categoryEn: varchar("category_en").notNull(),
+    categoryKa: varchar("category_ka").notNull(),
+    categoryId: uuid("category_id").references(() => categories.id),
+    featured: boolean().notNull(),
+    published: boolean().notNull().default(false),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [index("product_category_idx").on(t.categoryId)],
+);
 
-export type Product = InferSelectModel<typeof product>;
+export type Product = typeof products.$inferSelect;
 
-export const productImage = pgTable(
+export const productImages = pgTable(
   "product_images",
   {
     id: primaryKeyId(),
-    productId: uuid("product_id").references(() => product.id, {
+    productId: uuid("product_id").references(() => products.id, {
       onDelete: "cascade",
     }),
     key: varchar().notNull(),
@@ -54,9 +59,22 @@ export const productImage = pgTable(
   ],
 );
 
-export type ProductImage = InferSelectModel<typeof productImage>;
+export type ProductImage = typeof productImages.$inferSelect;
 
-export const user = pgTable("users", {
+export const categories = pgTable("categories", {
+  id: primaryKeyId(),
+  nameEn: varchar("name_en").notNull(),
+  nameKa: varchar("name_ka").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type Category = typeof categories.$inferSelect;
+
+export const users = pgTable("users", {
   id: primaryKeyId(),
   email: varchar().unique().notNull(),
   passwordHash: text("password_hash").notNull(),
@@ -67,15 +85,15 @@ export const user = pgTable("users", {
     .$onUpdate(() => new Date()),
 });
 
-export type User = InferSelectModel<typeof user>;
+export type User = typeof users.$inferSelect;
 
-export const userSession = pgTable(
+export const userSessions = pgTable(
   "user_sessions",
   {
     id: primaryKeyId(),
     userId: uuid("user_id")
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade" }),
     tokenHash: text("token_hash").unique().notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -86,4 +104,13 @@ export const userSession = pgTable(
   ],
 );
 
-export type UserSession = InferSelectModel<typeof userSession>;
+export type UserSession = typeof userSessions.$inferSelect;
+
+export const relations = defineRelations({ products, categories }, (r) => ({
+  products: {
+    category: r.one.categories({
+      from: r.products.categoryId,
+      to: r.categories.id,
+    }),
+  },
+}));

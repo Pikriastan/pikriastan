@@ -5,6 +5,7 @@ const env = { ...(await load()), ...Deno.env.toObject() };
 
 const schema = z.object({
   DATABASE_URL: z.url(),
+  DATABASE_DIRECT_URL: z.url().optional(),
 
   R2_ACCOUNT_ID: z.string(),
   R2_ACCESS_KEY_ID: z.string(),
