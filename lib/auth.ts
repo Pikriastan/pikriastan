@@ -8,7 +8,7 @@ import {
   SESSION_COOKIE,
   SESSION_MAX_AGE_SECONDS,
 } from "@/lib/constants.ts";
-import { type User, user, userSession } from "@/lib/db/schema.ts";
+import { type User, userSessions, users } from "@/lib/db/schema.ts";
 
 const PASSWORD_PREFIX = "pbkdf2:v1";
 const PASSWORD_ITERATIONS = 310_000;
@@ -79,12 +79,12 @@ export async function createUser({
   const input = createUserSchema.parse({ email, password });
 
   const [created] = await db
-    .insert(user)
+    .insert(users)
     .values({
       email: input.email,
       passwordHash: await hashPassword(input.password),
     })
-    .returning({ id: user.id, email: user.email });
+    .returning({ id: users.id, email: users.email });
 
   return created;
 }
@@ -104,8 +104,8 @@ export async function verifyUserCredentials({
 
   const [found] = await db
     .select()
-    .from(user)
-    .where(eq(user.email, normalizedEmail.data))
+    .from(users)
+    .where(eq(users.email, normalizedEmail.data))
     .limit(1);
 
   if (!(found && (await verifyPassword(password, found.passwordHash)))) {
@@ -119,7 +119,7 @@ export async function createSession(userId: string): Promise<string> {
   const token = toHex(randomBytes(SESSION_TOKEN_BYTES));
   const expiresAt = new Date(Date.now() + SESSION_MAX_AGE_SECONDS * 1000);
 
-  await db.insert(userSession).values({
+  await db.insert(userSessions).values({
     userId,
     tokenHash: await hashSessionToken(token),
     expiresAt,
@@ -136,18 +136,18 @@ export async function getUserBySessionToken(
   }
 
   const [row] = await db
-    .select({ user })
-    .from(userSession)
-    .innerJoin(user, eq(user.id, userSession.userId))
+    .select({ users })
+    .from(userSessions)
+    .innerJoin(users, eq(users.id, userSessions.userId))
     .where(
       and(
-        eq(userSession.tokenHash, await hashSessionToken(token)),
-        gt(userSession.expiresAt, new Date()),
+        eq(userSessions.tokenHash, await hashSessionToken(token)),
+        gt(userSessions.expiresAt, new Date()),
       ),
     )
     .limit(1);
 
-  return row ? toAuthUser(row.user) : null;
+  return row ? toAuthUser(row.users) : null;
 }
 
 export async function deleteSession(token: string | undefined): Promise<void> {
@@ -156,8 +156,8 @@ export async function deleteSession(token: string | undefined): Promise<void> {
   }
 
   await db
-    .delete(userSession)
-    .where(eq(userSession.tokenHash, await hashSessionToken(token)));
+    .delete(userSessions)
+    .where(eq(userSessions.tokenHash, await hashSessionToken(token)));
 }
 
 export function setSessionCookie(headers: Headers, token: string): void {

@@ -4,12 +4,127 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { config } from "@/lib/config.ts";
 import { isDriverError, WebError } from "@/lib/errors.ts";
 import { deleteImage, uploadImage } from "@/lib/r2.ts";
-import type { ProductData } from "@/lib/schemas.ts";
-import { type Product, product, productImage } from "./schema.ts";
+import type { CategoryData, ProductData } from "@/lib/schemas.ts";
+import {
+  type Category,
+  categories,
+  type Product,
+  productImages,
+  products,
+  relations,
+} from "./schema.ts";
 import type { ProductWithImages } from "./types.ts";
 import { productsWithImageUrls } from "./utils.ts";
 
-export const db = drizzle(config.DATABASE_URL);
+export const db = drizzle(config.DATABASE_URL, { relations });
+
+export async function getAllCategories(): Promise<Category[]> {
+  try {
+    return await db.select().from(categories).orderBy(asc(categories.nameEn));
+  } catch {
+    throw new WebError("bad_request:database", "Failed to get categories");
+  }
+}
+
+export async function getCategoriesPage({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}): Promise<{ items: Category[]; total: number }> {
+  try {
+    const offset = (page - 1) * pageSize;
+    const [items, countRow] = await Promise.all([
+      db
+        .select()
+        .from(categories)
+        .orderBy(asc(categories.nameEn))
+        .limit(pageSize)
+        .offset(offset),
+      db.select({ count: sql<number>`count(*)::int` }).from(categories),
+    ]);
+
+    return { items, total: countRow[0]?.count ?? 0 };
+  } catch {
+    throw new WebError("bad_request:database", "Failed to get categories");
+  }
+}
+
+export async function getCategoryById(
+  categoryId: string,
+): Promise<Category | null> {
+  try {
+    const [row] = await db
+      .select()
+      .from(categories)
+      .where(eq(categories.id, categoryId))
+      .limit(1);
+
+    return row ?? null;
+  } catch {
+    throw new WebError("bad_request:database", "Failed to get category");
+  }
+}
+
+export async function createCategory(data: CategoryData): Promise<Category> {
+  try {
+    const [row] = await db.insert(categories).values(data).returning();
+    return row;
+  } catch {
+    throw new WebError("bad_request:database", "Failed to create category");
+  }
+}
+
+export async function updateCategory(
+  categoryId: string,
+  data: CategoryData,
+): Promise<Category> {
+  try {
+    const [row] = await db
+      .update(categories)
+      .set(data)
+      .where(eq(categories.id, categoryId))
+      .returning();
+
+    if (!row) {
+      throw new WebError("not_found:database", "Category not found");
+    }
+
+    await db
+      .update(products)
+      .set({
+        categoryEn: row.nameEn,
+        categoryKa: row.nameKa,
+      })
+      .where(eq(products.categoryId, categoryId));
+
+    return row;
+  } catch (err) {
+    if (err instanceof WebError) {
+      throw err;
+    }
+    throw new WebError("bad_request:database", "Failed to update category");
+  }
+}
+
+async function resolveProductCategoryFields(categoryId: string): Promise<
+  Pick<ProductData, "categoryId"> & {
+    categoryEn: string;
+    categoryKa: string;
+  }
+> {
+  const category = await getCategoryById(categoryId);
+  if (!category) {
+    throw new WebError("bad_request:database", "Category not found");
+  }
+
+  return {
+    categoryId: category.id,
+    categoryEn: category.nameEn,
+    categoryKa: category.nameKa,
+  };
+}
 
 export async function getProducts({
   featuredOnly,
@@ -25,14 +140,14 @@ export async function getProducts({
   try {
     let productsQuery = db
       .select()
-      .from(product)
+      .from(products)
       .where(
         and(
-          featuredOnly ? eq(product.featured, true) : undefined,
-          publishedOnly ? eq(product.published, true) : undefined,
+          featuredOnly ? eq(products.featured, true) : undefined,
+          publishedOnly ? eq(products.published, true) : undefined,
         ),
       )
-      .orderBy(asc(product.createdAt))
+      .orderBy(asc(products.createdAt))
       .$dynamic();
 
     if (limit !== undefined) {
@@ -50,14 +165,14 @@ export async function getProducts({
 
     const imagesList = await db
       .select()
-      .from(productImage)
+      .from(productImages)
       .where(
         inArray(
-          productImage.productId,
+          productImages.productId,
           productsList.map((p) => p.id),
         ),
       )
-      .orderBy(asc(productImage.sortOrder), asc(productImage.id));
+      .orderBy(asc(productImages.sortOrder), asc(productImages.id));
 
     const imagesByProductId = new Map<string, typeof imagesList>();
     for (const img of imagesList) {
@@ -93,10 +208,10 @@ export async function getProductById(
   try {
     const result = await db
       .select()
-      .from(product)
-      .where(eq(product.id, productId))
-      .leftJoin(productImage, eq(productImage.productId, product.id))
-      .orderBy(asc(productImage.sortOrder), asc(productImage.id));
+      .from(products)
+      .where(eq(products.id, productId))
+      .leftJoin(productImages, eq(productImages.productId, products.id))
+      .orderBy(asc(productImages.sortOrder), asc(productImages.id));
 
     if (result.length === 0) {
       return null;
@@ -114,10 +229,10 @@ export async function getProductBySlug(
   try {
     const result = await db
       .select()
-      .from(product)
-      .where(eq(product.slug, slug))
-      .leftJoin(productImage, eq(productImage.productId, product.id))
-      .orderBy(asc(productImage.sortOrder), asc(productImage.id));
+      .from(products)
+      .where(eq(products.slug, slug))
+      .leftJoin(productImages, eq(productImages.productId, products.id))
+      .orderBy(asc(productImages.sortOrder), asc(productImages.id));
 
     if (result.length === 0) {
       return null;
@@ -130,18 +245,22 @@ export async function getProductBySlug(
 }
 
 export async function createProduct(data: ProductData): Promise<Product> {
-  const { images, ...productData } = data;
+  const { images, categoryId, ...productData } = data;
+  const categoryFields = await resolveProductCategoryFields(categoryId);
 
   try {
     return await db.transaction(async (tx) => {
-      const [row] = await tx.insert(product).values(productData).returning();
+      const [row] = await tx
+        .insert(products)
+        .values({ ...productData, ...categoryFields })
+        .returning();
 
       const uploads = await Promise.all(
         images.map((img) => uploadImage(row.id, img)),
       );
 
       if (uploads.length > 0) {
-        await tx.insert(productImage).values(
+        await tx.insert(productImages).values(
           uploads.map((u, i) => ({
             productId: row.id,
             key: u.key,
@@ -167,33 +286,34 @@ export async function createProduct(data: ProductData): Promise<Product> {
 }
 
 export async function updateProduct(productId: string, data: ProductData) {
-  const { images, existingImageIds, ...productData } = data;
+  const { images, existingImageIds, categoryId, ...productData } = data;
+  const categoryFields = await resolveProductCategoryFields(categoryId);
 
   let removedKeys: string[] = [];
 
   try {
     await db.transaction(async (tx) => {
       await tx
-        .update(product)
-        .set({ ...productData })
-        .where(eq(product.id, productId));
+        .update(products)
+        .set({ ...productData, ...categoryFields })
+        .where(eq(products.id, productId));
 
       const orphans = await tx
-        .select({ id: productImage.id, key: productImage.key })
-        .from(productImage)
+        .select({ id: productImages.id, key: productImages.key })
+        .from(productImages)
         .where(
           existingImageIds.length === 0
-            ? eq(productImage.productId, productId)
+            ? eq(productImages.productId, productId)
             : and(
-                eq(productImage.productId, productId),
-                notInArray(productImage.id, existingImageIds),
+                eq(productImages.productId, productId),
+                notInArray(productImages.id, existingImageIds),
               ),
         );
 
       if (orphans.length > 0) {
-        await tx.delete(productImage).where(
+        await tx.delete(productImages).where(
           inArray(
-            productImage.id,
+            productImages.id,
             orphans.map((o) => o.id),
           ),
         );
@@ -204,17 +324,17 @@ export async function updateProduct(productId: string, data: ProductData) {
       if (existingImageIds.length > 0) {
         const cases = sql.join(
           existingImageIds.map(
-            (id, i) => sql`WHEN ${productImage.id} = ${id} THEN ${i}`,
+            (id, i) => sql`WHEN ${productImages.id} = ${id} THEN ${i}`,
           ),
           sql` `,
         );
         await tx
-          .update(productImage)
+          .update(productImages)
           .set({ sortOrder: sql`(CASE ${cases} END)::integer` })
           .where(
             and(
-              eq(productImage.productId, productId),
-              inArray(productImage.id, existingImageIds),
+              eq(productImages.productId, productId),
+              inArray(productImages.id, existingImageIds),
             ),
           );
       }
@@ -223,7 +343,7 @@ export async function updateProduct(productId: string, data: ProductData) {
         const uploads = await Promise.all(
           images.map((img) => uploadImage(productId, img)),
         );
-        await tx.insert(productImage).values(
+        await tx.insert(productImages).values(
           uploads.map((u, i) => ({
             productId,
             key: u.key,
@@ -242,14 +362,14 @@ export async function updateProduct(productId: string, data: ProductData) {
 export async function deleteProduct(productId: string) {
   try {
     const images = await db
-      .select({ key: productImage.key })
-      .from(productImage)
-      .where(eq(productImage.productId, productId));
+      .select({ key: productImages.key })
+      .from(productImages)
+      .where(eq(productImages.productId, productId));
 
     const [deleted] = await db
-      .delete(product)
-      .where(eq(product.id, productId))
-      .returning({ id: product.id });
+      .delete(products)
+      .where(eq(products.id, productId))
+      .returning({ id: products.id });
 
     if (!deleted) {
       throw new WebError("not_found:database", "Product not found");

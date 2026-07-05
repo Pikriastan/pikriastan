@@ -1,12 +1,18 @@
 import { z } from "zod";
 
+export const categorySchema = z.object({
+  nameEn: z.string().min(1).max(120),
+  nameKa: z.string().min(1).max(120),
+});
+
+export type CategoryData = z.infer<typeof categorySchema>;
+
 export const productSchema = z.object({
   nameEn: z.string().min(1).max(200),
   nameKa: z.string().min(1).max(200),
   descriptionEn: z.string().max(4000).default(""),
   descriptionKa: z.string().max(4000).default(""),
-  categoryEn: z.string().max(120).default(""),
-  categoryKa: z.string().max(120).default(""),
+  categoryId: z.uuid("Select a category"),
   slug: z
     .string()
     .min(1)

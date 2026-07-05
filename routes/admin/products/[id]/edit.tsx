@@ -1,5 +1,5 @@
 import { HttpError } from "fresh/runtime";
-import { getProductById } from "@/lib/db/queries.ts";
+import { getAllCategories, getProductById } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { AdminShell } from "@/routes/admin/(_components)/admin-shell.tsx";
@@ -10,7 +10,10 @@ import {
 
 export default define.page(async ({ params, state }) => {
   const { t } = getT(state.locale);
-  const product = await getProductById(params.id);
+  const [product, categories] = await Promise.all([
+    getProductById(params.id),
+    getAllCategories(),
+  ]);
 
   if (!product) {
     throw new HttpError(404, "Product not found");
@@ -21,7 +24,7 @@ export default define.page(async ({ params, state }) => {
     slug: product.slug,
     name: { en: product.nameEn, ka: product.nameKa },
     description: { en: product.descriptionEn, ka: product.descriptionKa },
-    category: { en: product.categoryEn, ka: product.categoryKa },
+    categoryId: product.categoryId ?? "",
     price: product.price,
     currency: product.currency,
     images: product.images,
@@ -33,7 +36,15 @@ export default define.page(async ({ params, state }) => {
     <AdminShell locale={state.locale} t={t}>
       <section className="hairline border-b">
         <div className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
-          <p className="eyebrow mb-3">/ {t.admin.edit}</p>
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <p className="eyebrow mb-0">/ {t.admin.edit}</p>
+            <a
+              className="shrink-0 font-mono text-[10px] text-muted uppercase tracking-[0.28em] hover:text-ink"
+              href="/admin"
+            >
+              {`\u2190 ${t.admin.back}`}
+            </a>
+          </div>
           <h1 className="font-display text-4xl lowercase leading-none tracking-tight md:text-6xl">
             {t.admin.formTitleEdit}
           </h1>
@@ -45,6 +56,7 @@ export default define.page(async ({ params, state }) => {
       <section>
         <div className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
           <ProductForm
+            categories={categories}
             initial={initialValues}
             labels={{
               fieldSlug: t.admin.fieldSlug,
@@ -53,8 +65,8 @@ export default define.page(async ({ params, state }) => {
               fieldNameKa: t.admin.fieldNameKa,
               fieldDescriptionEn: t.admin.fieldDescriptionEn,
               fieldDescriptionKa: t.admin.fieldDescriptionKa,
-              fieldCategoryEn: t.admin.fieldCategoryEn,
-              fieldCategoryKa: t.admin.fieldCategoryKa,
+              fieldCategory: t.admin.fieldCategory,
+              fieldCategoryEmpty: t.admin.fieldCategoryEmpty,
               fieldPrice: t.admin.fieldPrice,
               fieldCurrency: t.admin.fieldCurrency,
               fieldFeatured: t.admin.fieldFeatured,
@@ -68,6 +80,7 @@ export default define.page(async ({ params, state }) => {
               saveError: t.admin.saveError,
               removeImage: t.admin.removeImage,
             }}
+            locale={state.locale}
             mode="edit"
           />
         </div>

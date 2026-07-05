@@ -491,6 +491,69 @@ input[type="checkbox"] {
   border: 1px solid var(--ink);
 }
 
+/* ---- Admin dialogs ---- */
+.admin-dialog {
+  width: min(640px, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  margin: auto;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+}
+
+.admin-dialog::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.admin-dialog-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+}
+
+.admin-dialog-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.admin-dialog-body {
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+.admin-dialog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.admin-dialog-close {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--ink);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+}
+
+.admin-dialog-close:hover {
+  color: var(--bg);
+  background: var(--ink);
+}
+
 /* ---- Toasts ---- */
 .toaster {
   position: fixed;

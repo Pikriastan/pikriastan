@@ -1,3 +1,4 @@
+import { getAllCategories } from "@/lib/db/queries.ts";
 import { getT } from "@/lib/i18n/locales.ts";
 import { define } from "@/lib/utils.ts";
 import { AdminShell } from "@/routes/admin/(_components)/admin-shell.tsx";
@@ -10,7 +11,7 @@ const initialValues: ProductFormValues = {
   slug: "",
   name: { en: "", ka: "" },
   description: { en: "", ka: "" },
-  category: { en: "", ka: "" },
+  categoryId: "",
   price: 0,
   currency: "GEL",
   images: [],
@@ -18,14 +19,23 @@ const initialValues: ProductFormValues = {
   published: true,
 };
 
-export default define.page(({ state, error }) => {
+export default define.page(async ({ state, error }) => {
   const { t } = getT(state.locale);
+  const categories = await getAllCategories();
 
   return (
     <AdminShell locale={state.locale} t={t}>
       <section className="hairline border-b">
         <div className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
-          <p className="eyebrow mb-3">/ {t.admin.newProduct}</p>
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <p className="eyebrow mb-0">/ {t.admin.newProduct}</p>
+            <a
+              className="shrink-0 font-mono text-[10px] text-muted uppercase tracking-[0.28em] hover:text-ink"
+              href="/admin"
+            >
+              {`\u2190 ${t.admin.back}`}
+            </a>
+          </div>
           <h1 className="font-display text-4xl lowercase leading-none tracking-tight md:text-6xl">
             {t.admin.formTitleNew}
           </h1>
@@ -34,6 +44,7 @@ export default define.page(({ state, error }) => {
       <section>
         <div className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
           <ProductForm
+            categories={categories}
             initial={initialValues}
             labels={{
               fieldSlug: t.admin.fieldSlug,
@@ -42,8 +53,8 @@ export default define.page(({ state, error }) => {
               fieldNameKa: t.admin.fieldNameKa,
               fieldDescriptionEn: t.admin.fieldDescriptionEn,
               fieldDescriptionKa: t.admin.fieldDescriptionKa,
-              fieldCategoryEn: t.admin.fieldCategoryEn,
-              fieldCategoryKa: t.admin.fieldCategoryKa,
+              fieldCategory: t.admin.fieldCategory,
+              fieldCategoryEmpty: t.admin.fieldCategoryEmpty,
               fieldPrice: t.admin.fieldPrice,
               fieldCurrency: t.admin.fieldCurrency,
               fieldFeatured: t.admin.fieldFeatured,
@@ -57,6 +68,7 @@ export default define.page(({ state, error }) => {
               saveError: t.admin.saveError,
               removeImage: t.admin.removeImage,
             }}
+            locale={state.locale}
             error={error}
             mode="create"
           />

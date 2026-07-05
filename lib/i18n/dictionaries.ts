@@ -32,8 +32,20 @@ export interface Dictionary {
     fieldNameKa: string;
     fieldDescriptionEn: string;
     fieldDescriptionKa: string;
+    fieldCategory: string;
+    fieldCategoryEmpty: string;
     fieldCategoryEn: string;
     fieldCategoryKa: string;
+    categoriesHeader: string;
+    categoriesTitle: string;
+    categoriesSubtitle: string;
+    categoriesEmpty: string;
+    createCategory: string;
+    categoryFormTitleCreate: string;
+    categoryFormTitleEdit: string;
+    prevPage: string;
+    nextPage: string;
+    pageLabel: string;
     fieldPrice: string;
     fieldCurrency: string;
     fieldFeatured: string;
@@ -44,6 +56,7 @@ export interface Dictionary {
     save: string;
     saving: string;
     cancel: string;
+    back: string;
     saved: string;
     saveError: string;
     removeImage: string;
@@ -226,8 +239,20 @@ const en: Dictionary = {
     fieldNameKa: "Name (Georgian)",
     fieldDescriptionEn: "Description (English)",
     fieldDescriptionKa: "Description (Georgian)",
+    fieldCategory: "Category",
+    fieldCategoryEmpty: "Select a category",
     fieldCategoryEn: "Category (English)",
     fieldCategoryKa: "Category (Georgian)",
+    categoriesHeader: "Categories",
+    categoriesTitle: "Categories",
+    categoriesSubtitle: "Create and edit product categories.",
+    categoriesEmpty: "No categories yet. Add the first one.",
+    createCategory: "New category",
+    categoryFormTitleCreate: "New category",
+    categoryFormTitleEdit: "Edit category",
+    prevPage: "Previous",
+    nextPage: "Next",
+    pageLabel: "Page",
     fieldPrice: "Price",
     fieldCurrency: "Currency",
     fieldFeatured: "Feature on home page",
@@ -238,6 +263,7 @@ const en: Dictionary = {
     save: "Save",
     saving: "Saving\u2026",
     cancel: "Cancel",
+    back: "Back",
     saved: "Saved.",
     saveError: "Something went wrong.",
     removeImage: "Remove",
@@ -361,8 +387,20 @@ const ka: Dictionary = {
     fieldNameKa: "სახელი (ქართული)",
     fieldDescriptionEn: "აღწერა (ინგლისური)",
     fieldDescriptionKa: "აღწერა (ქართული)",
+    fieldCategory: "კატეგორია",
+    fieldCategoryEmpty: "აირჩიე კატეგორია",
     fieldCategoryEn: "კატეგორია (ინგლისური)",
     fieldCategoryKa: "კატეგორია (ქართული)",
+    categoriesHeader: "კატეგორიები",
+    categoriesTitle: "კატეგორიები",
+    categoriesSubtitle: "შექმენი და შეცვალე პროდუქტის კატეგორიები.",
+    categoriesEmpty: "კატეგორიები ჯერ არ არის. დაამატე პირველი.",
+    createCategory: "ახალი კატეგორია",
+    categoryFormTitleCreate: "ახალი კატეგორია",
+    categoryFormTitleEdit: "კატეგორიის შესწორება",
+    prevPage: "წინა",
+    nextPage: "შემდეგი",
+    pageLabel: "გვერდი",
     fieldPrice: "ფასი",
     fieldCurrency: "ვალუტა",
     fieldFeatured: "გამოჩნდეს მთავარ გვერდზე",
@@ -373,6 +411,7 @@ const ka: Dictionary = {
     save: "შენახვა",
     saving: "ინახება…",
     cancel: "გაუქმება",
+    back: "უკან",
     saved: "შენახულია.",
     saveError: "რაღაც შეცდომა მოხდა.",
     removeImage: "მოშორება",

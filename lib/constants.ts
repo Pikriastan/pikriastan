@@ -28,3 +28,5 @@ export const ALLOWED_IMAGE_TYPES = new Set([
 ]);
 
 export const INQUIRY_EMAIL = "pikriastan@gmail.com";
+
+export const CATEGORIES_PAGE_SIZE = 10;

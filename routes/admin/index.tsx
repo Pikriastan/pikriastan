@@ -31,6 +31,11 @@ export default define.page(async function AdminPage({ state }) {
               + {t.admin.newProduct}
             </a>
           </div>
+          <div className="mt-6">
+            <a className="btn btn-ghost" href="/admin/categories">
+              {t.admin.categoriesHeader}
+            </a>
+          </div>
         </div>
       </section>
 

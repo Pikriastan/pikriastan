@@ -1,8 +1,11 @@
 import { useSignal } from "@preact/signals";
 import { useRef } from "preact/hooks";
 import { useFormAction } from "@/hooks/use-form-action.ts";
+import type { Locale } from "@/lib/constants.ts";
+import type { Category } from "@/lib/db/schema.ts";
 import type { ProductImageWithUrl } from "@/lib/db/types.ts";
 import { toast } from "@/lib/toast.ts";
+import { pickLocalized } from "@/lib/utils.ts";
 
 interface PendingFile {
   file: File;
@@ -11,7 +14,7 @@ interface PendingFile {
 }
 
 export interface ProductFormValues {
-  category: { en: string; ka: string };
+  categoryId: string;
   currency: string;
   description: { en: string; ka: string };
   featured: boolean;
@@ -25,8 +28,8 @@ export interface ProductFormValues {
 
 export interface ProductFormLabels {
   cancel: string;
-  fieldCategoryEn: string;
-  fieldCategoryKa: string;
+  fieldCategory: string;
+  fieldCategoryEmpty: string;
   fieldCurrency: string;
   fieldDescriptionEn: string;
   fieldDescriptionKa: string;
@@ -47,8 +50,10 @@ export interface ProductFormLabels {
 }
 
 interface ProductFormProps {
+  categories: Category[];
   initial: ProductFormValues;
   labels: ProductFormLabels;
+  locale: Locale;
   mode: "create" | "edit";
   error?: unknown;
 }
@@ -64,8 +69,10 @@ function slugify(s: string): string {
 }
 
 export function ProductForm({
+  categories,
   initial,
   labels,
+  locale,
   error,
   mode,
 }: ProductFormProps) {
@@ -259,42 +266,25 @@ export function ProductForm({
 
         <div className="col-span-12 md:col-span-6">
           <label className="field">
-            <span>{labels.fieldCategoryEn}</span>
-            <input
-              name="categoryEn"
-              onChange={(e) =>
-                (values.value = {
-                  ...values.value,
-                  category: {
-                    ...values.value.category,
-                    en: e.currentTarget.value,
-                  },
-                })
-              }
-              placeholder="Outerwear"
-              type="text"
-              value={values.value.category.en}
-            />
-          </label>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="field">
-            <span>{labels.fieldCategoryKa}</span>
-            <input
-              name="categoryKa"
-              onChange={(e) =>
-                (values.value = {
-                  ...values.value,
-                  category: {
-                    ...values.value.category,
-                    ka: e.currentTarget.value,
-                  },
-                })
-              }
-              placeholder="გარესაცმელი"
-              type="text"
-              value={values.value.category.ka}
-            />
+            <span>{labels.fieldCategory}</span>
+            <select
+              name="categoryId"
+              onChange={(e) => patch("categoryId", e.currentTarget.value)}
+              required
+              value={values.value.categoryId}
+            >
+              <option disabled value="">
+                {labels.fieldCategoryEmpty}
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {pickLocalized(
+                    { en: category.nameEn, ka: category.nameKa },
+                    locale,
+                  )}
+                </option>
+              ))}
+            </select>
           </label>
         </div>
 
