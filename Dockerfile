@@ -21,6 +21,4 @@ COPY --from=build /app/lib/db/migrations ./lib/db/migrations
 
 EXPOSE 8000
 
-RUN deno task db:migrate
-
-CMD ["deno", "task", "start"]
+CMD ["sh", "-c", "deno task db:migrate && deno task start"]
