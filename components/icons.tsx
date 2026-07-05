@@ -107,3 +107,76 @@ export const WarningIcon = ({ className }: { className?: string }) => (
     <path d="M12 9v4M12 17h.01" />
   </svg>
 );
+
+export const ArrowDownIcon = ({ className }: { className?: string }) => (
+  <svg
+    aria-hidden="true"
+    className={className}
+    fill="none"
+    height="16"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 5v14M5 12l7 7 7-7" />
+  </svg>
+);
+
+export const ArrowUpIcon = ({ className }: { className?: string }) => (
+  <svg
+    aria-hidden="true"
+    className={className}
+    fill="none"
+    height="16"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 19V5M5 12l7-7 7 7" />
+  </svg>
+);
+
+export const SortIcon = ({ className }: { className?: string }) => (
+  <svg
+    aria-hidden="true"
+    className={className}
+    fill="none"
+    height="16"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M3 7h13M3 12h9M3 17h5" />
+    <path d="M18 7v10M15 14l3 3 3-3" />
+  </svg>
+);
+
+export const ChevronDownIcon = ({ className }: { className?: string }) => (
+  <svg
+    aria-hidden="true"
+    className={className}
+    fill="none"
+    height="16"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);

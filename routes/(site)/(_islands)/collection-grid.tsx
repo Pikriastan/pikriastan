@@ -1,4 +1,10 @@
 import { computed, useSignal } from "@preact/signals";
+import type { ComponentType } from "preact";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  SortIcon,
+} from "@/components/icons.tsx";
 import type { Locale } from "@/lib/constants.ts";
 import type { Category } from "@/lib/db/schema.ts";
 import type { ProductWithImages } from "@/lib/db/types.ts";
@@ -17,6 +23,7 @@ export interface CollectionGridLabels {
   empty: string;
   filterAll: string;
   noResults: string;
+  searchLabel: string;
   searchPlaceholder: string;
   sortLabel: string;
   sortNewest: string;
@@ -128,6 +135,20 @@ function formatCount(count: number, labels: CollectionGridLabels): string {
   return labels.countManyTemplate.replace("{n}", String(count));
 }
 
+const SORT_OPTIONS: {
+  icon: ComponentType<{ className?: string }>;
+  labelKey: keyof Pick<
+    CollectionGridLabels,
+    "sortNewest" | "sortOldest" | "sortPriceHigh" | "sortPriceLow"
+  >;
+  value: CollectionSort;
+}[] = [
+  { value: "newest", labelKey: "sortNewest", icon: ArrowDownIcon },
+  { value: "oldest", labelKey: "sortOldest", icon: ArrowUpIcon },
+  { value: "price-asc", labelKey: "sortPriceLow", icon: ArrowUpIcon },
+  { value: "price-desc", labelKey: "sortPriceHigh", icon: ArrowDownIcon },
+];
+
 export function CollectionGrid({
   categories,
   labels,
@@ -167,8 +188,9 @@ export function CollectionGrid({
         <div className="grid grid-cols-12 gap-4 md:gap-6">
           <div className="col-span-12 lg:col-span-8">
             <label className="field">
-              <span>{labels.searchPlaceholder}</span>
+              <span>{labels.searchLabel}</span>
               <input
+                autocomplete="off"
                 onInput={(e) => (search.value = e.currentTarget.value)}
                 placeholder={labels.searchPlaceholder}
                 type="search"
@@ -176,21 +198,34 @@ export function CollectionGrid({
               />
             </label>
           </div>
-          <div className="col-span-12 sm:col-span-6 lg:col-span-4">
-            <label className="field">
-              <span>{labels.sortLabel}</span>
-              <select
-                onChange={(e) =>
-                  (sort.value = e.currentTarget.value as CollectionSort)
-                }
-                value={sort.value}
-              >
-                <option value="newest">{labels.sortNewest}</option>
-                <option value="oldest">{labels.sortOldest}</option>
-                <option value="price-asc">{labels.sortPriceLow}</option>
-                <option value="price-desc">{labels.sortPriceHigh}</option>
-              </select>
-            </label>
+          <div className="col-span-12 lg:col-span-4">
+            <div className="field">
+              <span className="inline-flex items-center gap-2">
+                <SortIcon className="text-muted" />
+                {labels.sortLabel}
+              </span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {SORT_OPTIONS.map((option) => {
+                  const active = sort.value === option.value;
+                  const Icon = option.icon;
+                  return (
+                    <button
+                      className={`hairline inline-flex items-center gap-1.5 border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors ${
+                        active
+                          ? "border-ink bg-ink text-paper"
+                          : "text-muted hover:border-ink hover:text-ink"
+                      }`}
+                      key={option.value}
+                      onClick={() => (sort.value = option.value)}
+                      type="button"
+                    >
+                      <Icon className="shrink-0" />
+                      <span>{labels[option.labelKey]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
 

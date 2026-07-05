@@ -70,6 +70,7 @@ export interface Dictionary {
     subtitle: string;
     empty: string;
     noResults: string;
+    searchLabel: string;
     searchPlaceholder: string;
     filterAll: string;
     sortLabel: string;
@@ -171,7 +172,8 @@ const en: Dictionary = {
     subtitle: "Every piece in the current archive.",
     empty: "The archive is currently empty. New pieces are being prepared.",
     noResults: "No pieces match your search or filters.",
-    searchPlaceholder: "Search by name or description",
+    searchLabel: "Search",
+    searchPlaceholder: "Name or description",
     filterAll: "All",
     sortLabel: "Sort",
     sortNewest: "Most recent",
@@ -328,7 +330,8 @@ const ka: Dictionary = {
     subtitle: "ყველა ნაკეთობა მიმდინარე არქივიდან.",
     empty: "არქივი ამჟამად ცარიელია. ახალი ნამუშევრები მზადდება.",
     noResults: "ძიებას ან ფილტრებს არც ერთი ნაკეთობა არ შეესაბამება.",
-    searchPlaceholder: "ძიება სახელით ან აღწერით",
+    searchLabel: "ძიება",
+    searchPlaceholder: "სახელი ან აღწერა",
     filterAll: "ყველა",
     sortLabel: "დალაგება",
     sortNewest: "უახლესი",

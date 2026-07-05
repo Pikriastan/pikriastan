@@ -41,6 +41,7 @@ export default define.page(async ({ state }) => {
               empty: t.collection.empty,
               filterAll: t.collection.filterAll,
               noResults: t.collection.noResults,
+              searchLabel: t.collection.searchLabel,
               searchPlaceholder: t.collection.searchPlaceholder,
               sortLabel: t.collection.sortLabel,
               sortNewest: t.collection.sortNewest,

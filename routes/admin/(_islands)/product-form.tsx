@@ -1,5 +1,6 @@
 import { useSignal } from "@preact/signals";
 import { useRef } from "preact/hooks";
+import { ChevronDownIcon } from "@/components/icons.tsx";
 import { useFormAction } from "@/hooks/use-form-action.ts";
 import type { Locale } from "@/lib/constants.ts";
 import type { Category } from "@/lib/db/schema.ts";
@@ -267,24 +268,27 @@ export function ProductForm({
         <div className="col-span-12">
           <label className="field">
             <span>{labels.fieldCategory}</span>
-            <select
-              name="categoryId"
-              onChange={(e) => patch("categoryId", e.currentTarget.value)}
-              required
-              value={values.value.categoryId}
-            >
-              <option disabled value="">
-                {labels.fieldCategoryEmpty}
-              </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {pickLocalized(
-                    { en: category.nameEn, ka: category.nameKa },
-                    locale,
-                  )}
+            <div className="field-select">
+              <select
+                name="categoryId"
+                onChange={(e) => patch("categoryId", e.currentTarget.value)}
+                required
+                value={values.value.categoryId}
+              >
+                <option disabled value="">
+                  {labels.fieldCategoryEmpty}
                 </option>
-              ))}
-            </select>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {pickLocalized(
+                      { en: category.nameEn, ka: category.nameKa },
+                      locale,
+                    )}
+                  </option>
+                ))}
+              </select>
+              <ChevronDownIcon className="field-select__icon" />
+            </div>
           </label>
         </div>
 
